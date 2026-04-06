@@ -1,10 +1,10 @@
 # Wendy — Development Log
 
-Standalone chatbot with IFS personality.
+Standalone chatbot with behavioral personality.
 
 ## 2026-04-06
 - Live at chat.gamemodes.xyz
-- Deepest IFS profile in portfolio
+- Deepest personality profile in portfolio
 
 ## 2026-04-04
 - GitHub Pages deployment

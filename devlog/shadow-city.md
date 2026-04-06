@@ -7,7 +7,7 @@ Full playable NPC dialogue showcase game.
 - Tick system bugs being resolved
 
 ## 2026-04-05
-- IFS Patent strategy
+- Patent strategy
 - Balance testing framework
 - 11 faction playthroughs complete
 

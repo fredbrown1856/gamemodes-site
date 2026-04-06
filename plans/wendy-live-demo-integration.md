@@ -166,7 +166,7 @@ Wendy should be consistent about herself day-to-day:
 
 **New endpoint:** `GET /api/export/training` (admin-only, bearer token)
 
-All training data exports are AES-256-GCM encrypted. The IFS-based integration methodology is proprietary and must never be exposed in plaintext exports.
+All training data exports are AES-256-GCM encrypted. The proprietary integration methodology is proprietary and must never be exposed in plaintext exports.
 
 ```
 Encryption Details:
@@ -467,7 +467,7 @@ CREATE TABLE IF NOT EXISTS public_stats (
 - **CORS**: Strict origin allowlist, no wildcard
 - **Admin endpoints**: Bearer token authentication for training data export
 - **Content moderation**: Light-touch filtering — block only extreme abuse/hate speech. Allow users to explore the full range of Wendy's personality including negative affinity interactions so the training data captures diverse conversation patterns
-- **Training data encryption**: AES-256-GCM encryption on all exported training data. Proprietary IFS-based methodology must never be exposed in plaintext. Key stored in environment variable only
+- **Training data encryption**: AES-256-GCM encryption on all exported training data. Proprietary methodology must never be exposed in plaintext. Key stored in environment variable only
 
 ---
 
@@ -479,6 +479,6 @@ CREATE TABLE IF NOT EXISTS public_stats (
 | LLM provider | Cerebras (existing) | Already configured, free tier |
 | Bot protection | Honeypot + IP rate limiting | No Turnstile account; simpler to implement |
 | Concurrent sessions | 2 max | Stays within Cerebras free tier limits |
-| Training data | AES-256-GCM encrypted | Protects proprietary IFS-based methodology |
+| Training data | AES-256-GCM encrypted | Protects proprietary methodology |
 | Admin auth | Bearer token | Simple, effective for single-admin use |
 | Content moderation | Light-touch only | Users need to test full personality range; captures diverse training data |
