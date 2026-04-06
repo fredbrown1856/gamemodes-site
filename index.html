@@ -589,6 +589,73 @@
     .wendy-showcase { grid-template-columns: 1fr; }
     .wendy-live-stats { flex-direction: column; gap: 1rem; }
   }
+
+  /* ── DEVLOG TIMELINE ─────────────────────────── */
+  .devlog-timeline {
+    max-width: 800px;
+    margin: 0 auto;
+    position: relative;
+    padding-left: 30px;
+  }
+  .devlog-timeline::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(180deg, #6366f1, #8b5cf6, #a855f7);
+  }
+  .devlog-entry {
+    position: relative;
+    margin-bottom: 30px;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    transition: all 0.3s ease;
+  }
+  .devlog-entry:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(99, 102, 241, 0.3);
+    transform: translateX(5px);
+  }
+  .devlog-entry::before {
+    content: '';
+    position: absolute;
+    left: -36px;
+    top: 24px;
+    width: 10px;
+    height: 10px;
+    background: #6366f1;
+    border-radius: 50%;
+    border: 2px solid #0a0a0f;
+  }
+  .devlog-date {
+    display: inline-block;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+  .devlog-entry h4 {
+    color: #e2e8f0;
+    margin-bottom: 10px;
+    font-size: 1.1rem;
+  }
+  .devlog-entry ul {
+    margin: 0;
+    padding-left: 20px;
+  }
+  .devlog-entry li {
+    color: #94a3b8;
+    margin-bottom: 6px;
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
 </style>
 </head>
 <body>
@@ -604,6 +671,7 @@
     <li><a href="#pipeline">Pipeline</a></li>
     <li><a href="#models">Models</a></li>
     <li><a href="#contribute">Contribute</a></li>
+    <li><a href="#devlog">Devlog</a></li>
     <li><a href="#contact">Contact</a></li>
   </ul>
 </nav>
@@ -1107,6 +1175,94 @@
       <h3>QA & Testing</h3>
       <p>Run simulations, validate training data quality, test dialogue outputs across game scenarios, or help build automated evaluation frameworks.</p>
     </div>
+  </div>
+</section>
+
+<!-- DEVLOG -->
+<section id="devlog">
+  <span class="section-label">📝 Development Log</span>
+  <h2 class="section-title">Latest Updates</h2>
+  <p class="section-desc">A chronological view of milestones, launches, and stabilization work across the Gamemodes portfolio.</p>
+
+  <div class="devlog-timeline">
+
+    <div class="devlog-entry">
+      <div class="devlog-date">2026-04-06</div>
+      <h4>Portfolio Evaluation Complete</h4>
+      <ul>
+        <li>Full portfolio assessment across 6 projects</li>
+        <li>Grade: B+ (7.6/10), Estimated value: $50K-$150K</li>
+        <li>IFS framework validated as core differentiator</li>
+        <li>Priority: Generate training data, fix Shadow City tick bugs</li>
+      </ul>
+    </div>
+
+    <div class="devlog-entry">
+      <div class="devlog-date">2026-04-05</div>
+      <h4>IFS Patent Strategy & Shadow City Stabilization</h4>
+      <ul>
+        <li>Patent application guide for IFS dialogue system</li>
+        <li>Shadow City Phase R6 stability work</li>
+        <li>Balance testing framework for NPC behavior validation</li>
+        <li>11 faction playthroughs completed across 5 archetypes</li>
+      </ul>
+    </div>
+
+    <div class="devlog-entry">
+      <div class="devlog-date">2026-04-04</div>
+      <h4>Gamemodes Site Launched & Wendy Live</h4>
+      <ul>
+        <li>GitHub Pages deployment at gamemodes.xyz</li>
+        <li>Wendy chatbot live at chat.gamemodes.xyz</li>
+        <li>Live stats integration between sites</li>
+        <li>Wendy Live Demo Integration plan finalized</li>
+      </ul>
+    </div>
+
+    <div class="devlog-entry">
+      <div class="devlog-date">2026-04-03</div>
+      <h4>Wendy v2 Development & Shadow City Expansion</h4>
+      <ul>
+        <li>Complete Wendy rewrite with modular architecture</li>
+        <li>Affinity system, LLM client, database, session management</li>
+        <li>Shadow City Phase 7+: Cell phone, comedy, entertainment engines</li>
+        <li>NPC extras system with 11 trait categories</li>
+      </ul>
+    </div>
+
+    <div class="devlog-entry">
+      <div class="devlog-date">2026-04-02</div>
+      <h4>IFS v2 & Skyrim Server Overhaul</h4>
+      <ul>
+        <li>IFS v2 psychology engine with 3-layer protection</li>
+        <li>Affinity-driven part access (Manager → Firefighter → Exile)</li>
+        <li>Skyrim LLM server with dual provider, caching, priority routing</li>
+        <li>Dynamic prompt tier system</li>
+      </ul>
+    </div>
+
+    <div class="devlog-entry">
+      <div class="devlog-date">2026-04-01</div>
+      <h4>Skyrim SKSE Plugin & Multi-Project Kickoff</h4>
+      <ul>
+        <li>Skyrim SKSE plugin foundation (http_client, npc_resolver, papyrus)</li>
+        <li>IFS dialogue system with NPC resolver and subtitle display</li>
+        <li>Fallout 4 F4SE plugin scaffolding</li>
+        <li>Multi-project architecture established</li>
+      </ul>
+    </div>
+
+    <div class="devlog-entry">
+      <div class="devlog-date">2026-03-31</div>
+      <h4>Shadow City Foundation</h4>
+      <ul>
+        <li>Core game loop: World, NPC, Rumor, Task, Entertainment engines</li>
+        <li>IFS psychology framework for NPC behavior</li>
+        <li>6 factions, 11 playthrough narratives</li>
+        <li>Database layer with conversation history</li>
+      </ul>
+    </div>
+
   </div>
 </section>
 
