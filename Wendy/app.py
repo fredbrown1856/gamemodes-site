@@ -393,14 +393,9 @@ def demo_start_handler():
     try:
         data = request.get_json(silent=True) or {}
         
-        # DEBUG: Log incoming request
-        app.logger.info(f"[DEBUG] /api/demo/start called. JSON data: {data}, UA: {request.headers.get('User-Agent', 'N/A')}")
-        
         # Step 1: Check honeypot
         if not bot_check.check_honeypot(data):
-            app.logger.info(f"[DEBUG] Honeypot check FAILED. data={data}")
             return jsonify({"error": "Invalid submission"}), 400
-        app.logger.info(f"[DEBUG] Honeypot check passed")
         
         # Step 2: Check user-agent
         user_agent = request.headers.get("User-Agent", "")
