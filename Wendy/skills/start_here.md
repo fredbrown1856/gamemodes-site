@@ -4,6 +4,20 @@
 
 Wendy is an interactive NPC conversation demo featuring a 22-year-old Appalachian woman from eastern Kentucky. The project uses an LLM (OpenAI GPT) to generate character-driven dialogue that dynamically adapts based on an "affinity" system — a numerical score (-100 to +100) tracking how much Wendy likes or trusts the user. Conversations flow through Flask endpoints, affinity is analyzed per-message via a secondary LLM call, and all state is persisted in SQLite. The frontend is vanilla HTML/CSS/JS with no frameworks.
 
+## ⚠️ PROPRIETARY NOTICE — WEBSITE PROJECT
+
+> **This project publishes content to the PUBLIC website at gamemodes.xyz.**
+>
+> The IFS (Internal Family Systems) psychology model is **proprietary**. When updating any website content:
+>
+> 1. **NEVER** reference "IFS", "Internal Family Systems", "parts system", "Manager/Firefighter/Exile" on the website
+> 2. **NEVER** reveal the proprietary personality model's structure or mechanics publicly
+> 3. Use only generic descriptions: "personality engine", "behavioral depth", "psychological realism"
+> 4. Before pushing ANY update, search for: "IFS", "Internal Family Systems", "Manager", "Firefighter", "Exile", "Self Energy", "affinity", "protector", "parts"
+> 5. Remove or replace all matches with generic terminology
+>
+> The website is PUBLIC and indexed by search engines. Protect the IP.
+
 ## Tech Stack
 
 | Component | Technology |
