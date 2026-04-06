@@ -224,6 +224,9 @@ Consider:
             shift = int(result.get("shift", 0))
             reason = str(result.get("reason", "No reason provided"))
             
+            # Clamp shift to reasonable range (extra safety)
+            shift = max(-50, min(50, shift))
+            
             return {"shift": shift, "reason": reason}
             
         except json.JSONDecodeError:

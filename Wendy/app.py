@@ -650,7 +650,11 @@ def demo_chat_handler():
         try:
             affinity_analysis = llm.analyze_affinity(formatted_messages, conversation["affinity"])
         except llm_client.LLMError:
+            # Fall back to keyword analysis, but default to small positive shift
             affinity_analysis = wendy.fallback_affinity_analysis(message, config)
+            # If fallback returns 0 shift, nudge to +1 to keep conversation going
+            if affinity_analysis.get("shift", 0) == 0:
+                affinity_analysis = {"shift": 1, "reason": "LLM analysis unavailable; defaulting to positive"}
         
         # Calculate clamped affinity shift
         # In demo mode, use a smaller max_shift to keep conversations going longer
@@ -674,14 +678,29 @@ def demo_chat_handler():
         # Safety net: prevent a single message from ending the conversation
         current_affinity = conversation["affinity"]
         hostile_threshold = config.get("affinity", {}).get("hostile_threshold", -50)
-        if current_affinity + shift <= hostile_threshold and current_affinity > hostile_threshold:
-            # This message would end the conversation — reduce the shift to stay just above hostile
-            safe_shift = (hostile_threshold - current_affinity) + 1
-            app.logger.warning(
-                f"Demo safety net | conv={conversation_id} | shift={shift} would end conversation. "
-                f"Overriding to safe_shift={safe_shift}"
-            )
-            shift = safe_shift
+        message_count = len(messages)
+        
+        # Require minimum messages before allowing hostile deactivation
+        min_messages_before_hostile = demo_config.get("min_messages_before_hostile", 5)
+        
+        if current_affinity + shift <= hostile_threshold:
+            if message_count < min_messages_before_hostile:
+                # Too early in conversation — clamp shift to stay just above hostile
+                safe_shift = (hostile_threshold - current_affinity) + 1
+                app.logger.warning(
+                    f"Demo early protection | conv={conversation_id} | msg_count={message_count} < "
+                    f"{min_messages_before_hostile} | shift={shift} would end conversation. "
+                    f"Overriding to safe_shift={safe_shift}"
+                )
+                shift = safe_shift
+            elif current_affinity > hostile_threshold:
+                # Standard safety net: prevent crossing into hostile from above
+                safe_shift = (hostile_threshold - current_affinity) + 1
+                app.logger.warning(
+                    f"Demo safety net | conv={conversation_id} | shift={shift} would end conversation. "
+                    f"Overriding to safe_shift={safe_shift}"
+                )
+                shift = safe_shift
         
         # Update affinity in DB
         affinity_result = database.update_affinity(
