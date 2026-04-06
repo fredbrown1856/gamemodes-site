@@ -1,0 +1,1311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gamemodes — Game Model Development Studio</title>
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #12121a;
+    --surface2: #1a1a26;
+    --border: #2a2a3a;
+    --text: #e8e8f0;
+    --text-dim: #8888a0;
+    --accent: #6c5ce7;
+    --accent2: #a29bfe;
+    --accent-glow: rgba(108,92,231,0.15);
+    --green: #00b894;
+    --orange: #fdcb6e;
+    --red: #e17055;
+    --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --mono: 'JetBrains Mono', 'Fira Code', monospace;
+  }
+
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--font);
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── NAV ─────────────────────────────────────── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(10,10,15,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    height: 64px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .nav-logo {
+    font-weight: 800; font-size: 1.2rem;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    letter-spacing: -0.5px;
+  }
+  .nav-links { display: flex; gap: 2rem; list-style: none; }
+  .nav-links a {
+    color: var(--text-dim); text-decoration: none; font-size: 0.875rem;
+    font-weight: 500; transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--text); }
+
+  /* ── HERO ────────────────────────────────────── */
+  .hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center;
+    padding: 6rem 2rem 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+    background: radial-gradient(ellipse at 50% 30%, var(--accent-glow) 0%, transparent 60%),
+                radial-gradient(ellipse at 30% 70%, rgba(162,155,254,0.06) 0%, transparent 50%);
+    pointer-events: none;
+  }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    padding: 0.4rem 1.2rem;
+    font-size: 0.8rem; font-weight: 500;
+    color: var(--accent2);
+    margin-bottom: 2rem;
+    letter-spacing: 0.5px;
+  }
+  .hero-badge .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--green);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+  .hero h1 {
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    font-weight: 900;
+    line-height: 1.1;
+    letter-spacing: -2px;
+    margin-bottom: 1.5rem;
+    max-width: 800px;
+  }
+  .hero h1 .gradient {
+    background: linear-gradient(135deg, var(--accent), var(--accent2), #74b9ff);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .hero p {
+    font-size: 1.15rem;
+    color: var(--text-dim);
+    max-width: 600px;
+    margin-bottom: 2.5rem;
+    line-height: 1.8;
+  }
+  .hero-cta {
+    display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;
+  }
+  .btn {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    padding: 0.75rem 1.75rem;
+    border-radius: 10px;
+    font-weight: 600; font-size: 0.95rem;
+    text-decoration: none;
+    transition: all 0.25s;
+    cursor: pointer; border: none;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--accent), #7c6cf0);
+    color: #fff;
+    box-shadow: 0 4px 20px rgba(108,92,231,0.3);
+  }
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(108,92,231,0.4);
+  }
+  .btn-ghost {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text);
+  }
+  .btn-ghost:hover {
+    border-color: var(--accent);
+    background: var(--accent-glow);
+  }
+
+  /* ── STATS BAR ──────────────────────────────── */
+  .stats-bar {
+    display: flex; justify-content: center; gap: 3rem; flex-wrap: wrap;
+    padding: 2rem;
+    margin-top: -2rem;
+    position: relative; z-index: 2;
+  }
+  .stat {
+    text-align: center;
+  }
+  .stat-value {
+    font-size: 2rem; font-weight: 800;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .stat-label {
+    font-size: 0.8rem; color: var(--text-dim);
+    text-transform: uppercase; letter-spacing: 1px; font-weight: 500;
+  }
+
+  /* ── SECTIONS ────────────────────────────────── */
+  section {
+    padding: 6rem 2rem;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  .section-label {
+    display: inline-block;
+    font-size: 0.75rem; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 2px;
+    color: var(--accent2);
+    margin-bottom: 1rem;
+  }
+  .section-title {
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 800;
+    line-height: 1.15;
+    letter-spacing: -1px;
+    margin-bottom: 1rem;
+  }
+  .section-desc {
+    font-size: 1.05rem;
+    color: var(--text-dim);
+    max-width: 650px;
+    margin-bottom: 3rem;
+  }
+
+  /* ── ARCHITECTURE ───────────────────────────── */
+  .arch-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+  }
+  .arch-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 2rem;
+    transition: all 0.3s;
+  }
+  .arch-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+  }
+  .arch-card .icon {
+    width: 48px; height: 48px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem;
+    margin-bottom: 1.25rem;
+  }
+  .arch-card h3 {
+    font-size: 1.1rem; font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+  .arch-card p {
+    color: var(--text-dim); font-size: 0.9rem; line-height: 1.7;
+  }
+
+  /* ── PROJECTS ────────────────────────────────── */
+  .project {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    align-items: center;
+    margin-bottom: 5rem;
+    padding: 3rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+  }
+  .project:nth-child(even) { direction: rtl; }
+  .project:nth-child(even) > * { direction: ltr; }
+  .project-label {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    font-size: 0.75rem; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 1.5px;
+    margin-bottom: 0.75rem;
+    padding: 0.3rem 0.8rem;
+    border-radius: 6px;
+  }
+  .project h3 {
+    font-size: 1.6rem; font-weight: 800;
+    letter-spacing: -0.5px;
+    margin-bottom: 0.75rem;
+  }
+  .project p {
+    color: var(--text-dim); font-size: 0.95rem; line-height: 1.8;
+    margin-bottom: 1rem;
+  }
+  .project-features {
+    list-style: none; padding: 0;
+  }
+  .project-features li {
+    display: flex; align-items: flex-start; gap: 0.6rem;
+    font-size: 0.88rem;
+    color: var(--text-dim);
+    margin-bottom: 0.5rem;
+  }
+  .project-features li::before {
+    content: '→';
+    color: var(--accent2);
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+  .project-visual {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    line-height: 1.9;
+    color: var(--text-dim);
+    overflow-x: auto;
+  }
+  .project-visual .hl { color: var(--accent2); }
+  .project-visual .hl2 { color: var(--green); }
+  .project-visual .hl3 { color: var(--orange); }
+  .project-visual .comment { color: #555570; }
+
+  /* ── PIPELINE ────────────────────────────────── */
+  .pipeline {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    position: relative;
+  }
+  .pipeline::before {
+    content: '';
+    position: absolute;
+    left: 23px;
+    top: 0; bottom: 0;
+    width: 2px;
+    background: linear-gradient(180deg, var(--accent), var(--accent2), var(--green));
+  }
+  .pipeline-step {
+    display: flex; gap: 1.5rem;
+    padding: 1.5rem 0;
+    position: relative;
+  }
+  .pipeline-dot {
+    width: 48px; height: 48px; flex-shrink: 0;
+    border-radius: 50%;
+    background: var(--surface);
+    border: 2px solid var(--accent);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 0.85rem;
+    color: var(--accent2);
+    z-index: 1;
+  }
+  .pipeline-content h4 {
+    font-size: 1rem; font-weight: 700;
+    margin-bottom: 0.3rem;
+  }
+  .pipeline-content p {
+    color: var(--text-dim); font-size: 0.88rem;
+  }
+
+  /* ── MODEL TABLE ─────────────────────────────── */
+  .model-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 2rem;
+  }
+  .model-table th {
+    text-align: left;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-dim);
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--border);
+    font-weight: 600;
+  }
+  .model-table td {
+    padding: 1rem;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.9rem;
+  }
+  .model-table tr:hover td {
+    background: var(--surface2);
+  }
+  .tag {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+  .tag-green { background: rgba(0,184,148,0.15); color: var(--green); }
+  .tag-orange { background: rgba(253,203,110,0.15); color: var(--orange); }
+  .tag-purple { background: rgba(108,92,231,0.15); color: var(--accent2); }
+
+  /* ── CONTRIBUTOR ─────────────────────────────── */
+  .contrib-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+  }
+  .contrib-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 2rem;
+    text-align: center;
+    transition: all 0.3s;
+  }
+  .contrib-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-3px);
+  }
+  .contrib-card .icon {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+  }
+  .contrib-card h3 {
+    font-size: 1rem; font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+  .contrib-card p {
+    color: var(--text-dim); font-size: 0.85rem;
+    line-height: 1.7;
+  }
+
+  /* ── CONTACT ─────────────────────────────────── */
+  .contact-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 3rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .contact-box::before {
+    content: '';
+    position: absolute;
+    top: -100px; left: 50%; transform: translateX(-50%);
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .contact-box h2 {
+    font-size: 2rem; font-weight: 800;
+    margin-bottom: 0.75rem;
+    position: relative;
+  }
+  .contact-box p {
+    color: var(--text-dim);
+    margin-bottom: 2rem;
+    position: relative;
+  }
+  .email-link {
+    display: inline-flex; align-items: center; gap: 0.6rem;
+    font-family: var(--mono);
+    font-size: 1.1rem;
+    color: var(--accent2);
+    text-decoration: none;
+    padding: 0.75rem 2rem;
+    border: 1px solid var(--accent);
+    border-radius: 12px;
+    transition: all 0.25s;
+    position: relative;
+    background: var(--accent-glow);
+  }
+  .email-link:hover {
+    background: rgba(108,92,231,0.2);
+    transform: translateY(-2px);
+  }
+
+  /* ── FOOTER ──────────────────────────────────── */
+  footer {
+    text-align: center;
+    padding: 3rem 2rem;
+    color: var(--text-dim);
+    font-size: 0.8rem;
+    border-top: 1px solid var(--border);
+  }
+
+  /* ── CODE BLOCK ──────────────────────────────── */
+  .code-block {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    line-height: 1.8;
+    overflow-x: auto;
+    margin: 2rem 0;
+  }
+  .code-block .kw { color: var(--accent2); }
+  .code-block .fn { color: #74b9ff; }
+  .code-block .str { color: var(--green); }
+  .code-block .cm { color: #555570; }
+
+  /* ── WENDY SHOWCASE ──────────────────────────── */
+  .wendy-showcase {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    gap: 3rem;
+    align-items: start;
+  }
+  .wendy-card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 2.5rem;
+    text-align: center;
+  }
+  .wendy-avatar {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+  }
+  .wendy-card h3 {
+    font-size: 1.6rem;
+    font-weight: 800;
+    margin-bottom: 0.3rem;
+  }
+  .wendy-subtitle {
+    color: var(--text-dim);
+    font-size: 0.85rem;
+    margin-bottom: 1rem;
+  }
+  .wendy-traits {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 1.5rem;
+  }
+  .wendy-description {
+    color: var(--text-dim);
+    font-size: 0.95rem;
+    line-height: 1.8;
+  }
+  .wendy-demo-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+  .wendy-feature-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .wendy-feature {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+    padding: 1rem;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    transition: border-color 0.2s;
+  }
+  .wendy-feature:hover {
+    border-color: var(--accent);
+  }
+  .wendy-feature-icon {
+    font-size: 1.5rem;
+    flex-shrink: 0;
+  }
+  .wendy-feature strong {
+    display: block;
+    font-size: 0.95rem;
+    margin-bottom: 0.2rem;
+  }
+  .wendy-feature p {
+    color: var(--text-dim);
+    font-size: 0.85rem;
+    line-height: 1.5;
+  }
+  .wendy-cta-area {
+    text-align: center;
+  }
+  .wendy-cta-btn {
+    font-size: 1.1rem;
+    padding: 1rem 2.5rem;
+  }
+  .wendy-cta-note {
+    color: var(--text-dim);
+    font-size: 0.8rem;
+    margin-top: 0.75rem;
+  }
+  .wendy-live-stats {
+    display: flex;
+    gap: 2rem;
+    justify-content: center;
+    padding: 1.5rem;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+  }
+  .wendy-stat {
+    text-align: center;
+  }
+  .wendy-stat-value {
+    display: block;
+    font-size: 1.3rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .wendy-stat-label {
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  /* ── RESPONSIVE ──────────────────────────────── */
+  @media (max-width: 768px) {
+    .project { grid-template-columns: 1fr; }
+    .project:nth-child(even) { direction: ltr; }
+    .nav-links { display: none; }
+    .stats-bar { gap: 1.5rem; }
+    section { padding: 4rem 1.5rem; }
+    .wendy-showcase { grid-template-columns: 1fr; }
+    .wendy-live-stats { flex-direction: column; gap: 1rem; }
+  }
+
+  /* ── DEVLOG TIMELINE ─────────────────────────── */
+  .devlog-timeline {
+    max-width: 800px;
+    margin: 0 auto;
+    position: relative;
+    padding-left: 30px;
+  }
+  .devlog-timeline::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(180deg, #6366f1, #8b5cf6, #a855f7);
+  }
+  .devlog-entry {
+    position: relative;
+    margin-bottom: 30px;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    transition: all 0.3s ease;
+  }
+  .devlog-entry:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(99, 102, 241, 0.3);
+    transform: translateX(5px);
+  }
+  .devlog-entry::before {
+    content: '';
+    position: absolute;
+    left: -36px;
+    top: 24px;
+    width: 10px;
+    height: 10px;
+    background: #6366f1;
+    border-radius: 50%;
+    border: 2px solid #0a0a0f;
+  }
+  .devlog-date {
+    display: inline-block;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+  .devlog-entry h4 {
+    color: #e2e8f0;
+    margin-bottom: 10px;
+    font-size: 1.1rem;
+  }
+  .devlog-entry ul {
+    margin: 0;
+    padding-left: 20px;
+  }
+  .devlog-entry li {
+    color: #94a3b8;
+    margin-bottom: 6px;
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">⬡ GAMEMODES</div>
+  <ul class="nav-links">
+    <li><a href="#hero">Home</a></li>
+    <li><a href="#vision">Vision</a></li>
+    <li><a href="#engine">Engine</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#wendy">Meet Wendy</a></li>
+    <li><a href="#pipeline">Pipeline</a></li>
+    <li><a href="#models">Models</a></li>
+    <li><a href="#contribute">Contribute</a></li>
+    <li><a href="devlog.html">Devlog</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-badge">
+    <span class="dot"></span>
+    Game Model Development Studio — IFS Psychology Engine for NPCs
+  </div>
+  <h1>
+    NPCs that <span class="gradient">think.</span><br>
+    Games that <span class="gradient">remember.</span>
+  </h1>
+  <p>
+    Gamemodes applies Internal Family Systems (IFS) psychology to NPC behavior — an AI-native engine that generates psychologically authentic, dynamic dialogue across 6 projects and 79K+ lines of code. Runs on consumer hardware with 1-bit quantized models.
+  </p>
+  <div class="hero-cta">
+    <a href="#projects" class="btn btn-primary">Explore Projects ↓</a>
+    <a href="#contact" class="btn btn-ghost">Get in Touch</a>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="stats-bar">
+  <div class="stat">
+    <div class="stat-value">6</div>
+    <div class="stat-label">Active Projects</div>
+  </div>
+  <div class="stat">
+    <div class="stat-value">79K+</div>
+    <div class="stat-label">Lines of Python</div>
+  </div>
+  <div class="stat">
+    <div class="stat-value">22K+</div>
+    <div class="stat-label">Training Records</div>
+  </div>
+  <div class="stat">
+    <div class="stat-value">~1GB</div>
+    <div class="stat-label">VRAM at Runtime</div>
+  </div>
+  <div class="stat">
+    <div class="stat-value">Live</div>
+    <div class="stat-label">Wendy Demo</div>
+  </div>
+</div>
+
+<!-- VISION -->
+<section id="vision">
+  <span class="section-label">The Vision</span>
+  <h2 class="section-title">Game NPCs deserve better than canned lines.</h2>
+  <p class="section-desc">
+    For decades, NPCs have been limited to pre-written dialogue trees. Gamemodes applies Internal Family Systems (IFS) psychology — a clinically validated therapeutic model — to NPC behavior. The engine generates contextually aware, psychologically grounded dialogue in real time, at a cost and compute footprint that works on any gaming PC.
+  </p>
+
+  <div class="arch-grid">
+    <div class="arch-card">
+      <div class="icon" style="background: rgba(108,92,231,0.15);">🧠</div>
+      <h3>IFS Psychology Engine</h3>
+      <p>NPCs are driven by Internal Family Systems profiles — Managers, Firefighters, and Exiles that govern behavior based on emotional state and relationship context. Every response reflects the character's internal parts system.</p>
+    </div>
+    <div class="arch-card">
+      <div class="icon" style="background: rgba(0,184,148,0.15);">⚡</div>
+      <h3>Runs on Consumer Hardware</h3>
+      <p>Our engine uses 1-bit quantized models (~1GB VRAM) to run entirely on local hardware — no cloud dependency, no latency, no per-call API costs.</p>
+    </div>
+    <div class="arch-card">
+      <div class="icon" style="background: rgba(253,203,110,0.15);">🔧</div>
+      <h3>Game-Agnostic Engine</h3>
+      <p>The core engine is designed for general applicability. We've proven it across three distinct game worlds — the architecture adapts to any game genre or setting.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ENGINE -->
+<section id="engine">
+  <span class="section-label">The Engine</span>
+  <h2 class="section-title">How it works.</h2>
+  <p class="section-desc">
+    The Gamemodes engine sits between the game and an LLM, translating game state into IFS-psychologically rich prompts and routing responses back as natural dialogue. The IFS framework governs NPC internal states — Managers protect, Firefighters react, Exiles reveal vulnerability.
+  </p>
+
+  <div class="code-block">
+<span class="cm">/* Core Data Flow */</span>
+<span class="kw">Game Engine</span> → <span class="fn">States</span> + <span class="fn">Profile</span> + <span class="fn">Context</span> → <span class="fn">Prompt Builder</span> → <span class="fn">LLM</span> → <span class="str">NPC Dialogue</span>
+
+<span class="cm">/* What the engine tracks per NPC: */</span>
+<span class="fn">IFS Parts System</span>       <span class="cm">(Manager, Firefighter, Exile)</span>
+<span class="fn">7 Physiological States</span>  <span class="cm">(stress, hunger, thirst, ...)</span>
+<span class="fn">3 Psychological Modes</span>   <span class="cm">(protective, reactive, vulnerable)</span>
+<span class="fn">20 Personality Archetypes</span> <span class="cm">(base traits, speech patterns)</span>
+<span class="fn">7 Relationship Levels</span>   <span class="cm">(hostile → bonded)</span>
+<span class="fn">5 Awareness Tiers</span>       <span class="cm">(emotional regulation capacity)</span>
+<span class="fn">8 Game Genres</span>           <span class="cm">(noir, fantasy, sci-fi, ...)</span>
+  </div>
+
+  <div class="arch-grid" style="margin-top: 2rem;">
+    <div class="arch-card">
+      <div class="icon" style="background: rgba(116,185,255,0.15);">🔀</div>
+      <h3>Provider Pattern Architecture</h3>
+      <p>Model-agnostic design. Swap between any OpenAI-compatible LLM at runtime — from 1-bit models to frontier models — without changing a line of game code.</p>
+    </div>
+    <div class="arch-card">
+      <div class="icon" style="background: rgba(108,92,231,0.15);">🛡️</div>
+      <h3>Graceful Degradation</h3>
+      <p>If the LLM is unavailable, the engine falls back to curated dialogue organized by psychological mode. The game never breaks.</p>
+    </div>
+    <div class="arch-card">
+      <div class="icon" style="background: rgba(0,184,148,0.15);">📊</div>
+      <h3>Training Data Pipeline</h3>
+      <p>Integrated pipeline for generating, validating, and filtering fine-tuning data — producing thousands of high-quality Alpaca-format examples.</p>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <span class="section-label">Projects</span>
+  <h2 class="section-title">Six projects. One engine.</h2>
+  <p class="section-desc">
+    Gamemodes operates across six interconnected projects — each proving a different dimension of the IFS psychology engine's capability.
+  </p>
+
+  <!-- Shadow City -->
+  <div class="project">
+    <div>
+      <div class="project-label" style="background: rgba(108,92,231,0.12); color: var(--accent2);">🌃 Testbed Game — Phase 12</div>
+      <h3>Shadow City</h3>
+      <p>
+        Shadow City is a noir RPG designed to showcase the Gamemodes NPC engine. Set in a rain-soaked dystopian metropolis where six factions wage silent war, it demonstrates the full capability of the IFS psychology engine — quest systems, faction progression, mortality, and dynamic NPC-NPC interactions — all powered by psychologically grounded dialogue generation.
+      </p>
+      <ul class="project-features">
+        <li>Phase 12 — 6 factions with full game loop and victory conditions</li>
+        <li>Cell phone, comedy, entertainment, tutorial, and asylum engines</li>
+        <li>Full quest tree system with pool-based job assignment</li>
+        <li>Medical, mortality, and addiction simulation systems</li>
+        <li>Tick system in development — duplicate event bugs being resolved</li>
+      </ul>
+    </div>
+    <div class="project-visual">
+<span class="hl">faction</span> <span class="str">"Police"</span> {<br>
+&nbsp;&nbsp;<span class="hl">theme</span>: <span class="str">"Internal corruption vs. duty"</span>,<br>
+&nbsp;&nbsp;<span class="hl">victory_quest</span>: <span class="str">"Operation: Takedown"</span>,<br>
+&nbsp;&nbsp;<span class="hl">mortality_rate</span>: <span class="hl3">0.004</span>,<br>
+&nbsp;&nbsp;<span class="hl">ranks</span>: [<span class="str">"Recruit"</span>, ..., <span class="str">"Leader"</span>]<br>
+}<br><br>
+<span class="comment">// NPC response driven by psychological state</span><br>
+<span class="hl">npc</span>.<span class="fn">generate_dialogue</span>({<br>
+&nbsp;&nbsp;<span class="hl">stress</span>: <span class="hl3">72</span>,<br>
+&nbsp;&nbsp;<span class="hl">psychological_mode</span>: <span class="str">"reactive"</span>,<br>
+&nbsp;&nbsp;<span class="hl">affinity</span>: <span class="hl3">-1</span><br>
+}) <span class="comment">// → contextually generated response</span>
+    </div>
+  </div>
+
+  <!-- Skyrim -->
+  <div class="project">
+    <div>
+      <div class="project-label" style="background: rgba(0,184,148,0.12); color: var(--green);">⚔️ Skyrim Integration — Best Architecture</div>
+      <h3>Skyrim NPC Dialogue Engine</h3>
+      <p>
+        A Skyrim Special Edition mod that replaces canned voice lines with real-time, IFS-psychologically grounded dialogue. Players type messages to NPCs via a console command; the engine generates responses through a C++ SKSE plugin communicating with a local Python dialogue server with dual-provider architecture.
+      </p>
+      <ul class="project-features">
+        <li>SKSE C++ plugin: http_client, npc_resolver, papyrus_functions, subtitle_display</li>
+        <li>Full LLM server with dual provider, caching, and priority routing</li>
+        <li>Dynamic prompt tier system with IFS psychology integration</li>
+        <li>NPCs across all major Skyrim factions with rich IFS profiles</li>
+        <li>Graceful fallback to curated dialogue when LLM unavailable</li>
+      </ul>
+    </div>
+    <div class="project-visual">
+<span class="cm">// SKSE Plugin → Python Server → LLM</span><br>
+<span class="kw">Player</span>: <span class="str">"talk lydia 'How are you?'"</span><br><br>
+<span class="comment">// 1. C++ plugin resolves NPC</span><br>
+<span class="hl">npc</span> = <span class="fn">NPCResolver</span>.<span class="fn">ResolveByName</span>(<span class="str">"lydia"</span>)<br><br>
+<span class="comment">// 2. HTTP POST to localhost:8080</span><br>
+<span class="fn">HttpClient</span>.<span class="fn">SendDialogue</span>({<br>
+&nbsp;&nbsp;<span class="hl">npc_id</span>: <span class="str">"lydia"</span>,<br>
+&nbsp;&nbsp;<span class="hl">stress</span>: <span class="hl3">35</span>,<br>
+&nbsp;&nbsp;<span class="hl">psychological_mode</span>: <span class="str">"protective"</span><br>
+})<br><br>
+<span class="comment">// 3. Response displayed as subtitle</span><br>
+<span class="str">"I am sworn to carry your burdens,<br>
+&nbsp;but tonight... I wonder who carries mine."</span>
+    </div>
+  </div>
+
+  <!-- Fallout 4 -->
+  <div class="project">
+    <div>
+      <div class="project-label" style="background: rgba(253,203,110,0.12); color: var(--orange);">☢️ Fallout 4 Integration — Only Trained Model</div>
+      <h3>Fallout 4 NPC Dialogue Engine</h3>
+      <p>
+        The only project with a fully trained model in the portfolio. A Fallout 4 mod using F4SE plugin to capture player input, route through a Python dialogue server, and generate wasteland-appropriate dialogue. Nine NPCs across five factions with full IFS psychological profiles and an affinity system.
+      </p>
+      <ul class="project-features">
+        <li>F4SE C++ plugin with fine-tuned 4B IFS model (checkpoint-250)</li>
+        <li>9 NPCs across Brotherhood, Institute, Railroad, Raiders, Settlers</li>
+        <li>22,250+ Alpaca-format training entries</li>
+        <li>Full affinity system tracking relationship progression</li>
+        <li>Faction-specific IFS psychological templates</li>
+      </ul>
+    </div>
+    <div class="project-visual">
+<span class="cm">// IFS model: fine-tuned 4B checkpoint-250</span><br>
+<span class="hl">model</span>: <span class="str">"fallout4-ifs-4b"</span><br><br>
+<span class="cm">// Factions with NPC profiles</span><br>
+<span class="hl">brotherhood</span> { <span class="hl">vibe</span>: <span class="str">"disciplined, hierarchical"</span> }<br>
+<span class="hl">institute</span>   { <span class="hl">vibe</span>: <span class="str">"detached, clinical"</span> }<br>
+<span class="hl">railroad</span>    { <span class="hl">vibe</span>: <span class="str">"devoted, paranoid"</span> }<br>
+<span class="hl">raiders</span>     { <span class="hl">vibe</span>: <span class="str">"chaotic, impulsive"</span> }<br>
+<span class="hl">settlers</span>    { <span class="hl">vibe</span>: <span class="str">"resilient, weary"</span> }<br><br>
+<span class="comment">// Training data: 22,250+ entries</span><br>
+<span class="fn">npc_dialogue_profiles</span>: <span class="hl3">2,065</span><br>
+<span class="fn">faction_voice</span>: <span class="hl3">1,501</span><br>
+<span class="fn">affinity_modulated</span>: <span class="hl3">1,500</span><br>
+<span class="fn">moral_dilemma</span>: <span class="hl3">800</span><br>
+<span class="cm">... and 5 more categories</span>
+    </div>
+  </div>
+
+  <!-- Gamemodes Engine -->
+  <div class="project">
+    <div>
+      <div class="project-label" style="background: rgba(116,185,255,0.12); color: #74b9ff;">⚡ Core Engine — Pipeline Ready</div>
+      <h3>Gamemodes01 — The Training Pipeline</h3>
+      <p>
+        The core fine-tuning and engine project. Trains lightweight LLMs to generate IFS-psychologically authentic NPC dialogue, with a complete data pipeline from generation through deployment. Pipeline is built and ready — data generation is the current focus.
+      </p>
+      <ul class="project-features">
+        <li>Training pipeline built — data generation in progress</li>
+        <li>Data schemas, seed data, fine-tuning scripts, annotation guidelines ready</li>
+        <li>LLM judge quality filtering across 5 scoring dimensions</li>
+        <li>Alpaca format conversion with augmentation and multi-template support</li>
+        <li>8 game genres supported: noir, fantasy, sci-fi, post-apocalyptic, and more</li>
+      </ul>
+    </div>
+    <div class="project-visual">
+<span class="cm">// Training pipeline</span><br>
+<span class="fn">generate</span> → <span class="fn">validate</span> → <span class="fn">merge</span> → <span class="fn">filter</span> → <span class="fn">fine-tune</span><br><br>
+<span class="cm">// Quality scoring (5 dimensions)</span><br>
+<span class="hl">part_authenticity</span>: <span class="hl3">0-1</span><br>
+<span class="hl">state_visibility</span>: <span class="hl3">0-1</span><br>
+<span class="hl">archetype_voice</span>: <span class="hl3">0-1</span><br>
+<span class="hl">genre_consistency</span>: <span class="hl3">0-1</span><br>
+<span class="hl">affinity_accuracy</span>: <span class="hl3">0-1</span><br><br>
+<span class="cm">// Auto-accept if avg ≥ 4.5/5</span><br>
+<span class="cm">// Flag for review if 3.0-4.5</span><br>
+<span class="cm">// Reject if avg &lt; 3.0</span>
+    </div>
+  </div>
+</section>
+
+<!-- MEET WENDY -->
+<section id="wendy" style="background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 6rem 2rem;">
+  <div style="max-width: 1100px; margin: 0 auto;">
+    <span class="section-label">Live Demo</span>
+    <h2 class="section-title">Meet Wendy — Our NPC in Action</h2>
+    <p class="section-desc">
+      Wendy is a 22-year-old from the Appalachian mountains of eastern Kentucky. She's a fully interactive NPC powered by the Gamemodes IFS engine — live at chat.gamemodes.xyz. She has the deepest IFS profile in the portfolio, with named parts and backstories that govern how she responds to you.
+    </p>
+
+    <div class="wendy-showcase">
+      <!-- Left: Wendy character card -->
+      <div class="wendy-card">
+        <div class="wendy-avatar">👩‍🌾</div>
+        <h3>Wendy</h3>
+        <p class="wendy-subtitle">Appalachian NPC • Affinity System Demo</p>
+        <div class="wendy-traits">
+          <span class="tag tag-green">8 Affinity Stages</span>
+          <span class="tag tag-purple">Dynamic Personality</span>
+          <span class="tag tag-orange">Appalachian Dialect</span>
+        </div>
+        <p class="wendy-description">
+          Wendy remembers how you treat her. Build trust over time and she'll open up about her life in the holler. Push her too far and she'll shut you out. Every conversation is different — and every conversation helps her grow.
+        </p>
+      </div>
+
+      <!-- Right: Demo info + CTA -->
+      <div class="wendy-demo-info">
+        <div class="wendy-feature-list">
+          <div class="wendy-feature">
+            <span class="wendy-feature-icon">💬</span>
+            <div>
+              <strong>15-Minute Live Chat</strong>
+              <p>Have a real conversation with Wendy. She responds dynamically based on her affinity toward you.</p>
+            </div>
+          </div>
+          <div class="wendy-feature">
+            <span class="wendy-feature-icon">📈</span>
+            <div>
+              <strong>Dynamic Affinity System</strong>
+              <p>Wendy's responses change across 8 relationship stages — from Hostile to Trusted.</p>
+            </div>
+          </div>
+          <div class="wendy-feature">
+            <span class="wendy-feature-icon">🧠</span>
+            <div>
+              <strong>Help Her Grow</strong>
+              <p>Your conversations train a fine-tuned Wendy model. Every interaction makes her smarter and more authentic.</p>
+            </div>
+          </div>
+          <div class="wendy-feature">
+            <span class="wendy-feature-icon">🎭</span>
+            <div>
+              <strong>Full Personality Range</strong>
+              <p>Be kind, be rude, be curious — test the full range of her psychologically grounded personality.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="wendy-cta-area">
+          <a href="https://chat.gamemodes.xyz?demo" class="btn btn-primary wendy-cta-btn" target="_blank">
+            Talk to Wendy →
+          </a>
+          <p class="wendy-cta-note">Free • No account needed • 15 min session</p>
+        </div>
+
+        <div class="wendy-live-stats">
+          <div class="wendy-stat">
+            <span class="wendy-stat-value" id="wendy-total-convos">—</span>
+            <span class="wendy-stat-label">Conversations</span>
+          </div>
+          <div class="wendy-stat">
+            <span class="wendy-stat-value" id="wendy-total-messages">—</span>
+            <span class="wendy-stat-label">Messages</span>
+          </div>
+          <div class="wendy-stat">
+            <span class="wendy-stat-value" id="wendy-slots">—</span>
+            <span class="wendy-stat-label">Slots Open</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TRAINING PIPELINE -->
+<section id="pipeline">
+  <span class="section-label">Training Pipeline</span>
+  <h2 class="section-title">From simulation to fine-tuned model.</h2>
+  <p class="section-desc">
+    Gamemodes operates a complete pipeline that transforms game simulation data into production-ready dialogue models — validated, quality-filtered, and optimized for edge deployment.
+  </p>
+
+  <div class="pipeline">
+    <div class="pipeline-step">
+      <div class="pipeline-dot">1</div>
+      <div class="pipeline-content">
+        <h4>Simulation & Generation</h4>
+        <p>Game simulations produce thousands of NPC interactions. A larger LLM generates training examples across categories — dialogue, faction voice, affinity scenarios, moral dilemmas, and more.</p>
+      </div>
+    </div>
+    <div class="pipeline-step">
+      <div class="pipeline-dot">2</div>
+      <div class="pipeline-content">
+        <h4>Validation & Deduplication</h4>
+        <p>Every example is validated for schema compliance, field completeness, and distribution balance. Duplicates are removed automatically.</p>
+      </div>
+    </div>
+    <div class="pipeline-step">
+      <div class="pipeline-dot">3</div>
+      <div class="pipeline-content">
+        <h4>LLM Judge Quality Filtering</h4>
+        <p>An independent LLM scores each example across five dimensions: psychological authenticity, state visibility, voice consistency, genre accuracy, and relationship modeling. Only high-quality data advances.</p>
+      </div>
+    </div>
+    <div class="pipeline-step">
+      <div class="pipeline-dot">4</div>
+      <div class="pipeline-content">
+        <h4>Format Conversion & Augmentation</h4>
+        <p>Clean data is converted to Alpaca format (instruction/input/output) with multiple instruction templates and controlled augmentation to increase effective dataset diversity.</p>
+      </div>
+    </div>
+    <div class="pipeline-step">
+      <div class="pipeline-dot">5</div>
+      <div class="pipeline-content">
+        <h4>Fine-Tuning (QLoRA)</h4>
+        <p>QLoRA fine-tuning on meta-llama-3.2-1b-instruct — proven settings with rank=16, adamw_8bit. Exportable to GGUF q4_k_m for local inference via llama.cpp.</p>
+      </div>
+    </div>
+    <div class="pipeline-step">
+      <div class="pipeline-dot">6</div>
+      <div class="pipeline-content">
+        <h4>Deployment</h4>
+        <p>Models are served via llama.cpp's OpenAI-compatible API. The engine routes requests between models based on complexity — Bonsai 8B for nuanced scenes, Llama 1B for simple exchanges.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MODEL STRATEGY -->
+<section id="models">
+  <span class="section-label">Model Strategy</span>
+  <h2 class="section-title">1-bit models. Full-size intelligence.</h2>
+  <p class="section-desc">
+    Our roadmap centers on 1-bit quantized models — leveraging Microsoft's BitNet research and the Bonsai model family to deliver frontier-quality NPC dialogue at a fraction of the compute cost.
+  </p>
+
+  <table class="model-table">
+    <thead>
+      <tr>
+        <th>Model</th>
+        <th>Parameters</th>
+        <th>Quantization</th>
+        <th>VRAM</th>
+        <th>Role</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Llama 3.2 1B</strong></td>
+        <td>1.2B</td>
+        <td>Q4_K_M</td>
+        <td>~0.5 GB</td>
+        <td>Simple exchanges, fallback</td>
+        <td><span class="tag tag-green">Active</span></td>
+      </tr>
+      <tr>
+        <td><strong>Bonsai 8B</strong></td>
+        <td>8.2B</td>
+        <td>Q1_0 (1-bit)</td>
+        <td>~1.0 GB</td>
+        <td>Complex dialogue, nuanced scenes</td>
+        <td><span class="tag tag-green">Active</span></td>
+      </tr>
+      <tr>
+        <td><strong>Bonsai 4B</strong></td>
+        <td>4B</td>
+        <td>1-bit</td>
+        <td>~0.7 GB</td>
+        <td>Mid-tier routing target</td>
+        <td><span class="tag tag-orange">Planned</span></td>
+      </tr>
+      <tr>
+        <td><strong>BitNet (Microsoft)</strong></td>
+        <td>Variable</td>
+        <td>1.58-bit</td>
+        <td>TBD</td>
+        <td>Next-gen baseline for future development</td>
+        <td><span class="tag tag-purple">Research</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="arch-grid" style="margin-top: 2.5rem;">
+    <div class="arch-card">
+      <div class="icon" style="background: rgba(108,92,231,0.15);">🎯</div>
+      <h3>Game-Specific Fine-Tuning</h3>
+      <p>Each game produces its own fine-tuned adapter — trained on that game's specific dialogue patterns, lore vocabulary, and character archetypes. One base model, many game-specific variants.</p>
+    </div>
+    <div class="arch-card">
+      <div class="icon" style="background: rgba(0,184,148,0.15);">🌐</div>
+      <h3>General Applicability</h3>
+      <p>The engine architecture is game-agnostic. Proven across noir RPG (Shadow City), fantasy (Skyrim), and post-apocalyptic (Fallout 4) — any genre can plug in.</p>
+    </div>
+    <div class="arch-card">
+      <div class="icon" style="background: rgba(253,203,110,0.15);">📉</div>
+      <h3>Cost Curve Advantage</h3>
+      <p>1-bit models deliver 8B+ parameter quality at ~1GB VRAM. This means NPC dialogue generation runs on the player's existing GPU — no cloud costs, no latency, full privacy.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CONTRIBUTE -->
+<section id="contribute">
+  <span class="section-label">Get Involved</span>
+  <h2 class="section-title">Built in the open. Grow with us.</h2>
+  <p class="section-desc">
+    Gamemodes welcomes contributors across every discipline — from game modders to ML researchers.
+  </p>
+
+  <div class="contrib-grid">
+    <div class="contrib-card">
+      <div class="icon">🎮</div>
+      <h3>Game Modders</h3>
+      <p>Help expand NPC profiles, write training scenarios, or build integrations for new games. Familiarity with Skyrim/Fallout 4 modding is a plus.</p>
+    </div>
+    <div class="contrib-card">
+      <div class="icon">🐍</div>
+      <h3>Python Developers</h3>
+      <p>Work on the dialogue server, training pipeline, quality filtering, or simulation engine. Flask, data processing, and API design experience welcome.</p>
+    </div>
+    <div class="contrib-card">
+      <div class="icon">⚙️</div>
+      <h3>C++ Developers</h3>
+      <p>Contribute to the SKSE/F4SE plugin layer — NPC resolution, HTTP clients, subtitle display, or Papyrus integration. CommonLibSSE-NG experience helpful.</p>
+    </div>
+    <div class="contrib-card">
+      <div class="icon">🤖</div>
+      <h3>ML / AI Researchers</h3>
+      <p>Help optimize fine-tuning strategies, explore 1-bit quantization approaches, improve quality scoring, or design new training data categories.</p>
+    </div>
+    <div class="contrib-card">
+      <div class="icon">✍️</div>
+      <h3>Writers & Designers</h3>
+      <p>Craft training scenarios, define psychological profiles, design archetypes, or help shape the narrative systems. Understanding of character psychology valued.</p>
+    </div>
+    <div class="contrib-card">
+      <div class="icon">🧪</div>
+      <h3>QA & Testing</h3>
+      <p>Run simulations, validate training data quality, test dialogue outputs across game scenarios, or help build automated evaluation frameworks.</p>
+    </div>
+  </div>
+</section>
+
+<!-- DEVLOG -->
+<section id="devlog">
+  <span class="section-label">📝 Development Log</span>
+  <h2 class="section-title">Latest Updates</h2>
+  <p class="section-desc">A chronological view of milestones, launches, and stabilization work across the Gamemodes portfolio.</p>
+
+  <div class="devlog-timeline">
+
+    <div class="devlog-entry">
+      <div class="devlog-date">2026-04-06</div>
+      <h4>Portfolio Evaluation Complete</h4>
+      <ul>
+        <li>Full portfolio assessment across 6 projects</li>
+        <li>Grade: B+ (7.6/10), Estimated value: $50K-$150K</li>
+        <li>IFS framework validated as core differentiator</li>
+        <li>Priority: Generate training data, fix Shadow City tick bugs</li>
+      </ul>
+    </div>
+
+    <div class="devlog-entry">
+      <div class="devlog-date">2026-04-05</div>
+      <h4>IFS Patent Strategy & Shadow City Stabilization</h4>
+      <ul>
+        <li>Patent application guide for IFS dialogue system</li>
+        <li>Shadow City Phase R6 stability work</li>
+        <li>Balance testing framework for NPC behavior validation</li>
+        <li>11 faction playthroughs completed across 5 archetypes</li>
+      </ul>
+    </div>
+
+    <div class="devlog-entry">
+      <div class="devlog-date">2026-04-04</div>
+      <h4>Gamemodes Site Launched & Wendy Live</h4>
+      <ul>
+        <li>GitHub Pages deployment at gamemodes.xyz</li>
+        <li>Wendy chatbot live at chat.gamemodes.xyz</li>
+        <li>Live stats integration between sites</li>
+        <li>Wendy Live Demo Integration plan finalized</li>
+      </ul>
+    </div>
+
+    <div class="devlog-entry">
+      <div class="devlog-date">2026-04-03</div>
+      <h4>Wendy v2 Development & Shadow City Expansion</h4>
+      <ul>
+        <li>Complete Wendy rewrite with modular architecture</li>
+        <li>Affinity system, LLM client, database, session management</li>
+        <li>Shadow City Phase 7+: Cell phone, comedy, entertainment engines</li>
+        <li>NPC extras system with 11 trait categories</li>
+      </ul>
+    </div>
+
+    <div class="devlog-entry">
+      <div class="devlog-date">2026-04-02</div>
+      <h4>IFS v2 & Skyrim Server Overhaul</h4>
+      <ul>
+        <li>IFS v2 psychology engine with 3-layer protection</li>
+        <li>Affinity-driven part access (Manager → Firefighter → Exile)</li>
+        <li>Skyrim LLM server with dual provider, caching, priority routing</li>
+        <li>Dynamic prompt tier system</li>
+      </ul>
+    </div>
+
+    <div class="devlog-entry">
+      <div class="devlog-date">2026-04-01</div>
+      <h4>Skyrim SKSE Plugin & Multi-Project Kickoff</h4>
+      <ul>
+        <li>Skyrim SKSE plugin foundation (http_client, npc_resolver, papyrus)</li>
+        <li>IFS dialogue system with NPC resolver and subtitle display</li>
+        <li>Fallout 4 F4SE plugin scaffolding</li>
+        <li>Multi-project architecture established</li>
+      </ul>
+    </div>
+
+    <div class="devlog-entry">
+      <div class="devlog-date">2026-03-31</div>
+      <h4>Shadow City Foundation</h4>
+      <ul>
+        <li>Core game loop: World, NPC, Rumor, Task, Entertainment engines</li>
+        <li>IFS psychology framework for NPC behavior</li>
+        <li>6 factions, 11 playthrough narratives</li>
+        <li>Database layer with conversation history</li>
+      </ul>
+    </div>
+
+  </div>
+  <div style="text-align: center; margin-top: 2rem;">
+    <a href="devlog.html" class="btn btn-primary">View Full Development Log →</a>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="contact-box">
+    <h2>Let's build the future of NPCs.</h2>
+    <p>Whether you want to contribute, invest, or just learn more — we'd love to hear from you.</p>
+    <a href="mailto:gamemodes.dev@gmail.com" class="email-link">
+      ✉ gamemodes.dev@gmail.com
+    </a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>Gamemodes (Game Model Development Studio) — AI-Native NPC Engine · Built with ❤️ for game developers who want more from their NPCs.</p>
+</footer>
+
+<script>
+  // Fetch Wendy live stats
+  fetch('https://chat.gamemodes.xyz/api/demo/stats')
+    .then(r => r.json())
+    .then(data => {
+      const convos = document.getElementById('wendy-total-convos');
+      const msgs = document.getElementById('wendy-total-messages');
+      const slots = document.getElementById('wendy-slots');
+      if (convos) convos.textContent = data.total_conversations || '0';
+      if (msgs) msgs.textContent = data.total_messages || '0';
+      if (slots) slots.textContent = data.slots_available ? 'Open' : 'Full';
+    })
+    .catch(() => {
+      // Backend may not be running yet — show dashes
+      document.getElementById('wendy-total-convos').textContent = '—';
+      document.getElementById('wendy-total-messages').textContent = '—';
+      document.getElementById('wendy-slots').textContent = '—';
+    });
+</script>
+</body>
+</html>

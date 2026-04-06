@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gamemodes — Development Log</title>
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #12121a;
+    --surface2: #1a1a26;
+    --border: #2a2a3a;
+    --text: #e8e8f0;
+    --text-dim: #8888a0;
+    --accent: #6c5ce7;
+    --accent2: #a29bfe;
+    --accent-glow: rgba(108,92,231,0.15);
+    --green: #00b894;
+    --orange: #fdcb6e;
+    --red: #e17055;
+    --cyan: #74b9ff;
+    --pink: #fd79a8;
+    --yellow: #ffeaa7;
+    --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --mono: 'JetBrains Mono', 'Fira Code', monospace;
+  }
+
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--font);
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── NAV ─────────────────────────────────────── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(10,10,15,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    height: 64px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .nav-logo {
+    font-weight: 800; font-size: 1.2rem;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    letter-spacing: -0.5px;
+    text-decoration: none;
+  }
+  .nav-links { display: flex; gap: 2rem; list-style: none; }
+  .nav-links a {
+    color: var(--text-dim); text-decoration: none; font-size: 0.875rem;
+    font-weight: 500; transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--text); }
+  .nav-links a.active { color: var(--accent2); }
+
+  /* ── HERO ────────────────────────────────────── */
+  .hero {
+    min-height: 50vh;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center;
+    padding: 8rem 2rem 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+    background: radial-gradient(ellipse at 50% 30%, var(--accent-glow) 0%, transparent 60%),
+                radial-gradient(ellipse at 30% 70%, rgba(162,155,254,0.06) 0%, transparent 50%);
+    pointer-events: none;
+  }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    padding: 0.4rem 1.2rem;
+    font-size: 0.8rem; font-weight: 500;
+    color: var(--accent2);
+    margin-bottom: 2rem;
+    letter-spacing: 0.5px;
+  }
+  .hero-badge .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--green);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+  .hero h1 {
+    font-size: clamp(2.5rem, 6vw, 4rem);
+    font-weight: 900;
+    line-height: 1.1;
+    letter-spacing: -2px;
+    margin-bottom: 1.5rem;
+    max-width: 800px;
+  }
+  .hero h1 .gradient {
+    background: linear-gradient(135deg, var(--accent), var(--accent2), var(--cyan));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .hero p {
+    font-size: 1.1rem;
+    color: var(--text-dim);
+    max-width: 600px;
+    margin-bottom: 2rem;
+    line-height: 1.8;
+  }
+
+  /* ── FILTERS ─────────────────────────────────── */
+  .filters-section {
+    padding: 0 2rem 2rem;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  .filters-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--text-dim);
+    margin-bottom: 1rem;
+  }
+  .filter-tabs {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+  .filter-tab {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 0.5rem 1.2rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-dim);
+    cursor: pointer;
+    transition: all 0.25s;
+    font-family: var(--font);
+  }
+  .filter-tab:hover {
+    border-color: var(--accent);
+    color: var(--text);
+    background: var(--surface2);
+  }
+  .filter-tab.active {
+    background: linear-gradient(135deg, var(--accent), #7c6cf0);
+    color: #fff;
+    border-color: var(--accent);
+    box-shadow: 0 4px 15px rgba(108,92,231,0.3);
+  }
+
+  /* ── TIMELINE ────────────────────────────────── */
+  .devlog-section {
+    padding: 2rem 2rem 6rem;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  .timeline {
+    position: relative;
+  }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 23px;
+    top: 0; bottom: 0;
+    width: 2px;
+    background: linear-gradient(180deg, var(--accent), var(--accent2), var(--green));
+  }
+  .date-group {
+    margin-bottom: 2rem;
+  }
+  .date-header {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 1rem;
+    position: relative;
+    z-index: 1;
+  }
+  .date-dot {
+    width: 48px;
+    height: 48px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: var(--surface);
+    border: 2px solid var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.85rem;
+    color: var(--accent2);
+    z-index: 1;
+  }
+  .date-text {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .devlog-entry {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.25rem 1.5rem;
+    margin-left: 64px;
+    margin-bottom: 0.75rem;
+    transition: all 0.3s;
+  }
+  .devlog-entry:hover {
+    border-color: var(--accent);
+    transform: translateX(4px);
+  }
+  .entry-content {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  .project-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.25rem 0.7rem;
+    border-radius: 6px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+  .badge-portfolio {
+    background: rgba(108,92,231,0.15);
+    color: var(--accent2);
+  }
+  .badge-shadow-city {
+    background: rgba(0,184,148,0.15);
+    color: var(--green);
+  }
+  .badge-skyrim {
+    background: rgba(116,185,255,0.15);
+    color: var(--cyan);
+  }
+  .badge-fallout4 {
+    background: rgba(225,112,85,0.15);
+    color: var(--red);
+  }
+  .badge-wendy {
+    background: rgba(253,121,168,0.15);
+    color: var(--pink);
+  }
+  .badge-site {
+    background: rgba(253,203,110,0.15);
+    color: var(--orange);
+  }
+  .badge-core {
+    background: rgba(162,155,254,0.15);
+    color: var(--accent2);
+  }
+  .entry-text {
+    font-size: 0.9rem;
+    color: var(--text-dim);
+    line-height: 1.6;
+  }
+
+  /* ── FOOTER ──────────────────────────────────── */
+  footer {
+    text-align: center;
+    padding: 3rem 2rem;
+    color: var(--text-dim);
+    font-size: 0.8rem;
+    border-top: 1px solid var(--border);
+  }
+  footer a {
+    color: var(--accent2);
+    text-decoration: none;
+  }
+  footer a:hover {
+    text-decoration: underline;
+  }
+
+  /* ── RESPONSIVE ──────────────────────────────── */
+  @media (max-width: 768px) {
+    .devlog-entry {
+      margin-left: 48px;
+    }
+    .date-dot {
+      width: 40px;
+      height: 40px;
+      font-size: 0.75rem;
+    }
+    .entry-content {
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .filter-tabs {
+      gap: 0.4rem;
+    }
+    .filter-tab {
+      padding: 0.4rem 0.9rem;
+      font-size: 0.8rem;
+    }
+  }
+</style>
+</head>
+<body>
+
+  <!-- ═══ NAVIGATION ═══ -->
+  <nav>
+    <a href="index.html" class="nav-logo">⬡ GAMEMODES</a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="devlog.html" class="active">Devlog</a></li>
+    </ul>
+  </nav>
+
+  <!-- ═══ HERO ═══ -->
+  <section class="hero">
+    <div class="hero-badge">
+      <span class="dot"></span>
+      Development Log
+    </div>
+    <h1><span class="gradient">Development Log</span></h1>
+    <p>A consolidated chronological history of all development across the Gamemodes project portfolio — from initial inception to live deployment.</p>
+  </section>
+
+  <!-- ═══ FILTERS ═══ -->
+  <section class="filters-section">
+    <div class="filters-label">Filter by Project</div>
+    <div class="filter-tabs">
+      <button class="filter-tab active" onclick="filterDevlog('all', event)">All Projects</button>
+      <button class="filter-tab" onclick="filterDevlog('core', event)">Core</button>
+      <button class="filter-tab" onclick="filterDevlog('shadow-city', event)">Shadow City</button>
+      <button class="filter-tab" onclick="filterDevlog('skyrim', event)">Skyrim</button>
+      <button class="filter-tab" onclick="filterDevlog('fallout4', event)">Fallout 4</button>
+      <button class="filter-tab" onclick="filterDevlog('wendy', event)">Wendy</button>
+      <button class="filter-tab" onclick="filterDevlog('site', event)">Site</button>
+      <button class="filter-tab" onclick="filterDevlog('portfolio', event)">Portfolio</button>
+    </div>
+  </section>
+
+  <!-- ═══ TIMELINE ═══ -->
+  <section class="devlog-section">
+    <div class="timeline">
+
+      <!-- ── 2026-04-06 ───────────────────────────── -->
+      <div class="date-group">
+        <div class="date-header">
+          <div class="date-dot">06</div>
+          <div class="date-text">April 6, 2026</div>
+        </div>
+        <div class="devlog-entry" data-project="portfolio">
+          <div class="entry-content">
+            <span class="project-badge badge-portfolio">Portfolio</span>
+            <span class="entry-text">Full portfolio evaluation complete. Grade: B+ (7.6/10). Estimated value: $50K-$150K.</span>
+          </div>
+        </div>
+        <div class="devlog-entry" data-project="portfolio">
+          <div class="entry-content">
+            <span class="project-badge badge-portfolio">Portfolio</span>
+            <span class="entry-text">Project Overseer skills folder created with cross-project documentation.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── 2026-04-05 ───────────────────────────── -->
+      <div class="date-group">
+        <div class="date-header">
+          <div class="date-dot">05</div>
+          <div class="date-text">April 5, 2026</div>
+        </div>
+        <div class="devlog-entry" data-project="shadow-city">
+          <div class="entry-content">
+            <span class="project-badge badge-shadow-city">Shadow City</span>
+            <span class="entry-text">IFS Patent Application Guide created for dialogue system IP protection.</span>
+          </div>
+        </div>
+        <div class="devlog-entry" data-project="shadow-city">
+          <div class="entry-content">
+            <span class="project-badge badge-shadow-city">Shadow City</span>
+            <span class="entry-text">Balance testing framework implemented for NPC behavior validation.</span>
+          </div>
+        </div>
+        <div class="devlog-entry" data-project="shadow-city">
+          <div class="entry-content">
+            <span class="project-badge badge-shadow-city">Shadow City</span>
+            <span class="entry-text">11 faction playthroughs completed across 5 player archetypes.</span>
+          </div>
+        </div>
+        <div class="devlog-entry" data-project="shadow-city">
+          <div class="entry-content">
+            <span class="project-badge badge-shadow-city">Shadow City</span>
+            <span class="entry-text">Phase R6 stability work — tick system fixes, tier stall resolution.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── 2026-04-04 ───────────────────────────── -->
+      <div class="date-group">
+        <div class="date-header">
+          <div class="date-dot">04</div>
+          <div class="date-text">April 4, 2026</div>
+        </div>
+        <div class="devlog-entry" data-project="site">
+          <div class="entry-content">
+            <span class="project-badge badge-site">Site</span>
+            <span class="entry-text">GitHub Pages deployment at gamemodes.xyz.</span>
+          </div>
+        </div>
+        <div class="devlog-entry" data-project="wendy">
+          <div class="entry-content">
+            <span class="project-badge badge-wendy">Wendy</span>
+            <span class="entry-text">Live deployment at chat.gamemodes.xyz.</span>
+          </div>
+        </div>
+        <div class="devlog-entry" data-project="site">
+          <div class="entry-content">
+            <span class="project-badge badge-site">Site</span>
+            <span class="entry-text">Live stats integration between gamemodes.xyz and chat.gamemodes.xyz.</span>
+          </div>
+        </div>
+        <div class="devlog-entry" data-project="site">
+          <div class="entry-content">
+            <span class="project-badge badge-site">Site</span>
+            <span class="entry-text">Wendy Live Demo Integration plan finalized.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── 2026-04-03 ───────────────────────────── -->
+      <div class="date-group">
+        <div class="date-header">
+          <div class="date-dot">03</div>
+          <div class="date-text">April 3, 2026</div>
+        </div>
+        <div class="devlog-entry" data-project="wendy">
+          <div class="entry-content">
+            <span class="project-badge badge-wendy">Wendy</span>
+            <span class="entry-text">Complete rewrite — modular architecture with affinity system, LLM client, database, session manager.</span>
+          </div>
+        </div>
+        <div class="devlog-entry" data-project="wendy">
+          <div class="entry-content">
+            <span class="project-badge badge-wendy">Wendy</span>
+            <span class="entry-text">Bot protection, daily cache, queue manager added.</span>
+          </div>
+        </div>
+        <div class="devlog-entry" data-project="wendy">
+          <div class="entry-content">
+            <span class="project-badge badge-wendy">Wendy</span>
+            <span class="entry-text">Training export system for capturing conversations.</span>
+          </div>
+        </div>
+        <div class="devlog-entry" data-project="shadow-city">
+          <div class="entry-content">
+            <span class="project-badge badge-shadow-city">Shadow City</span>
+            <span class="entry-text">Cell phone engine, comedy engine, entertainment engine added.</span>
+          </div>
+        </div>
+        <div class="devlog-entry" data-project="shadow-city">
+          <div class="entry-content">
+            <span class="project-badge badge-shadow-city">Shadow City</span>
+            <span class="entry-text">NPC extras system with 11 trait categories.</span>
+          </div>
+        </div>
+        <div class="devlog-entry" data-project="shadow-city">
+          <div class="entry-content">
+            <span class="project-badge badge-shadow-city">Shadow City</span>
+            <span class="entry-text">Tutorial engine for new player onboarding.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── 2026-04-02 ───────────────────────────── -->
+      <div class="date-group">
+        <div class="date-header">
+          <div class="date-dot">02</div>
+          <div class="date-text">April 2, 2026</div>
+        </div>
+        <div class="devlog-entry" data-project="shadow-city">
+          <div class="entry-content">
+            <span class="project-badge badge-shadow-city">Shadow City</span>
+            <span class="entry-text">IFS v2 psychology engine — 3-layer protection (Manager/Firefighter/Exile).</span>
+          </div>
+        </div>
+        <div class="devlog-entry" data-project="shadow-city">
+          <div class="entry-content">
+            <span class="project-badge badge-shadow-city">Shadow City</span>
+            <span class="entry-text">Affinity-driven part access thresholds.</span>
+          </div>
+        </div>
+        <div class="devlog-entry" data-project="shadow-city">
+          <div class="entry-content">
+            <span class="project-badge badge-shadow-city">Shadow City</span>
+            <span class="entry-text">Dynamic NPC behavior based on conversation context.</span>
+          </div>
+        </div>
+        <div class="devlog-entry" data-project="skyrim">
+          <div class="entry-content">
+            <span class="project-badge badge-skyrim">Skyrim</span>
+            <span class="entry-text">LLM server architecture with dual provider, caching, priority routing.</span>
+          </div>
+        </div>
+        <div class="devlog-entry" data-project="skyrim">
+          <div class="entry-content">
+            <span class="project-badge badge-skyrim">Skyrim</span>
+            <span class="entry-text">Dynamic prompt tier system based on NPC relationship level.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── 2026-04-01 ───────────────────────────── -->
+      <div class="date-group">
+        <div class="date-header">
+          <div class="date-dot">01</div>
+          <div class="date-text">April 1, 2026</div>
+        </div>
+        <div class="devlog-entry" data-project="skyrim">
+          <div class="entry-content">
+            <span class="project-badge badge-skyrim">Skyrim</span>
+            <span class="entry-text">SKSE plugin foundation — http_client, npc_resolver, papyrus_functions.</span>
+          </div>
+        </div>
+        <div class="devlog-entry" data-project="skyrim">
+          <div class="entry-content">
+            <span class="project-badge badge-skyrim">Skyrim</span>
+            <span class="entry-text">IFS dialogue system with subtitle display.</span>
+          </div>
+        </div>
+        <div class="devlog-entry" data-project="fallout4">
+          <div class="entry-content">
+            <span class="project-badge badge-fallout4">Fallout 4</span>
+            <span class="entry-text">F4SE plugin scaffolding.</span>
+          </div>
+        </div>
+        <div class="devlog-entry" data-project="core">
+          <div class="entry-content">
+            <span class="project-badge badge-core">Core</span>
+            <span class="entry-text">Multi-project architecture established.</span>
+          </div>
+        </div>
+        <div class="devlog-entry" data-project="core">
+          <div class="entry-content">
+            <span class="project-badge badge-core">Core</span>
+            <span class="entry-text">Alpaca-format training data pipeline designed.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── 2026-03-31 ───────────────────────────── -->
+      <div class="date-group">
+        <div class="date-header">
+          <div class="date-dot">31</div>
+          <div class="date-text">March 31, 2026</div>
+        </div>
+        <div class="devlog-entry" data-project="shadow-city">
+          <div class="entry-content">
+            <span class="project-badge badge-shadow-city">Shadow City</span>
+            <span class="entry-text">Core game loop — World, NPC, Rumor, Task, Entertainment engines.</span>
+          </div>
+        </div>
+        <div class="devlog-entry" data-project="shadow-city">
+          <div class="entry-content">
+            <span class="project-badge badge-shadow-city">Shadow City</span>
+            <span class="entry-text">IFS psychology framework for NPC behavior.</span>
+          </div>
+        </div>
+        <div class="devlog-entry" data-project="shadow-city">
+          <div class="entry-content">
+            <span class="project-badge badge-shadow-city">Shadow City</span>
+            <span class="entry-text">6 factions: Police, Military, Political, Crime, Journalist, Medical.</span>
+          </div>
+        </div>
+        <div class="devlog-entry" data-project="shadow-city">
+          <div class="entry-content">
+            <span class="project-badge badge-shadow-city">Shadow City</span>
+            <span class="entry-text">11 playthrough narratives recorded.</span>
+          </div>
+        </div>
+        <div class="devlog-entry" data-project="shadow-city">
+          <div class="entry-content">
+            <span class="project-badge badge-shadow-city">Shadow City</span>
+            <span class="entry-text">Database layer with conversation history.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── 2026-03-30 ───────────────────────────── -->
+      <div class="date-group">
+        <div class="date-header">
+          <div class="date-dot">30</div>
+          <div class="date-text">March 30, 2026</div>
+        </div>
+        <div class="devlog-entry" data-project="core">
+          <div class="entry-content">
+            <span class="project-badge badge-core">Core</span>
+            <span class="entry-text">Gamemodes01 project initialized.</span>
+          </div>
+        </div>
+        <div class="devlog-entry" data-project="core">
+          <div class="entry-content">
+            <span class="project-badge badge-core">Core</span>
+            <span class="entry-text">Data schemas defined: training_record, archetypes, categories, genres.</span>
+          </div>
+        </div>
+        <div class="devlog-entry" data-project="core">
+          <div class="entry-content">
+            <span class="project-badge badge-core">Core</span>
+            <span class="entry-text">Seed data with gold standard Alpaca entries.</span>
+          </div>
+        </div>
+        <div class="devlog-entry" data-project="core">
+          <div class="entry-content">
+            <span class="project-badge badge-core">Core</span>
+            <span class="entry-text">Fine-tuning scripts: LoRA adapter training for Qwen3 models.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── 2026-03-29 ───────────────────────────── -->
+      <div class="date-group">
+        <div class="date-header">
+          <div class="date-dot">29</div>
+          <div class="date-text">March 29, 2026</div>
+        </div>
+        <div class="devlog-entry" data-project="core">
+          <div class="entry-content">
+            <span class="project-badge badge-core">Core</span>
+            <span class="entry-text">Project inception — vision for IFS-powered NPC dialogue system.</span>
+          </div>
+        </div>
+        <div class="devlog-entry" data-project="core">
+          <div class="entry-content">
+            <span class="project-badge badge-core">Core</span>
+            <span class="entry-text">Technology stack selection: Python, OpenAI-compatible API, LoRA fine-tuning.</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ═══ FOOTER ═══ -->
+  <footer>
+    <p>© 2026 Gamemodes — Built with purpose, deployed with pride</p>
+    <p style="margin-top: 0.5rem;"><a href="index.html">Back to Home</a></p>
+  </footer>
+
+  <!-- ═══ FILTER SCRIPT ═══ -->
+  <script>
+    function filterDevlog(project, event) {
+      const entries = document.querySelectorAll('.devlog-entry');
+      entries.forEach(entry => {
+        if (project === 'all' || entry.dataset.project === project) {
+          entry.style.display = 'block';
+        } else {
+          entry.style.display = 'none';
+        }
+      });
+
+      // Show/hide empty date groups
+      const dateGroups = document.querySelectorAll('.date-group');
+      dateGroups.forEach(group => {
+        const visibleEntries = group.querySelectorAll('.devlog-entry[style="display: block"], .devlog-entry:not([style])');
+        let hasVisible = false;
+        group.querySelectorAll('.devlog-entry').forEach(entry => {
+          if (entry.style.display !== 'none') hasVisible = true;
+        });
+        group.style.display = hasVisible ? 'block' : 'none';
+      });
+
+      // Update active tab
+      document.querySelectorAll('.filter-tab').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      if (event && event.target) {
+        event.target.classList.add('active');
+      }
+    }
+
+    // Initialize all entries as visible
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('.devlog-entry').forEach(entry => {
+        entry.style.display = 'block';
+      });
+    });
+  </script>
+
+</body>
+</html>

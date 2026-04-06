@@ -1,0 +1,115 @@
+# Gamemodes License
+
+Copyright (c) 2026 Gamemodes (Game Model Development Studio)
+
+This project uses a dual-license structure. Different components are
+covered by different terms depending on their classification below.
+
+---
+
+## Open Components — MIT License
+
+The following components are released under the MIT License:
+
+- Game integration plugins (SKSE, F4SE, and other game-specific plugins)
+- HTTP client libraries and API interface definitions
+- Flask server scaffolding and endpoint routing
+- Model provider interface (abstract base classes)
+- Model routing infrastructure (dual-model, fallback logic)
+- Response caching layer
+- Build systems and configuration templates
+- Documentation describing integration and deployment
+
+### MIT License Terms
+
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of these components, to deal in them without restriction,
+including without limitation the rights to use, copy, modify, merge,
+publish, distribute, sublicense, and/or sell copies, and to permit
+persons to whom the components are furnished to do so, subject to the
+following conditions:
+
+The above copyright notice and this permission notice shall be included
+in all copies or substantial portions of the software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+---
+
+## Proprietary Components — All Rights Reserved
+
+The following components are proprietary and all rights are reserved
+by Gamemodes:
+
+- Psychological modeling system and algorithms
+- Prompt templates, prompt architecture, and prompt construction logic
+- NPC profile schemas and psychological profile definitions
+- Training data (generated, curated, and seed examples)
+- Training methodology and data generation pipelines
+- Quality scoring criteria and evaluation frameworks
+- Fine-tuned model weights and adapter files
+- Trigger mapping systems and state-to-behavior algorithms
+- Any file, directory, or module marked with "PROPRIETARY" in its
+  header or accompanying documentation
+
+These components may not be copied, modified, distributed, sublicensed,
+sold, reverse-engineered, or used to create derivative works without
+explicit written permission from Gamemodes.
+
+Access to proprietary components in any Gamemodes repository, whether
+public or private, does not constitute a grant of license to use those
+components outside of their intended context within the Gamemodes
+platform.
+
+---
+
+## Identifying Component Classification
+
+Files belonging to open components will contain the following header
+where practical:
+
+    // SPDX-License-Identifier: MIT
+    // Part of Gamemodes — Open Integration Layer
+
+Files belonging to proprietary components will contain the following
+header where practical:
+
+    // PROPRIETARY — Gamemodes (Game Model Development Studio)
+    // All Rights Reserved. See LICENSE for terms.
+
+If a file does not contain either header, its classification is
+determined by the directory it resides in. Consult the project
+documentation or contact gamemodes.dev@gmail.com for clarification.
+
+---
+
+## Contributions
+
+By submitting a pull request or other contribution to this project,
+you agree that:
+
+1. Contributions to open components are licensed under the MIT License.
+2. You will not submit proprietary Gamemodes code in public pull
+   requests.
+3. You have the right to make the contribution and it does not infringe
+   on any third-party rights.
+
+---
+
+## Commercial Licensing
+
+For commercial use of proprietary components, integration partnerships,
+or licensing inquiries, contact:
+
+**Email:** gamemodes.dev@gmail.com
+**Web:** https://gamemodes.xyz
+
+---
+
+Gamemodes — Game Model Development Studio
