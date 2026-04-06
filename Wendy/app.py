@@ -538,8 +538,8 @@ def demo_status_handler():
                     "message": "Session has expired or is invalid."
                 }), 200
             
-            # Calculate time remaining
-            expires_at = datetime.fromisoformat(session["expires_at"])
+            # Calculate time remaining (strip "Z" for Python <3.11 compat)
+            expires_at = datetime.fromisoformat(session["expires_at"].rstrip("Z"))
             now = datetime.utcnow()
             time_remaining = max(0, int((expires_at - now).total_seconds()))
             
@@ -607,11 +607,14 @@ def demo_chat_handler():
         if conversation is None:
             return jsonify({"error": "Conversation not found"}), 404
         
-        if not conversation["is_active"]:
-            return jsonify({"error": "Conversation has ended"}), 403
+        # DEMO MODE: Never reject messages due to is_active flag.
+        # Conversations in demo mode are never deactivated (force_active=True
+        # in update_affinity), but this is a defense-in-depth check in case
+        # a conversation was somehow marked inactive in the DB.
+        # The session timer (time_remaining) is the only way demo sessions end.
         
         # Calculate time remaining for response
-        expires_at = datetime.fromisoformat(session["expires_at"])
+        expires_at = datetime.fromisoformat(session["expires_at"].rstrip("Z"))
         time_remaining = max(0, int((expires_at - datetime.utcnow()).total_seconds()))
         
         # Step 2: Check daily cache for self-referential questions
@@ -675,48 +678,47 @@ def demo_chat_handler():
             f"reason={affinity_analysis.get('reason', 'N/A')}"
         )
         
-        # Safety net: prevent a single message from ending the conversation
+        # ============================================================
+        # DEMO MODE: Completely disable conversation deactivation.
+        # Conversations in demo mode are NEVER deactivated regardless
+        # of affinity values. Wendy never leaves in demo mode.
+        # ============================================================
         current_affinity = conversation["affinity"]
         hostile_threshold = config.get("affinity", {}).get("hostile_threshold", -50)
-        message_count = len(messages)
         
-        # Require minimum messages before allowing hostile deactivation
-        min_messages_before_hostile = demo_config.get("min_messages_before_hostile", 5)
-        
+        # Clamp shift so affinity never crosses hostile threshold
         if current_affinity + shift <= hostile_threshold:
-            if message_count < min_messages_before_hostile:
-                # Too early in conversation — clamp shift to stay just above hostile
-                safe_shift = (hostile_threshold - current_affinity) + 1
-                app.logger.warning(
-                    f"Demo early protection | conv={conversation_id} | msg_count={message_count} < "
-                    f"{min_messages_before_hostile} | shift={shift} would end conversation. "
-                    f"Overriding to safe_shift={safe_shift}"
-                )
-                shift = safe_shift
-            elif current_affinity > hostile_threshold:
-                # Standard safety net: prevent crossing into hostile from above
-                safe_shift = (hostile_threshold - current_affinity) + 1
-                app.logger.warning(
-                    f"Demo safety net | conv={conversation_id} | shift={shift} would end conversation. "
-                    f"Overriding to safe_shift={safe_shift}"
-                )
-                shift = safe_shift
+            safe_shift = (hostile_threshold - current_affinity) + 1
+            app.logger.warning(
+                f"Demo protection (never deactivate) | conv={conversation_id} | "
+                f"shift={shift} would reach hostile. Overriding to safe_shift={safe_shift}"
+            )
+            shift = safe_shift
         
-        # Update affinity in DB
+        # Update affinity in DB — force_active=True ensures demo conversations
+        # are NEVER deactivated in the database regardless of affinity values
         affinity_result = database.update_affinity(
             conversation_id,
             shift,
-            affinity_analysis.get("reason", "No reason provided")
+            affinity_analysis.get("reason", "No reason provided"),
+            force_active=True
         )
         
         new_affinity = affinity_result["affinity_after"]
-        is_active = affinity_result["conversation_active"]
+        
+        # DEMO MODE: Force conversation_active to ALWAYS be true.
+        # Wendy never leaves the conversation in demo mode.
+        # The shift clamping above ensures affinity stays above hostile,
+        # but we force this as an absolute safety net.
+        is_active = True
         
         # Get stage info
         stage_info = wendy.get_stage(new_affinity, config)
         
-        # Check if conversation just ended due to hostility
+        # NOTE: In demo mode, we never reach this block because is_active
+        # is always True above. Kept as a paranoid safety check.
         if not is_active:
+            # This block should never execute in demo mode
             dismissive_msg = wendy.get_dismissive_message()
             assistant_message = database.add_message(conversation_id, "assistant", dismissive_msg)
             session_manager.end_demo_session(session_token)

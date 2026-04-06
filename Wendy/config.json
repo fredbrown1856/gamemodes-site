@@ -33,7 +33,8 @@
         "min_value": -100,
         "max_value": 100,
         "max_shift_per_message": 15,
-        "hostile_threshold": -50
+        "hostile_threshold": -50,
+        "hostile_threshold_demo_mode_disabled": true
     },
     "affinity_stages": [
         {
@@ -123,13 +124,13 @@
     },
     "demo": {
         "enabled": true,
-        "session_duration_minutes": 10,
+        "session_duration_minutes": 15,
         "max_concurrent_sessions": 2,
         "max_queue_size": 20,
         "queue_timeout_minutes": 5,
         "warning_seconds_before_expiry": 30,
         "max_shift_per_message_demo": 5,
-        "min_messages_before_hostile": 5,
+        "min_messages_before_hostile": 99999,
         "source": "website"
     },
     "bot_protection": {

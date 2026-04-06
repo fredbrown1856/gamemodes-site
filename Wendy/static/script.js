@@ -651,12 +651,18 @@
 
             // Update affinity
             // Demo API returns 'session_active', normal API returns 'conversation_active'
-            const isActive = state.demoMode ? data.session_active : data.conversation_active;
-            state.isActive = isActive;
+            // In demo mode, force isActive to true — Wendy never leaves in demo mode.
+            // The only way a demo session ends is via the timer (time_remaining <= 0).
+            if (state.demoMode) {
+                state.isActive = true;
+            } else {
+                state.isActive = data.conversation_active !== false;
+            }
             updateAffinityDisplay(data.affinity.current, data.affinity.stage, true);
 
-            // Check if conversation ended
-            if (!isActive) {
+            // Check if conversation ended (non-demo mode only;
+            // demo mode never sets state.isActive to false)
+            if (!state.isActive) {
                 setInputEnabled(false);
             }
 

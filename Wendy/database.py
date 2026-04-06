@@ -763,7 +763,7 @@ def get_conversations_for_export(min_affinity: int = 10) -> list[dict]:
     return conversations
 
 
-def update_affinity(conversation_id: int, shift: int, reason: str) -> dict:
+def update_affinity(conversation_id: int, shift: int, reason: str, force_active: bool = False) -> dict:
     """
     Apply an affinity shift to a conversation.
     
@@ -771,6 +771,7 @@ def update_affinity(conversation_id: int, shift: int, reason: str) -> dict:
         conversation_id: The conversation ID
         shift: The affinity change (positive or negative)
         reason: Explanation of why the shift occurred
+        force_active: If True, never deactivate the conversation (used for demo mode)
         
     Returns:
         Dict with: affinity_before, affinity_after, shift, reason, conversation_active
@@ -792,7 +793,11 @@ def update_affinity(conversation_id: int, shift: int, reason: str) -> dict:
     affinity_after = max(-100, min(100, affinity_before + shift))
     
     # Determine if conversation should be deactivated
-    is_active = 1 if affinity_after > -50 else 0
+    # In demo mode (force_active=True), conversations are NEVER deactivated
+    if force_active:
+        is_active = 1
+    else:
+        is_active = 1 if affinity_after > -50 else 0
     
     # Update the conversation
     cursor.execute(

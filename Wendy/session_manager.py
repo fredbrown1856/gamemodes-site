@@ -36,7 +36,7 @@ def create_demo_session(ip_hash: str, conversation_id: int, config: dict) -> Opt
     
     duration_minutes = config.get("demo", {}).get("session_duration_minutes", 10)
     now = datetime.utcnow()
-    expires_at = (now + timedelta(minutes=duration_minutes)).isoformat()
+    expires_at = (now + timedelta(minutes=duration_minutes)).isoformat() + "Z"
     
     source = config.get("demo", {}).get("source", "website")
     
@@ -76,7 +76,9 @@ def validate_session(session_token: str) -> Optional[dict]:
     expires_at_str = session.get("expires_at")
     if expires_at_str:
         try:
-            expires_at = datetime.fromisoformat(expires_at_str)
+            # Strip trailing "Z" (UTC marker) for Python <3.11 compatibility
+            normalized = expires_at_str.rstrip("Z")
+            expires_at = datetime.fromisoformat(normalized)
             if datetime.utcnow() > expires_at:
                 return None
         except (ValueError, TypeError):
