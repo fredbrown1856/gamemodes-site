@@ -7,37 +7,52 @@ import re
 import random
 from typing import Optional
 
+import critical_facts
 
-def build_system_prompt(affinity: int, config: dict) -> str:
+
+def build_system_prompt(affinity: int, config: dict, db_path: Optional[str] = None) -> str:
     """
     Construct the full system prompt for the LLM.
-    Combines base character description with stage-specific behavioral instructions.
-    
+    Combines base character description with stage-specific behavioral instructions
+    and cached critical facts for consistency.
+
     Args:
         affinity: Current affinity value (-100 to 100)
         config: Full configuration dictionary
-        
+        db_path: Optional database path for critical facts. Reads from config if not provided.
+
     Returns:
         Complete system prompt string
     """
     wendy_config = config.get("wendy", {})
     stages = config.get("affinity_stages", [])
-    
+
     # Get current stage info
     stage_info = get_stage(affinity, config)
-    
+
     # Get the base system prompt template
     base_prompt = wendy_config.get("system_prompt_base", "")
-    
+
     # Replace placeholders with actual values
     system_prompt = base_prompt.replace("{affinity}", str(affinity))
     system_prompt = system_prompt.replace("{stage_label}", stage_info["label"])
     system_prompt = system_prompt.replace("{stage_description}", stage_info["behavior"])
-    
+
     # Add stage-specific instructions
     system_prompt += f"\n\n--- AFFINITY STAGE: {stage_info['label']} ---\n"
     system_prompt += stage_info["behavior"]
-    
+
+    # Inject cached critical facts for consistency
+    if db_path is None:
+        db_path = config.get("database", {}).get("path", "data/wendy.db")
+    try:
+        facts_section = critical_facts.build_facts_prompt_section(db_path)
+        if facts_section:
+            system_prompt += f"\n\n{facts_section}"
+    except Exception:
+        # Never break prompt building due to facts system failure
+        pass
+
     return system_prompt
 
 
@@ -310,23 +325,24 @@ def get_dismissive_message() -> str:
     return random.choice(messages)
 
 
-def build_demo_system_prompt(affinity: int, config: dict, daily_briefing: Optional[str] = None) -> str:
+def build_demo_system_prompt(affinity: int, config: dict, daily_briefing: Optional[str] = None, db_path: Optional[str] = None) -> str:
     """
     Build system prompt for demo mode with daily briefing injected.
-    
+
     Constructs the standard system prompt and appends the daily briefing
     context block if provided, ensuring Wendy's responses are consistent
     with her daily context across all demo sessions.
-    
+
     Args:
         affinity: Current affinity value (-100 to 100)
         config: Full configuration dictionary
         daily_briefing: Optional daily briefing text to inject
-        
+        db_path: Optional database path for critical facts. Reads from config if not provided.
+
     Returns:
         Complete system prompt string with daily briefing appended
     """
-    base = build_system_prompt(affinity, config)
+    base = build_system_prompt(affinity, config, db_path)
     if daily_briefing:
         base += f"\n\n--- TODAY'S CONTEXT ---\n{daily_briefing}"
     return base

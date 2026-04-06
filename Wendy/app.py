@@ -17,6 +17,7 @@ import queue_manager
 import bot_check
 import daily_cache
 import training_export
+import critical_facts
 
 
 # Load configuration
@@ -62,6 +63,14 @@ config = load_config()
 
 # Initialize database
 database.init_db(config["database"]["path"])
+
+# Initialize critical facts table
+db_path = config["database"]["path"]
+critical_facts.init_critical_facts_table(db_path)
+
+# Seed initial facts from character definition if auto_seed is enabled
+if config.get("critical_facts", {}).get("auto_seed", True):
+    critical_facts.seed_initial_facts(db_path, config)
 
 # Initialize LLM client
 llm = llm_client.create_client(config)
@@ -195,7 +204,21 @@ def chat_handler():
         
         # Save Wendy's message to DB
         assistant_message = database.add_message(conversation_id, "assistant", response_text)
-        
+
+        # Extract and cache critical facts from Wendy's response (non-blocking)
+        try:
+            if config.get("critical_facts", {}).get("enabled", True):
+                critical_facts.extract_facts_from_response(
+                    llm_client=llm,
+                    messages=formatted_messages,
+                    response=response_text,
+                    db_path=config["database"]["path"],
+                    conversation_id=conversation_id
+                )
+        except Exception:
+            # Never break the chat flow due to fact extraction failure
+            pass
+
         return jsonify({
             "message": {
                 "id": assistant_message["id"],
@@ -762,7 +785,21 @@ def demo_chat_handler():
         
         # Save Wendy's message
         assistant_message = database.add_message(conversation_id, "assistant", response_text)
-        
+
+        # Extract and cache critical facts from Wendy's response (non-blocking)
+        try:
+            if config.get("critical_facts", {}).get("enabled", True):
+                critical_facts.extract_facts_from_response(
+                    llm_client=llm,
+                    messages=formatted_messages,
+                    response=response_text,
+                    db_path=config["database"]["path"],
+                    conversation_id=conversation_id
+                )
+        except Exception:
+            # Never break the chat flow due to fact extraction failure
+            pass
+
         # Step 4: Cache response if self-referential
         if is_self_ref:
             daily_cache.cache_response(message, response_text)
