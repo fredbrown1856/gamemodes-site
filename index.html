@@ -47,10 +47,15 @@
     display: flex; align-items: center; justify-content: space-between;
   }
   .nav-logo {
+    display: flex; align-items: center; gap: 0.6rem;
     font-weight: 800; font-size: 1.2rem;
     background: linear-gradient(135deg, var(--accent), var(--accent2));
     -webkit-background-clip: text; -webkit-text-fill-color: transparent;
     letter-spacing: -0.5px;
+  }
+  .nav-logo img {
+    height: 32px; width: auto;
+    -webkit-text-fill-color: initial;
   }
   .nav-links { display: flex; gap: 2rem; list-style: none; }
   .nav-links a {
@@ -74,6 +79,12 @@
     background: radial-gradient(ellipse at 50% 30%, var(--accent-glow) 0%, transparent 60%),
                 radial-gradient(ellipse at 30% 70%, rgba(162,155,254,0.06) 0%, transparent 50%);
     pointer-events: none;
+  }
+  .hero-logo {
+    width: 180px; height: auto;
+    margin-bottom: 1.5rem;
+    position: relative; z-index: 1;
+    filter: drop-shadow(0 4px 20px rgba(108,92,231,0.25));
   }
   .hero-badge {
     display: inline-flex; align-items: center; gap: 0.5rem;
@@ -662,7 +673,7 @@
 
 <!-- NAV -->
 <nav>
-  <div class="nav-logo">⬡ GAMEMODES</div>
+  <div class="nav-logo"><img src="art/gamemodes_logo.png" alt="Gamemodes Logo">GAMEMODES</div>
   <ul class="nav-links">
     <li><a href="#hero">Home</a></li>
     <li><a href="#vision">Vision</a></li>
@@ -679,6 +690,7 @@
 
 <!-- HERO -->
 <div class="hero">
+  <img src="art/gamemodes_logo.png" alt="Gamemodes Logo" class="hero-logo">
   <div class="hero-badge">
     <span class="dot"></span>
     Game Model Development Studio — IFS Psychology Engine for NPCs
