@@ -463,6 +463,122 @@
   .code-block .str { color: var(--green); }
   .code-block .cm { color: #555570; }
 
+  /* ── WENDY SHOWCASE ──────────────────────────── */
+  .wendy-showcase {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    gap: 3rem;
+    align-items: start;
+  }
+  .wendy-card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 2.5rem;
+    text-align: center;
+  }
+  .wendy-avatar {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+  }
+  .wendy-card h3 {
+    font-size: 1.6rem;
+    font-weight: 800;
+    margin-bottom: 0.3rem;
+  }
+  .wendy-subtitle {
+    color: var(--text-dim);
+    font-size: 0.85rem;
+    margin-bottom: 1rem;
+  }
+  .wendy-traits {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 1.5rem;
+  }
+  .wendy-description {
+    color: var(--text-dim);
+    font-size: 0.95rem;
+    line-height: 1.8;
+  }
+  .wendy-demo-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+  .wendy-feature-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .wendy-feature {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+    padding: 1rem;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    transition: border-color 0.2s;
+  }
+  .wendy-feature:hover {
+    border-color: var(--accent);
+  }
+  .wendy-feature-icon {
+    font-size: 1.5rem;
+    flex-shrink: 0;
+  }
+  .wendy-feature strong {
+    display: block;
+    font-size: 0.95rem;
+    margin-bottom: 0.2rem;
+  }
+  .wendy-feature p {
+    color: var(--text-dim);
+    font-size: 0.85rem;
+    line-height: 1.5;
+  }
+  .wendy-cta-area {
+    text-align: center;
+  }
+  .wendy-cta-btn {
+    font-size: 1.1rem;
+    padding: 1rem 2.5rem;
+  }
+  .wendy-cta-note {
+    color: var(--text-dim);
+    font-size: 0.8rem;
+    margin-top: 0.75rem;
+  }
+  .wendy-live-stats {
+    display: flex;
+    gap: 2rem;
+    justify-content: center;
+    padding: 1.5rem;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+  }
+  .wendy-stat {
+    text-align: center;
+  }
+  .wendy-stat-value {
+    display: block;
+    font-size: 1.3rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .wendy-stat-label {
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
   /* ── RESPONSIVE ──────────────────────────────── */
   @media (max-width: 768px) {
     .project { grid-template-columns: 1fr; }
@@ -470,6 +586,8 @@
     .nav-links { display: none; }
     .stats-bar { gap: 1.5rem; }
     section { padding: 4rem 1.5rem; }
+    .wendy-showcase { grid-template-columns: 1fr; }
+    .wendy-live-stats { flex-direction: column; gap: 1rem; }
   }
 </style>
 </head>
@@ -482,6 +600,7 @@
     <li><a href="#vision">Vision</a></li>
     <li><a href="#engine">Engine</a></li>
     <li><a href="#projects">Projects</a></li>
+    <li><a href="#wendy">Meet Wendy</a></li>
     <li><a href="#pipeline">Pipeline</a></li>
     <li><a href="#models">Models</a></li>
     <li><a href="#contribute">Contribute</a></li>
@@ -525,6 +644,10 @@
   <div class="stat">
     <div class="stat-value">266+</div>
     <div class="stat-label">Tests Passing</div>
+  </div>
+  <div class="stat">
+    <div class="stat-value">Live</div>
+    <div class="stat-label">Wendy Demo</div>
   </div>
 </div>
 
@@ -733,6 +856,90 @@
   </div>
 </section>
 
+<!-- MEET WENDY -->
+<section id="wendy" style="background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 6rem 2rem;">
+  <div style="max-width: 1100px; margin: 0 auto;">
+    <span class="section-label">Live Demo</span>
+    <h2 class="section-title">Meet Wendy — Our NPC in Action</h2>
+    <p class="section-desc">
+      Wendy is a 22-year-old from the Appalachian mountains of eastern Kentucky. She's a fully interactive NPC powered by the Gamemodes engine — complete with a dynamic affinity system that tracks how she feels about you based on every word you say.
+    </p>
+
+    <div class="wendy-showcase">
+      <!-- Left: Wendy character card -->
+      <div class="wendy-card">
+        <div class="wendy-avatar">👩‍🌾</div>
+        <h3>Wendy</h3>
+        <p class="wendy-subtitle">Appalachian NPC • Affinity System Demo</p>
+        <div class="wendy-traits">
+          <span class="tag tag-green">8 Affinity Stages</span>
+          <span class="tag tag-purple">Dynamic Personality</span>
+          <span class="tag tag-orange">Appalachian Dialect</span>
+        </div>
+        <p class="wendy-description">
+          Wendy remembers how you treat her. Build trust over time and she'll open up about her life in the holler. Push her too far and she'll shut you out. Every conversation is different — and every conversation helps her grow.
+        </p>
+      </div>
+
+      <!-- Right: Demo info + CTA -->
+      <div class="wendy-demo-info">
+        <div class="wendy-feature-list">
+          <div class="wendy-feature">
+            <span class="wendy-feature-icon">💬</span>
+            <div>
+              <strong>10-Minute Live Chat</strong>
+              <p>Have a real conversation with Wendy. She responds dynamically based on her affinity toward you.</p>
+            </div>
+          </div>
+          <div class="wendy-feature">
+            <span class="wendy-feature-icon">📈</span>
+            <div>
+              <strong>Dynamic Affinity System</strong>
+              <p>Wendy's responses change across 8 relationship stages — from Hostile to Trusted.</p>
+            </div>
+          </div>
+          <div class="wendy-feature">
+            <span class="wendy-feature-icon">🧠</span>
+            <div>
+              <strong>Help Her Grow</strong>
+              <p>Your conversations train a fine-tuned Wendy model. Every interaction makes her smarter and more authentic.</p>
+            </div>
+          </div>
+          <div class="wendy-feature">
+            <span class="wendy-feature-icon">🎭</span>
+            <div>
+              <strong>Full Personality Range</strong>
+              <p>Be kind, be rude, be curious — test the full range of her psychologically grounded personality.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="wendy-cta-area">
+          <a href="https://chat.gamemodes.xyz?demo" class="btn btn-primary wendy-cta-btn" target="_blank">
+            Talk to Wendy →
+          </a>
+          <p class="wendy-cta-note">Free • No account needed • 10 min session</p>
+        </div>
+
+        <div class="wendy-live-stats">
+          <div class="wendy-stat">
+            <span class="wendy-stat-value" id="wendy-total-convos">—</span>
+            <span class="wendy-stat-label">Conversations</span>
+          </div>
+          <div class="wendy-stat">
+            <span class="wendy-stat-value" id="wendy-total-messages">—</span>
+            <span class="wendy-stat-label">Messages</span>
+          </div>
+          <div class="wendy-stat">
+            <span class="wendy-stat-value" id="wendy-slots">—</span>
+            <span class="wendy-stat-label">Slots Open</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- TRAINING PIPELINE -->
 <section id="pipeline">
   <span class="section-label">Training Pipeline</span>
@@ -919,5 +1126,24 @@
   <p>Gamemodes (Game Model Development Studio) — AI-Native NPC Engine · Built with ❤️ for game developers who want more from their NPCs.</p>
 </footer>
 
+<script>
+  // Fetch Wendy live stats
+  fetch('https://chat.gamemodes.xyz/api/demo/stats')
+    .then(r => r.json())
+    .then(data => {
+      const convos = document.getElementById('wendy-total-convos');
+      const msgs = document.getElementById('wendy-total-messages');
+      const slots = document.getElementById('wendy-slots');
+      if (convos) convos.textContent = data.total_conversations || '0';
+      if (msgs) msgs.textContent = data.total_messages || '0';
+      if (slots) slots.textContent = data.slots_available ? 'Open' : 'Full';
+    })
+    .catch(() => {
+      // Backend may not be running yet — show dashes
+      document.getElementById('wendy-total-convos').textContent = '—';
+      document.getElementById('wendy-total-messages').textContent = '—';
+      document.getElementById('wendy-slots').textContent = '—';
+    });
+</script>
 </body>
 </html>

@@ -16,14 +16,17 @@
 ├── DEVLOG.md     — Development log tracking all project milestones
 ├── README.md     — Project documentation and setup instructions
 ├── LICENSE       — Apache 2.0 license
-└── .skills/      — AI bot skill files (this directory)
+├── .skills/      — AI bot skill files (this directory)
+├── plans/        — Architecture plans and integration designs
+└── Wendy/        — Live NPC demo with affinity system
 ```
 
-## Four Projects Showcased
+## Five Projects Showcased
 1. **Shadow City** — Noir RPG showcase game (266 tests passing)
 2. **Skyrim Mod** — Skyrim Special Edition integration (18 NPCs)
 3. **Fallout 4 Mod** — Fallout 4 integration (9 NPCs, 10,682 training examples)
 4. **Gamemodes Core** — Training pipeline and fine-tuning system
+5. **Wendy** — Live NPC demo with affinity system (chat.gamemodes.xyz)
 
 ## Tech Stack (for reference when editing content)
 - Python/Flask (dialogue server backend)

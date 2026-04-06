@@ -19,6 +19,45 @@ Gamemodes is building an AI-native NPC engine that generates psychologically aut
 
 ---
 
+## 🌱 Wendy Live Demo Integration — Public NPC Demo
+
+**Date**: 2026-04-06
+**Status**: ✅ Complete
+
+### What Changed
+Added Wendy as a live, interactive NPC demonstration on gamemodes.xyz. Visitors who pass a bot check get a 10-minute conversation with Wendy. All conversation data is stored and exported as encrypted training data for a future fine-tuned Wendy model.
+
+### New Files
+| File | Purpose |
+|------|---------|
+| `Wendy/session_manager.py` | Session token lifecycle (create, validate, expire) |
+| `Wendy/queue_manager.py` | FIFO wait queue with 5-min timeout |
+| `Wendy/bot_check.py` | Honeypot + IP rate limiting + UA blocking |
+| `Wendy/daily_cache.py` | Daily consistency cache + self-referential response caching |
+| `Wendy/training_export.py` | AES-256-GCM encrypted Alpaca-format export pipeline |
+| `Wendy/.env.example` | Environment variable template |
+
+### Modified Files
+| File | Changes |
+|------|---------|
+| `Wendy/database.py` | +4 tables (sessions, daily_cache, training_export_log, public_stats) |
+| `Wendy/app.py` | +CORS +5 demo API routes |
+| `Wendy/wendy.py` | +build_demo_system_prompt() with daily briefing |
+| `Wendy/config.json` | +5 config sections (demo, bot_protection, cors, daily_cache, training_export) |
+| `Wendy/requirements.txt` | +flask-cors, cryptography |
+| `Wendy/templates/index.html` | +demo welcome/queue/expired screens +timer |
+| `Wendy/static/script.js` | +demo mode state, queue polling, session timer |
+| `Wendy/static/style.css` | +all demo mode styles |
+| `index.html` | +"Meet Wendy" section with CTA +live stats |
+
+### Architecture
+- Main site (gamemodes.xyz) → GitHub Pages (static)
+- Wendy backend (chat.gamemodes.xyz) → Railway.app (Flask)
+- 2 concurrent sessions max (Cerebras free tier)
+- AES-256-GCM encrypted training data exports
+
+---
+
 ## 🔧 Gamemodes Core Engine
 
 ### What It Is
