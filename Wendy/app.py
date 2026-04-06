@@ -893,7 +893,7 @@ def internal_error(e):
 if __name__ == "__main__":
     # Railway/production: use PORT env var and bind to 0.0.0.0
     port = int(os.environ.get("PORT", config["server"]["port"]))
-    host = os.environ.get("HOST", config["server"]["host"])
+    host = os.environ.get("HOST", "0.0.0.0")
     debug = config["server"]["debug"] and not os.environ.get("RAILWAY_ENVIRONMENT")
     
     print(f"Starting Wendy NPC Conversation Demo on {host}:{port}")
