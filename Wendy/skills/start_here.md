@@ -133,10 +133,28 @@ Eight stages define Wendy's behavior:
 | `get_conversation_handler()` | `/api/conversations/<id>` | GET | Load conversation with messages |
 | `list_conversations_handler()` | `/api/conversations` | GET | List all conversations (paginated) |
 | `delete_conversation_handler()` | `/api/conversations/<id>` | DELETE | Delete conversation and related data |
+| `demo_start_handler()` | `/api/demo/start` | POST | Bot check + session/queue allocation |
+| `demo_status_handler()` | `/api/demo/status` | GET | Queue position or session time remaining |
+| `demo_chat_handler()` | `/api/demo/chat` | POST | Session-aware chat (validates token, checks timer) |
+| `demo_stats_handler()` | `/api/demo/stats` | GET | Public conversation/message counters |
+| `export_training_handler()` | `/api/export/training` | GET | Admin-only encrypted training data export |
 | `index()` | `/` | GET | Serve main chat UI |
 | `serve_static()` | `/static/<filename>` | GET | Serve static files |
 | `not_found()` | — | — | 404 handler |
 | `internal_error()` | — | — | 500 handler |
+
+### Demo Config ([`config.json`](../config.json) `demo` section)
+
+| Key | Default | Purpose |
+|-----|---------|---------|
+| `enabled` | `true` | Enable/disable demo mode |
+| `session_duration_minutes` | `15` | How long each demo session lasts |
+| `max_concurrent_sessions` | `2` | Simultaneous sessions allowed |
+| `max_queue_size` | `20` | Max visitors waiting in queue |
+| `queue_timeout_minutes` | `5` | How long before queue entry expires |
+| `warning_seconds_before_expiry` | `30` | Timer warning before session ends |
+| `max_shift_per_message_demo` | `5` | Smaller affinity shifts in demo (vs 15 normal) |
+| `min_messages_before_hostile` | `99999` | Effectively disables hostile deactivation in demo |
 
 ### database.py — Functions
 

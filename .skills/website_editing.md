@@ -25,9 +25,15 @@ The page is structured as a single-page site with sections:
 4. **Keep all content in a single file** — do not split into multiple HTML files
 5. **Test locally** by opening index.html directly in a browser
 
+## Wendy Integration Notes
+- The **Meet Wendy** section includes a CTA button that opens `chat.gamemodes.xyz/?demo`
+- Live stats (conversations, messages) are fetched from `chat.gamemodes.xyz/api/demo/stats` via JavaScript
+- The demo UI is served entirely from the Wendy backend ([`Wendy/templates/index.html`](../Wendy/templates/index.html)), not from `index.html`
+- Stats update automatically — no manual editing needed for counters
+
 ## Common Edits
 - **Adding a new stat**: Find the stats bar grid and add a new `.stat-card` div
 - **Updating NPC counts**: Search for the current number and replace
 - **Adding a dev log entry**: Edit DEVLOG.md (separate from the website)
 - **Updating progress**: Change emoji status indicators in tables
-- **Updating Wendy demo stats**: The stats are fetched live from chat.gamemodes.xyz/api/demo/stats — no manual editing needed
+- **Updating Wendy demo stats**: Stats are fetched live from `chat.gamemodes.xyz/api/demo/stats` — no manual editing needed

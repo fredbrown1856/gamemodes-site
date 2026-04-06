@@ -299,6 +299,243 @@ Delete a conversation and all associated messages and affinity log entries.
 
 ---
 
+## POST /api/demo/start
+
+Start a demo session (public visitors). Runs bot checks, then allocates a session or queue slot.
+
+**Request Body:**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `website_url` | string | No | Honeypot field — must be empty or missing for humans |
+
+```json
+{}
+```
+
+**Response — Session Allocated (201 Created):**
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `status` | string | `"active"` |
+| `session_token` | string | Token for subsequent demo requests |
+| `conversation_id` | int | New conversation ID |
+| `affinity` | int | Initial affinity (0) |
+| `stage` | string | Initial stage (`"Stranger"`) |
+| `expires_at` | string | ISO 8601 UTC expiry timestamp |
+| `time_remaining_seconds` | int | Seconds until session expires |
+
+```json
+{
+  "status": "active",
+  "session_token": "abc123...",
+  "conversation_id": 42,
+  "affinity": 0,
+  "stage": "Stranger",
+  "expires_at": "2026-04-06T13:15:00Z",
+  "time_remaining_seconds": 900
+}
+```
+
+**Response — Queued (202 Accepted):**
+
+```json
+{
+  "status": "queued",
+  "queue_id": "q_abc123",
+  "position": 3,
+  "estimated_wait": 420,
+  "queue_size": 3
+}
+```
+
+**Error Responses:**
+
+| Status | Condition |
+|--------|-----------|
+| 400 | Honeypot field filled (bot detected) |
+| 403 | Blocked user-agent |
+| 429 | Rate limit exceeded (max 3 session attempts per IP per hour) |
+| 503 | Queue is full |
+| 500 | Internal server error |
+
+---
+
+## GET /api/demo/status
+
+Poll queue position or session time remaining.
+
+**Query Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `queue_id` | string | Queue entry ID (for waiting visitors) |
+| `session_token` | string | Session token (for active visitors) |
+
+**Response — Queue Status (200):**
+
+```json
+{
+  "in_queue": true,
+  "position": 2,
+  "estimated_wait": 300,
+  "queue_size": 3
+}
+```
+
+**Response — Queue Ready (200):**
+
+```json
+{
+  "in_queue": true,
+  "position": 0,
+  "ready": true,
+  "message": "A slot is available! Start your session now."
+}
+```
+
+**Response — Session Status (200):**
+
+```json
+{
+  "is_active": true,
+  "time_remaining_seconds": 742,
+  "expires_at": "2026-04-06T13:15:00Z",
+  "conversation_id": 42
+}
+```
+
+**Response — Session Expired (200):**
+
+```json
+{
+  "is_active": false,
+  "time_remaining_seconds": 0,
+  "message": "Session has expired or is invalid."
+}
+```
+
+**Error Responses:**
+
+| Status | Condition |
+|--------|-----------|
+| 400 | Neither `queue_id` nor `session_token` provided |
+
+---
+
+## POST /api/demo/chat
+
+Session-aware chat for demo mode. Validates session token and timer before processing.
+
+**Request Body:**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `session_token` | string | Yes | Active demo session token |
+| `message` | string | Yes | User's message (max 2000 chars) |
+
+```json
+{
+  "session_token": "abc123...",
+  "message": "Hey Wendy, what's it like living in the mountains?"
+}
+```
+
+**Response (200 OK):**
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `message.content` | string | Wendy's response text |
+| `message.cached` | bool | `true` if returned from daily cache |
+| `affinity.current` | int | Current affinity value |
+| `affinity.stage` | string | Current stage label |
+| `time_remaining_seconds` | int | Seconds left in session |
+| `session_active` | bool | Always `true` in demo mode |
+
+```json
+{
+  "message": {
+    "content": "Well, it ain't for everybody, but I reckon I wouldn't trade it for nothin'.",
+    "cached": false
+  },
+  "affinity": {
+    "current": 3,
+    "stage": "Stranger"
+  },
+  "time_remaining_seconds": 842,
+  "session_active": true
+}
+```
+
+**Error Responses:**
+
+| Status | Condition |
+|--------|-----------|
+| 400 | Missing `session_token` or `message`, or message too long |
+| 401 | Session expired or invalid |
+| 404 | Conversation not found |
+| 500 | LLM error or internal server error |
+
+> **Note:** In demo mode, Wendy never leaves the conversation. Affinity shifts are clamped smaller (`max_shift_per_message_demo: 5`), and conversations are never deactivated regardless of affinity. The session timer is the only way a demo session ends.
+
+---
+
+## GET /api/demo/stats
+
+Public counters for the website widget. No authentication required.
+
+**Response (200 OK):**
+
+```json
+{
+  "total_conversations": 142,
+  "total_messages": 1847,
+  "current_queue_size": 0,
+  "slots_available": 2,
+  "active_sessions": 0
+}
+```
+
+---
+
+## GET /api/export/training
+
+Admin-only encrypted training data export.
+
+**Headers:**
+
+| Header | Value |
+|--------|-------|
+| `Authorization` | `Bearer <ADMIN_TOKEN>` |
+
+**Query Parameters:**
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `min_affinity` | int | 10 | Minimum affinity threshold for export |
+
+**Response (200 OK):**
+
+```json
+{
+  "filename": "wendy_training_2026-04-06.enc",
+  "count": 87,
+  "size_bytes": 45230,
+  "export_date": "2026-04-06",
+  "min_affinity": 10
+}
+```
+
+**Error Responses:**
+
+| Status | Condition |
+|--------|-----------|
+| 401 | Missing or malformed Authorization header |
+| 403 | Invalid admin token |
+| 503 | `ADMIN_TOKEN` or `TRAINING_ENCRYPTION_KEY` not configured |
+
+---
+
 ## Frontend Routes
 
 | Route | Method | Description |
@@ -310,6 +547,12 @@ Delete a conversation and all associated messages and affinity log entries.
 
 ## Source References
 
-- Route handlers: [`app.py`](../app.py:63) lines 63-366
-- Error handlers: [`app.py`](../app.py:373) lines 373-384
-- Database operations called by routes: [`database.py`](../database.py)
+- Standard route handlers: [`app.py`](../app.py:80)
+- Demo route handlers: [`app.py`](../app.py:377)
+- Error handlers: [`app.py`](../app.py:900)
+- Database operations: [`database.py`](../database.py)
+- Session management: [`session_manager.py`](../session_manager.py)
+- Queue management: [`queue_manager.py`](../queue_manager.py)
+- Bot protection: [`bot_check.py`](../bot_check.py)
+- Daily cache: [`daily_cache.py`](../daily_cache.py)
+- Training export: [`training_export.py`](../training_export.py)

@@ -29,12 +29,13 @@
 5. **Wendy** — Live NPC demo with affinity system (chat.gamemodes.xyz)
 
 ## Tech Stack (for reference when editing content)
-- Python/Flask (dialogue server backend)
+- Python/Flask (Wendy dialogue server backend on Railway)
 - C++ SKSE/F4SE (game plugin integration)
-- llama.cpp (local LLM inference)
-- SQLite (database for Shadow City)
+- Cerebras API / llama.cpp (LLM inference — Cerebras free tier for Wendy, llama.cpp for local)
+- SQLite (database for Shadow City and Wendy)
 - QLoRA (fine-tuning methodology)
 - GGUF format (model deployment)
+- Railway.app (Wendy backend hosting with persistent SQLite volume)
 
 ## Key Conventions
 - All website content lives in `index.html` (inline CSS and JS)
@@ -42,7 +43,15 @@
 - The site uses a dark theme with syntax-highlighted code blocks
 - No external dependencies or frameworks
 
+## Key Directories
+- `plans/` — Architecture plans and integration designs (e.g., Wendy live demo integration)
+- `Wendy/` — Live NPC demo backend (Flask on Railway) with its own [`skills/`](../Wendy/skills/start_here.md)
+- `.skills/` — This directory; AI bot orientation files for the root project
+
 ## Related Skill Files
 - [Content Guidelines](./content_guidelines.md) — What can/cannot appear in public content
 - [Website Editing Guide](./website_editing.md) — How to edit the site safely
-- [Deployment](./deployment.md) — How the site is deployed
+- [Deployment](./deployment.md) — How the site and Wendy backend are deployed
+- [Architecture](./architecture.md) — System architecture overview
+- [Troubleshooting](./troubleshooting.md) — Common bugs and fixes
+- [Wendy Skills](../Wendy/skills/start_here.md) — Wendy-specific skill files
