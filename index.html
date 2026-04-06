@@ -629,7 +629,7 @@
 <span class="comment">// NPC response driven by psychological state</span><br>
 <span class="hl">npc</span>.<span class="fn">generate_dialogue</span>({<br>
 &nbsp;&nbsp;<span class="hl">stress</span>: <span class="hl3">72</span>,<br>
-&nbsp;&nbsp;<span class="hl">active_part</span>: <span class="str">"firefighter"</span>,<br>
+&nbsp;&nbsp;<span class="hl">psychological_mode</span>: <span class="str">"reactive"</span>,<br>
 &nbsp;&nbsp;<span class="hl">affinity</span>: <span class="hl3">-1</span><br>
 }) <span class="comment">// → contextually generated response</span>
     </div>
@@ -639,7 +639,7 @@
   <div class="project">
     <div>
       <div class="project-label" style="background: rgba(0,184,148,0.12); color: var(--green);">⚔️ Skyrim Integration — In Development</div>
-      <h3>Skyrim IFS Dialogue Engine</h3>
+      <h3>Skyrim NPC Dialogue Engine</h3>
       <p>
         In development: a Skyrim Special Edition mod that replaces canned voice lines with real-time, psychologically grounded dialogue. Players type messages to NPCs via a console command; the engine generates responses through a C++ SKSE plugin communicating with a local Python dialogue server.
       </p>
@@ -660,7 +660,7 @@
 <span class="fn">HttpClient</span>.<span class="fn">SendDialogue</span>({<br>
 &nbsp;&nbsp;<span class="hl">npc_id</span>: <span class="str">"lydia"</span>,<br>
 &nbsp;&nbsp;<span class="hl">stress</span>: <span class="hl3">35</span>,<br>
-&nbsp;&nbsp;<span class="hl">active_part</span>: <span class="str">"manager"</span><br>
+&nbsp;&nbsp;<span class="hl">psychological_mode</span>: <span class="str">"protective"</span><br>
 })<br><br>
 <span class="comment">// 3. Response displayed as subtitle</span><br>
 <span class="str">"I am sworn to carry your burdens,<br>
@@ -685,14 +685,14 @@
       </ul>
     </div>
     <div class="project-visual">
-<span class="cm">// Factions with IFS profiles</span><br>
+<span class="cm">// Factions with NPC profiles</span><br>
 <span class="hl">brotherhood</span> { <span class="hl">vibe</span>: <span class="str">"disciplined, hierarchical"</span> }<br>
 <span class="hl">institute</span>   { <span class="hl">vibe</span>: <span class="str">"detached, clinical"</span> }<br>
 <span class="hl">railroad</span>    { <span class="hl">vibe</span>: <span class="str">"devoted, paranoid"</span> }<br>
 <span class="hl">raiders</span>     { <span class="hl">vibe</span>: <span class="str">"chaotic, impulsive"</span> }<br>
 <span class="hl">settlers</span>    { <span class="hl">vibe</span>: <span class="str">"resilient, weary"</span> }<br><br>
 <span class="comment">// Training data: 10,682 examples</span><br>
-<span class="fn">npc_dialogue_ifs</span>: <span class="hl3">2,065</span><br>
+<span class="fn">npc_dialogue_profiles</span>: <span class="hl3">2,065</span><br>
 <span class="fn">faction_voice</span>: <span class="hl3">1,501</span><br>
 <span class="fn">affinity_modulated</span>: <span class="hl3">1,500</span><br>
 <span class="fn">moral_dilemma</span>: <span class="hl3">800</span><br>

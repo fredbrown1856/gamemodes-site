@@ -101,7 +101,7 @@ A noir RPG designed to showcase the Gamemodes NPC engine. Set in a rain-soaked d
 | Phase | Name | Tests | Status |
 |-------|------|-------|--------|
 | R1 | LLM Module Rebuild | 74 | ✅ Complete |
-| R2 | IFS Prompt Engineering | 70 | ✅ Complete |
+| R2 | NPC Prompt Engineering | 70 | ✅ Complete |
 | R3 | Integration + Engine Updates | 36 | ✅ Complete |
 | R4 | Model Swap Infrastructure | 43 | ✅ Complete |
 | R5 | Testing + Tuning | 43 | ✅ Complete |
@@ -174,7 +174,7 @@ A noir RPG designed to showcase the Gamemodes NPC engine. Set in a rain-soaked d
 
 ---
 
-## 🔧 Skyrim IFS Dialogue Engine
+## 🔧 Skyrim NPC Dialogue Engine
 
 ### What It Is
 
@@ -185,7 +185,7 @@ A Skyrim Special Edition mod that gives NPCs dynamic, psychologically authentic 
 ```
 SKSE Plugin (C++) → HTTP POST → Python Flask Server (localhost:8080) → LLM (llama.cpp)
       ↑                                      ↓
-  Skyrim Game                          NPC State + IFS Profiles
+  Skyrim Game                          NPC State + NPC Profiles
    Engine                              Prompt Builder → Response
 ```
 
@@ -194,7 +194,7 @@ SKSE Plugin (C++) → HTTP POST → Python Flask Server (localhost:8080) → LLM
 | Component | Status |
 |-----------|--------|
 | Flask dialogue server (8 endpoints) | ✅ Complete |
-| 18 NPC IFS profiles (all major factions) | ✅ Complete |
+| 18 NPC profiles (all major factions) | ✅ Complete |
 | 22 game event triggers with stress/part mappings | ✅ Complete |
 | Dual model routing (Bonsai 8B + Llama 1B) | ✅ Complete |
 | Three prompt tiers (Trained/Instructed/Hybrid) | ✅ Complete |
@@ -252,7 +252,7 @@ A Fallout 4 mod using the same engine architecture — F4SE plugin captures play
 | Component | Status |
 |-----------|--------|
 | NPC data profiles (9 NPCs, 5 factions) | ✅ Complete |
-| IFS templates (per-faction psychological templates) | ✅ Complete |
+| NPC templates (per-faction psychological templates) | ✅ Complete |
 | JSON schema (full validation) | ✅ Complete |
 | LLM client (multi-backend with failover + rate limiting) | ✅ Complete |
 | Dialogue server (Flask, port 8080, 3 endpoints) | ✅ Complete |
@@ -285,7 +285,7 @@ A Fallout 4 mod using the same engine architecture — F4SE plugin captures play
 
 | Category | Target | Actual |
 |----------|--------|--------|
-| npc_dialogue_ifs | 2,000 | 2,065 |
+| npc_dialogue_profiles | 2,000 | 2,065 |
 | faction_voice | 1,500 | 1,501 |
 | affinity_modulated | 1,500 | 1,500 |
 | task_guidance | 1,000 | 1,008 |
