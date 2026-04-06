@@ -227,8 +227,10 @@ Consider:
             return {"shift": shift, "reason": reason}
             
         except json.JSONDecodeError:
-            # Fall back to zero shift if JSON parsing fails
-            return {"shift": 0, "reason": "Failed to parse affinity analysis response"}
+            # JSON parsing failed — raise LLMError so caller falls back to keyword analysis
+            import sys
+            print(f"WARNING: Failed to parse affinity analysis JSON: {response_text!r}", file=sys.stderr)
+            raise LLMError(f"Failed to parse affinity analysis response as JSON: {response_text[:200]}")
             
         except Exception as e:
             raise LLMError(f"OpenAI API error in analyze_affinity: {str(e)}")

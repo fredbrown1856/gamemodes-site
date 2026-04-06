@@ -653,7 +653,35 @@ def demo_chat_handler():
             affinity_analysis = wendy.fallback_affinity_analysis(message, config)
         
         # Calculate clamped affinity shift
-        shift = wendy.calculate_affinity_shift(affinity_analysis, config)
+        # In demo mode, use a smaller max_shift to keep conversations going longer
+        demo_config = config.get("demo", {})
+        demo_max_shift = demo_config.get("max_shift_per_message_demo", 5)
+        
+        # Build a temporary config with the demo max_shift for clamping
+        clamp_config = dict(config)
+        clamp_config["affinity"] = dict(config.get("affinity", {}))
+        clamp_config["affinity"]["max_shift_per_message"] = demo_max_shift
+        
+        shift = wendy.calculate_affinity_shift(affinity_analysis, clamp_config)
+        
+        # Log the affinity analysis for debugging
+        app.logger.info(
+            f"Demo affinity | conv={conversation_id} | raw_shift={affinity_analysis.get('shift')} | "
+            f"clamped_shift={shift} | before={conversation['affinity']} | "
+            f"reason={affinity_analysis.get('reason', 'N/A')}"
+        )
+        
+        # Safety net: prevent a single message from ending the conversation
+        current_affinity = conversation["affinity"]
+        hostile_threshold = config.get("affinity", {}).get("hostile_threshold", -50)
+        if current_affinity + shift <= hostile_threshold and current_affinity > hostile_threshold:
+            # This message would end the conversation — reduce the shift to stay just above hostile
+            safe_shift = (hostile_threshold - current_affinity) + 1
+            app.logger.warning(
+                f"Demo safety net | conv={conversation_id} | shift={shift} would end conversation. "
+                f"Overriding to safe_shift={safe_shift}"
+            )
+            shift = safe_shift
         
         # Update affinity in DB
         affinity_result = database.update_affinity(
