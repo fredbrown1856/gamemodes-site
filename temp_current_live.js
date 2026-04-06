@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Wendy NPC Conversation Demo — Frontend Logic
  * Pure vanilla JavaScript, no frameworks.
  */
@@ -794,7 +794,6 @@
      * Initialize demo mode — hide normal UI, show welcome screen.
      */
     async function initDemoMode() {
-        console.log('[DEBUG] initDemoMode() called');
         state.demoMode = true;
 
         // Hide sidebar and normal chat elements
@@ -802,73 +801,51 @@
         DOM.sidebarOverlay.style.display = 'none';
 
         // Show the demo welcome screen
-        const demoWelcome = document.getElementById('demo-welcome');
-        console.log('[DEBUG] demo-welcome element:', demoWelcome);
-        if (demoWelcome) {
-            demoWelcome.style.display = 'flex';
-        }
+        document.getElementById('demo-welcome').style.display = 'flex';
 
         // Fetch and display queue stats
         try {
             const stats = await apiRequest('/api/demo/stats');
-            console.log('[DEBUG] stats response:', stats);
             const queueInfo = document.getElementById('demo-queue-info');
-            if (queueInfo && stats.current_queue_size > 0) {
+            if (stats.current_queue_size > 0) {
                 queueInfo.textContent = `~${stats.current_queue_size} in line`;
-            } else if (queueInfo) {
+            } else {
                 queueInfo.textContent = 'No wait';
             }
         } catch (e) {
-            console.error('[DEBUG] stats fetch failed:', e);
             // Stats are non-critical; leave default text
         }
 
         // Bind the demo start form
-        const demoForm = document.getElementById('demo-start-form');
-        console.log('[DEBUG] demo-start-form element:', demoForm);
-        if (demoForm) {
-            demoForm.addEventListener('submit', (e) => {
-                console.log('[DEBUG] form submit event fired');
-                e.preventDefault();
-                startDemoSession();
-            });
-            console.log('[DEBUG] submit event listener bound successfully');
-        } else {
-            console.error('[DEBUG] demo-start-form NOT FOUND - cannot bind submit handler!');
-        }
+        document.getElementById('demo-start-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            startDemoSession();
+        });
     }
 
     /**
      * Start a demo session — called when user clicks "Start Conversation".
      */
     async function startDemoSession() {
-        console.log('[DEBUG] startDemoSession() called');
-        const honeypotEl = document.getElementById('honeypot');
-        const honeypot = honeypotEl ? honeypotEl.value : '';
-        console.log('[DEBUG] honeypot value:', JSON.stringify(honeypot));
+        const honeypot = document.getElementById('honeypot').value;
 
         try {
-            console.log('[DEBUG] sending POST to /api/demo/start');
             const resp = await apiRequest('/api/demo/start', {
                 method: 'POST',
                 body: JSON.stringify({ honeypot: honeypot })
             });
-            console.log('[DEBUG] demo/start response:', resp);
 
             // Determine status: use explicit field, or infer from response shape
             const status = resp.status ||
                 (resp.session_token ? 'active' : null) ||
                 (resp.queue_id ? 'queued' : null);
-            console.log('[DEBUG] determined status:', status);
 
             if (status === 'active') {
-                console.log('[DEBUG] status is active - transitioning to chat');
                 // Got a slot — transition directly to chat
                 state.demoSessionToken = resp.session_token;
                 state.demoExpiresAt = resp.expires_at;
                 transitionToChat(resp.conversation_id);
             } else if (status === 'queued') {
-                console.log('[DEBUG] status is queued - showing queue screen');
                 // All slots full — show queue screen
                 state.demoQueueId = resp.queue_id;
                 document.getElementById('queue-position').textContent = `#${resp.position}`;
@@ -876,12 +853,9 @@
                 document.getElementById('demo-welcome').style.display = 'none';
                 document.getElementById('demo-queue').style.display = 'flex';
                 startQueuePolling();
-            } else {
-                console.error('[DEBUG] unknown status - no action taken! resp:', resp);
-                showError('Unexpected response from server. Please try again.');
             }
         } catch (error) {
-            console.error('[DEBUG] Demo start failed:', error);
+            console.error('Demo start failed:', error);
             showError(error.message || 'Failed to start demo session.');
         }
     }
@@ -893,7 +867,6 @@
         state.demoQueueInterval = setInterval(async () => {
             try {
                 const resp = await apiRequest(`/api/demo/status?queue_id=${state.demoQueueId}`);
-                console.log('[DEBUG] queue poll response:', resp);
 
                 if (resp.status === 'active') {
                     clearInterval(state.demoQueueInterval);
@@ -908,8 +881,6 @@
                     clearInterval(state.demoQueueInterval);
                     state.demoQueueInterval = null;
                     showSessionExpired();
-                } else {
-                    console.log('[DEBUG] queue poll - unrecognized response shape:', resp);
                 }
             } catch (error) {
                 console.error('Queue poll error:', error);
@@ -1001,18 +972,14 @@
     // ============================================================================
 
     async function init() {
-        console.log('[DEBUG] init() called. URL:', window.location.href);
-        console.log('[DEBUG] isDemoMode():', isDemoMode());
         initEventListeners();
 
         if (isDemoMode()) {
             // Demo mode: skip normal initialization
-            console.log('[DEBUG] Demo mode detected, calling initDemoMode()');
             await initDemoMode();
             return;
         }
 
-        console.log('[DEBUG] Normal mode, loading conversations');
         // Load conversation list
         await refreshConversationList();
 
@@ -1027,3 +994,4 @@
         init();
     }
 })();
+

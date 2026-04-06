@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Wendy NPC Conversation Demo — Frontend Logic
  * Pure vanilla JavaScript, no frameworks.
  */
@@ -1001,18 +1001,14 @@
     // ============================================================================
 
     async function init() {
-        console.log('[DEBUG] init() called. URL:', window.location.href);
-        console.log('[DEBUG] isDemoMode():', isDemoMode());
         initEventListeners();
 
         if (isDemoMode()) {
             // Demo mode: skip normal initialization
-            console.log('[DEBUG] Demo mode detected, calling initDemoMode()');
             await initDemoMode();
             return;
         }
 
-        console.log('[DEBUG] Normal mode, loading conversations');
         // Load conversation list
         await refreshConversationList();
 
@@ -1027,3 +1023,4 @@
         init();
     }
 })();
+
