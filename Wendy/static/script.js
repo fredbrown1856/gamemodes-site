@@ -835,12 +835,17 @@
                 body: JSON.stringify({ honeypot: honeypot })
             });
 
-            if (resp.status === 'active') {
+            // Determine status: use explicit field, or infer from response shape
+            const status = resp.status ||
+                (resp.session_token ? 'active' : null) ||
+                (resp.queue_id ? 'queued' : null);
+
+            if (status === 'active') {
                 // Got a slot — transition directly to chat
                 state.demoSessionToken = resp.session_token;
                 state.demoExpiresAt = resp.expires_at;
                 transitionToChat(resp.conversation_id);
-            } else if (resp.status === 'queued') {
+            } else if (status === 'queued') {
                 // All slots full — show queue screen
                 state.demoQueueId = resp.queue_id;
                 document.getElementById('queue-position').textContent = `#${resp.position}`;

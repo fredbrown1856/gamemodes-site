@@ -433,6 +433,7 @@ def demo_start_handler():
             stage_info = wendy.get_stage(conversation["affinity"], config)
             
             return jsonify({
+                "status": "active",
                 "session_token": session["session_token"],
                 "conversation_id": conversation["id"],
                 "affinity": conversation["affinity"],
@@ -459,6 +460,7 @@ def demo_start_handler():
             estimated_wait = queue_manager.get_estimated_wait(position)
             
             return jsonify({
+                "status": "queued",
                 "queue_id": queue_entry.get("queue_id"),
                 "position": position,
                 "estimated_wait": estimated_wait,
