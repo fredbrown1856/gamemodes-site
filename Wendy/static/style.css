@@ -764,6 +764,7 @@ body {
     justify-content: center;
     padding: var(--spacing-lg);
     animation: modalFadeIn 0.2s ease;
+    pointer-events: none;
 }
 
 @keyframes modalFadeIn {
@@ -915,7 +916,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 200;
+    z-index: 201;
 }
 
 .demo-welcome-content,
