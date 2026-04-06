@@ -650,11 +650,13 @@
             appendMessage(data.message);
 
             // Update affinity
-            state.isActive = data.conversation_active;
+            // Demo API returns 'session_active', normal API returns 'conversation_active'
+            const isActive = state.demoMode ? data.session_active : data.conversation_active;
+            state.isActive = isActive;
             updateAffinityDisplay(data.affinity.current, data.affinity.stage, true);
 
             // Check if conversation ended
-            if (!data.conversation_active) {
+            if (!isActive) {
                 setInputEnabled(false);
             }
 
