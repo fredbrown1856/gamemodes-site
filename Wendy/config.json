@@ -150,5 +150,11 @@
         "encryption_algorithm": "AES-256-GCM",
         "min_stage_for_export": "Acquaintance",
         "export_format": "alpaca"
+    },
+    "critical_facts": {
+        "enabled": true,
+        "extraction_model": null,
+        "extraction_temperature": 0.1,
+        "auto_seed": true
     }
 }

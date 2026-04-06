@@ -664,6 +664,7 @@
 <nav>
   <div class="nav-logo">⬡ GAMEMODES</div>
   <ul class="nav-links">
+    <li><a href="#hero">Home</a></li>
     <li><a href="#vision">Vision</a></li>
     <li><a href="#engine">Engine</a></li>
     <li><a href="#projects">Projects</a></li>
@@ -671,7 +672,7 @@
     <li><a href="#pipeline">Pipeline</a></li>
     <li><a href="#models">Models</a></li>
     <li><a href="#contribute">Contribute</a></li>
-    <li><a href="#devlog">Devlog</a></li>
+    <li><a href="devlog.html">Devlog</a></li>
     <li><a href="#contact">Contact</a></li>
   </ul>
 </nav>
@@ -680,14 +681,14 @@
 <div class="hero">
   <div class="hero-badge">
     <span class="dot"></span>
-    Game Model Development Studio — Building the future of NPC interaction
+    Game Model Development Studio — IFS Psychology Engine for NPCs
   </div>
   <h1>
     NPCs that <span class="gradient">think.</span><br>
     Games that <span class="gradient">remember.</span>
   </h1>
   <p>
-    Gamemodes is building an AI-native NPC engine that generates psychologically authentic, dynamic dialogue — running on consumer hardware with 1-bit quantized models.
+    Gamemodes applies Internal Family Systems (IFS) psychology to NPC behavior — an AI-native engine that generates psychologically authentic, dynamic dialogue across 6 projects and 79K+ lines of code. Runs on consumer hardware with 1-bit quantized models.
   </p>
   <div class="hero-cta">
     <a href="#projects" class="btn btn-primary">Explore Projects ↓</a>
@@ -698,20 +699,20 @@
 <!-- STATS -->
 <div class="stats-bar">
   <div class="stat">
-    <div class="stat-value">4</div>
+    <div class="stat-value">6</div>
     <div class="stat-label">Active Projects</div>
   </div>
   <div class="stat">
-    <div class="stat-value">~26K</div>
-    <div class="stat-label">Training Examples</div>
+    <div class="stat-value">79K+</div>
+    <div class="stat-label">Lines of Python</div>
+  </div>
+  <div class="stat">
+    <div class="stat-value">22K+</div>
+    <div class="stat-label">Training Records</div>
   </div>
   <div class="stat">
     <div class="stat-value">~1GB</div>
     <div class="stat-label">VRAM at Runtime</div>
-  </div>
-  <div class="stat">
-    <div class="stat-value">266+</div>
-    <div class="stat-label">Tests Passing</div>
   </div>
   <div class="stat">
     <div class="stat-value">Live</div>
@@ -724,14 +725,14 @@
   <span class="section-label">The Vision</span>
   <h2 class="section-title">Game NPCs deserve better than canned lines.</h2>
   <p class="section-desc">
-    For decades, NPCs have been limited to pre-written dialogue trees. Gamemodes changes that — an engine that generates contextually aware, psychologically grounded dialogue in real time, at a cost and compute footprint that works on any gaming PC.
+    For decades, NPCs have been limited to pre-written dialogue trees. Gamemodes applies Internal Family Systems (IFS) psychology — a clinically validated therapeutic model — to NPC behavior. The engine generates contextually aware, psychologically grounded dialogue in real time, at a cost and compute footprint that works on any gaming PC.
   </p>
 
   <div class="arch-grid">
     <div class="arch-card">
       <div class="icon" style="background: rgba(108,92,231,0.15);">🧠</div>
-      <h3>Psychological Depth</h3>
-      <p>NPCs are driven by structured psychological profiles — not random personality quirks. Every response reflects the character's internal state, emotional history, and relationship context.</p>
+      <h3>IFS Psychology Engine</h3>
+      <p>NPCs are driven by Internal Family Systems profiles — Managers, Firefighters, and Exiles that govern behavior based on emotional state and relationship context. Every response reflects the character's internal parts system.</p>
     </div>
     <div class="arch-card">
       <div class="icon" style="background: rgba(0,184,148,0.15);">⚡</div>
@@ -751,7 +752,7 @@
   <span class="section-label">The Engine</span>
   <h2 class="section-title">How it works.</h2>
   <p class="section-desc">
-    The Gamemodes engine sits between the game and an LLM, translating game state into psychologically rich prompts and routing responses back as natural dialogue.
+    The Gamemodes engine sits between the game and an LLM, translating game state into IFS-psychologically rich prompts and routing responses back as natural dialogue. The IFS framework governs NPC internal states — Managers protect, Firefighters react, Exiles reveal vulnerability.
   </p>
 
   <div class="code-block">
@@ -759,6 +760,7 @@
 <span class="kw">Game Engine</span> → <span class="fn">States</span> + <span class="fn">Profile</span> + <span class="fn">Context</span> → <span class="fn">Prompt Builder</span> → <span class="fn">LLM</span> → <span class="str">NPC Dialogue</span>
 
 <span class="cm">/* What the engine tracks per NPC: */</span>
+<span class="fn">IFS Parts System</span>       <span class="cm">(Manager, Firefighter, Exile)</span>
 <span class="fn">7 Physiological States</span>  <span class="cm">(stress, hunger, thirst, ...)</span>
 <span class="fn">3 Psychological Modes</span>   <span class="cm">(protective, reactive, vulnerable)</span>
 <span class="fn">20 Personality Archetypes</span> <span class="cm">(base traits, speech patterns)</span>
@@ -789,25 +791,25 @@
 <!-- PROJECTS -->
 <section id="projects">
   <span class="section-label">Projects</span>
-  <h2 class="section-title">Four projects. One engine.</h2>
+  <h2 class="section-title">Six projects. One engine.</h2>
   <p class="section-desc">
-    Gamemodes operates across four interconnected projects — each proving a different dimension of the engine's capability.
+    Gamemodes operates across six interconnected projects — each proving a different dimension of the IFS psychology engine's capability.
   </p>
 
   <!-- Shadow City -->
   <div class="project">
     <div>
-      <div class="project-label" style="background: rgba(108,92,231,0.12); color: var(--accent2);">🌃 Testbed Game</div>
+      <div class="project-label" style="background: rgba(108,92,231,0.12); color: var(--accent2);">🌃 Testbed Game — Phase 12</div>
       <h3>Shadow City</h3>
       <p>
-        Shadow City is a noir RPG designed to showcase the Gamemodes NPC engine. Set in a rain-soaked dystopian metropolis where six factions wage silent war, it demonstrates the full capability of the engine — quest systems, faction progression, mortality, and dynamic NPC-NPC interactions — all powered by psychologically grounded dialogue generation.
+        Shadow City is a noir RPG designed to showcase the Gamemodes NPC engine. Set in a rain-soaked dystopian metropolis where six factions wage silent war, it demonstrates the full capability of the IFS psychology engine — quest systems, faction progression, mortality, and dynamic NPC-NPC interactions — all powered by psychologically grounded dialogue generation.
       </p>
       <ul class="project-features">
-        <li>Six factions with distinct victory quests and progression</li>
-        <li>Dynamic NPC-NPC and player-NPC conversations every tick</li>
+        <li>Phase 12 — 6 factions with full game loop and victory conditions</li>
+        <li>Cell phone, comedy, entertainment, tutorial, and asylum engines</li>
         <li>Full quest tree system with pool-based job assignment</li>
         <li>Medical, mortality, and addiction simulation systems</li>
-        <li>266 tests passing across 5 rebuild phases</li>
+        <li>Tick system in development — duplicate event bugs being resolved</li>
       </ul>
     </div>
     <div class="project-visual">
@@ -829,16 +831,16 @@
   <!-- Skyrim -->
   <div class="project">
     <div>
-      <div class="project-label" style="background: rgba(0,184,148,0.12); color: var(--green);">⚔️ Skyrim Integration — In Development</div>
+      <div class="project-label" style="background: rgba(0,184,148,0.12); color: var(--green);">⚔️ Skyrim Integration — Best Architecture</div>
       <h3>Skyrim NPC Dialogue Engine</h3>
       <p>
-        In development: a Skyrim Special Edition mod that replaces canned voice lines with real-time, psychologically grounded dialogue. Players type messages to NPCs via a console command; the engine generates responses through a C++ SKSE plugin communicating with a local Python dialogue server.
+        A Skyrim Special Edition mod that replaces canned voice lines with real-time, IFS-psychologically grounded dialogue. Players type messages to NPCs via a console command; the engine generates responses through a C++ SKSE plugin communicating with a local Python dialogue server with dual-provider architecture.
       </p>
       <ul class="project-features">
-        <li>18 NPCs across all major Skyrim factions with rich profiles</li>
-        <li>Dual-model routing: complex requests to Bonsai 8B, simple to Llama 1B</li>
-        <li>SKSE plugin with NPC resolver, subtitle display, Papyrus integration</li>
-        <li>~5,000 Alpaca-format training examples for fine-tuning</li>
+        <li>SKSE C++ plugin: http_client, npc_resolver, papyrus_functions, subtitle_display</li>
+        <li>Full LLM server with dual provider, caching, and priority routing</li>
+        <li>Dynamic prompt tier system with IFS psychology integration</li>
+        <li>NPCs across all major Skyrim factions with rich IFS profiles</li>
         <li>Graceful fallback to curated dialogue when LLM unavailable</li>
       </ul>
     </div>
@@ -862,32 +864,33 @@
   <!-- Fallout 4 -->
   <div class="project">
     <div>
-      <div class="project-label" style="background: rgba(253,203,110,0.12); color: var(--orange);">☢️ Fallout 4 Integration — In Development</div>
+      <div class="project-label" style="background: rgba(253,203,110,0.12); color: var(--orange);">☢️ Fallout 4 Integration — Only Trained Model</div>
       <h3>Fallout 4 NPC Dialogue Engine</h3>
       <p>
-        In development: a Fallout 4 mod using the same engine architecture — F4SE plugin captures player input, routes through a Python dialogue server, and generates wasteland-appropriate dialogue. Nine NPCs across five factions, each with full psychological profiles.
+        The only project with a fully trained model in the portfolio. A Fallout 4 mod using F4SE plugin to capture player input, route through a Python dialogue server, and generate wasteland-appropriate dialogue. Nine NPCs across five factions with full IFS psychological profiles and an affinity system.
       </p>
       <ul class="project-features">
+        <li>F4SE C++ plugin with fine-tuned 4B IFS model (checkpoint-250)</li>
         <li>9 NPCs across Brotherhood, Institute, Railroad, Raiders, Settlers</li>
-        <li>10,682 Alpaca-format training examples generated</li>
-        <li>Multi-backend LLM client with automatic failover</li>
-        <li>Faction-specific psychological templates</li>
-        <li>Training data covers 10 scenario categories</li>
+        <li>22,250+ Alpaca-format training entries</li>
+        <li>Full affinity system tracking relationship progression</li>
+        <li>Faction-specific IFS psychological templates</li>
       </ul>
     </div>
     <div class="project-visual">
+<span class="cm">// IFS model: fine-tuned 4B checkpoint-250</span><br>
+<span class="hl">model</span>: <span class="str">"fallout4-ifs-4b"</span><br><br>
 <span class="cm">// Factions with NPC profiles</span><br>
 <span class="hl">brotherhood</span> { <span class="hl">vibe</span>: <span class="str">"disciplined, hierarchical"</span> }<br>
 <span class="hl">institute</span>   { <span class="hl">vibe</span>: <span class="str">"detached, clinical"</span> }<br>
 <span class="hl">railroad</span>    { <span class="hl">vibe</span>: <span class="str">"devoted, paranoid"</span> }<br>
 <span class="hl">raiders</span>     { <span class="hl">vibe</span>: <span class="str">"chaotic, impulsive"</span> }<br>
 <span class="hl">settlers</span>    { <span class="hl">vibe</span>: <span class="str">"resilient, weary"</span> }<br><br>
-<span class="comment">// Training data: 10,682 examples</span><br>
+<span class="comment">// Training data: 22,250+ entries</span><br>
 <span class="fn">npc_dialogue_profiles</span>: <span class="hl3">2,065</span><br>
 <span class="fn">faction_voice</span>: <span class="hl3">1,501</span><br>
 <span class="fn">affinity_modulated</span>: <span class="hl3">1,500</span><br>
 <span class="fn">moral_dilemma</span>: <span class="hl3">800</span><br>
-<span class="fn">survival_scenarios</span>: <span class="hl3">808</span><br>
 <span class="cm">... and 5 more categories</span>
     </div>
   </div>
@@ -895,16 +898,16 @@
   <!-- Gamemodes Engine -->
   <div class="project">
     <div>
-      <div class="project-label" style="background: rgba(116,185,255,0.12); color: #74b9ff;">⚡ Core Engine</div>
-      <h3>Gamemodes — The NPC Engine</h3>
+      <div class="project-label" style="background: rgba(116,185,255,0.12); color: #74b9ff;">⚡ Core Engine — Pipeline Ready</div>
+      <h3>Gamemodes01 — The Training Pipeline</h3>
       <p>
-        The core fine-tuning and engine project. Trains lightweight LLMs to generate psychologically authentic NPC dialogue, with a complete data pipeline from generation through deployment. Designed for general applicability across any game genre.
+        The core fine-tuning and engine project. Trains lightweight LLMs to generate IFS-psychologically authentic NPC dialogue, with a complete data pipeline from generation through deployment. Pipeline is built and ready — data generation is the current focus.
       </p>
       <ul class="project-features">
-        <li>Structured training data across 9 categories, 2,100+ target examples</li>
+        <li>Training pipeline built — data generation in progress</li>
+        <li>Data schemas, seed data, fine-tuning scripts, annotation guidelines ready</li>
         <li>LLM judge quality filtering across 5 scoring dimensions</li>
         <li>Alpaca format conversion with augmentation and multi-template support</li>
-        <li>Fine-tuning pipeline: QLoRA on meta-llama-3.2-1b-instruct</li>
         <li>8 game genres supported: noir, fantasy, sci-fi, post-apocalyptic, and more</li>
       </ul>
     </div>
@@ -930,7 +933,7 @@
     <span class="section-label">Live Demo</span>
     <h2 class="section-title">Meet Wendy — Our NPC in Action</h2>
     <p class="section-desc">
-      Wendy is a 22-year-old from the Appalachian mountains of eastern Kentucky. She's a fully interactive NPC powered by the Gamemodes engine — complete with a dynamic affinity system that tracks how she feels about you based on every word you say.
+      Wendy is a 22-year-old from the Appalachian mountains of eastern Kentucky. She's a fully interactive NPC powered by the Gamemodes IFS engine — live at chat.gamemodes.xyz. She has the deepest IFS profile in the portfolio, with named parts and backstories that govern how she responds to you.
     </p>
 
     <div class="wendy-showcase">
@@ -1263,6 +1266,9 @@
       </ul>
     </div>
 
+  </div>
+  <div style="text-align: center; margin-top: 2rem;">
+    <a href="devlog.html" class="btn btn-primary">View Full Development Log →</a>
   </div>
 </section>
 

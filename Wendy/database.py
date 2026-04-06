@@ -145,6 +145,31 @@ def init_db(db_path: str = "data/wendy.db") -> None:
         )
     """)
     
+    # Create critical_facts table for consistency caching
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS critical_facts (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            category TEXT NOT NULL,
+            fact_key TEXT NOT NULL,
+            fact_value TEXT NOT NULL,
+            source TEXT DEFAULT 'conversation',
+            conversation_id INTEGER,
+            confidence REAL DEFAULT 0.8,
+            is_active INTEGER DEFAULT 1,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            UNIQUE(category, fact_key)
+        )
+    """)
+    cursor.execute("""
+        CREATE INDEX IF NOT EXISTS idx_critical_facts_active
+            ON critical_facts(is_active)
+    """)
+    cursor.execute("""
+        CREATE INDEX IF NOT EXISTS idx_critical_facts_category
+            ON critical_facts(category)
+    """)
+
     conn.commit()
     conn.close()
 
