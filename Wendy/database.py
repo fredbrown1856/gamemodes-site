@@ -111,7 +111,7 @@ def init_db(db_path: str = "data/wendy.db") -> None:
         CREATE TABLE IF NOT EXISTS daily_cache (
             id              INTEGER PRIMARY KEY AUTOINCREMENT,
             cache_date      TEXT    NOT NULL,
-            cache_type      TEXT    NOT NULL CHECK (cache_type IN ('daily_briefing', 'response_cache')),
+            cache_type      TEXT    NOT NULL CHECK (cache_type IN ('daily_briefing', 'response_cache', 'news_cache')),
             question_hash   TEXT,
             question_text   TEXT,
             response_text   TEXT    NOT NULL,

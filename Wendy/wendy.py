@@ -53,6 +53,16 @@ def build_system_prompt(affinity: int, config: dict, db_path: Optional[str] = No
         # Never break prompt building due to facts system failure
         pass
 
+    # Inject live news for current events awareness
+    try:
+        from live_news import get_news_prompt_section
+        news_section = get_news_prompt_section(config, db_path)
+        if news_section:
+            system_prompt += f"\n\n{news_section}"
+    except Exception:
+        # Never break prompt building due to news system failure
+        pass
+
     return system_prompt
 
 
