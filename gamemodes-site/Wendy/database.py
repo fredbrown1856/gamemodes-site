@@ -33,7 +33,7 @@ def init_db(db_path: str = "data/wendy.db") -> None:
     conn = get_connection()
     cursor = conn.cursor()
     
-    # Create conversations table
+    # Create conversations table (with character_id for multi-character support)
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS conversations (
             id              INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -41,8 +41,23 @@ def init_db(db_path: str = "data/wendy.db") -> None:
             updated_at      TEXT    NOT NULL DEFAULT (datetime('now')),
             affinity        INTEGER NOT NULL DEFAULT 0,
             is_active       INTEGER NOT NULL DEFAULT 1,
+            character_id    TEXT    NOT NULL DEFAULT 'wendy',
             CHECK (affinity >= -100 AND affinity <= 100)
         )
+    """)
+    
+    # Migrate: add character_id column if it doesn't exist (for existing databases)
+    try:
+        cursor.execute("SELECT character_id FROM conversations LIMIT 1")
+    except sqlite3.OperationalError:
+        cursor.execute(
+            "ALTER TABLE conversations ADD COLUMN character_id TEXT NOT NULL DEFAULT 'wendy'"
+        )
+    
+    # Create index on character_id for filtered queries
+    cursor.execute("""
+        CREATE INDEX IF NOT EXISTS idx_conversations_character_id
+            ON conversations(character_id)
     """)
     
     # Create messages table
@@ -189,13 +204,16 @@ def get_connection() -> sqlite3.Connection:
     return conn
 
 
-def create_conversation() -> dict:
+def create_conversation(character_id: str = "wendy") -> dict:
     """
     Insert a new conversation row with default affinity=0, is_active=1.
     
+    Args:
+        character_id: Which character this conversation is with (default 'wendy')
+    
     Returns:
         The new conversation as a dict with keys:
-        id, created_at, updated_at, affinity, is_active
+        id, created_at, updated_at, affinity, is_active, character_id
     """
     conn = get_connection()
     cursor = conn.cursor()
@@ -203,8 +221,8 @@ def create_conversation() -> dict:
     now = datetime.utcnow().isoformat()
     
     cursor.execute(
-        "INSERT INTO conversations (created_at, updated_at, affinity, is_active) VALUES (?, ?, 0, 1)",
-        (now, now)
+        "INSERT INTO conversations (created_at, updated_at, affinity, is_active, character_id) VALUES (?, ?, 0, 1, ?)",
+        (now, now, character_id)
     )
     
     conv_id = cursor.lastrowid
@@ -226,7 +244,7 @@ def get_conversation(conversation_id: int) -> Optional[dict]:
         conversation_id: The conversation ID to fetch
         
     Returns:
-        A dict with keys: id, created_at, updated_at, affinity, is_active
+        A dict with keys: id, created_at, updated_at, affinity, is_active, character_id
         Returns None if not found.
     """
     conn = get_connection()
@@ -242,40 +260,64 @@ def get_conversation(conversation_id: int) -> Optional[dict]:
     return dict(row)
 
 
-def list_conversations(limit: int = 50, offset: int = 0) -> dict:
+def list_conversations(limit: int = 50, offset: int = 0, character_id: Optional[str] = None) -> dict:
     """
     Return conversations ordered by updated_at DESC.
     
     Args:
         limit: Maximum number of conversations to return
         offset: Pagination offset
+        character_id: Optional filter by character
         
     Returns:
         Dict with 'conversations' list and 'total' count.
         Each conversation dict includes: id, created_at, updated_at, affinity, is_active,
-        last_message (content of the most recent message), message_count
+        character_id, last_message (content of the most recent message), message_count
     """
     conn = get_connection()
     cursor = conn.cursor()
     
-    # Get total count
-    cursor.execute("SELECT COUNT(*) as count FROM conversations")
-    total = cursor.fetchone()["count"]
-    
-    # Get conversations with last message and message count
-    cursor.execute("""
-        SELECT 
-            c.id,
-            c.created_at,
-            c.updated_at,
-            c.affinity,
-            c.is_active,
-            (SELECT content FROM messages WHERE conversation_id = c.id ORDER BY timestamp DESC LIMIT 1) as last_message,
-            (SELECT COUNT(*) FROM messages WHERE conversation_id = c.id) as message_count
-        FROM conversations c
-        ORDER BY c.updated_at DESC
-        LIMIT ? OFFSET ?
-    """, (limit, offset))
+    # Build query with optional character filter
+    if character_id:
+        cursor.execute(
+            "SELECT COUNT(*) as count FROM conversations WHERE character_id = ?",
+            (character_id,)
+        )
+        total = cursor.fetchone()["count"]
+        
+        cursor.execute("""
+            SELECT 
+                c.id,
+                c.created_at,
+                c.updated_at,
+                c.affinity,
+                c.is_active,
+                c.character_id,
+                (SELECT content FROM messages WHERE conversation_id = c.id ORDER BY timestamp DESC LIMIT 1) as last_message,
+                (SELECT COUNT(*) FROM messages WHERE conversation_id = c.id) as message_count
+            FROM conversations c
+            WHERE c.character_id = ?
+            ORDER BY c.updated_at DESC
+            LIMIT ? OFFSET ?
+        """, (character_id, limit, offset))
+    else:
+        cursor.execute("SELECT COUNT(*) as count FROM conversations")
+        total = cursor.fetchone()["count"]
+        
+        cursor.execute("""
+            SELECT 
+                c.id,
+                c.created_at,
+                c.updated_at,
+                c.affinity,
+                c.is_active,
+                c.character_id,
+                (SELECT content FROM messages WHERE conversation_id = c.id ORDER BY timestamp DESC LIMIT 1) as last_message,
+                (SELECT COUNT(*) FROM messages WHERE conversation_id = c.id) as message_count
+            FROM conversations c
+            ORDER BY c.updated_at DESC
+            LIMIT ? OFFSET ?
+        """, (limit, offset))
     
     rows = cursor.fetchall()
     conn.close()
@@ -758,7 +800,7 @@ def get_conversations_for_export(min_affinity: int = 10) -> list[dict]:
     
     # Get qualifying conversations
     cursor.execute(
-        """SELECT id, created_at, updated_at, affinity, is_active
+        """SELECT id, created_at, updated_at, affinity, is_active, character_id
            FROM conversations
            WHERE affinity >= ?
            ORDER BY id ASC""",

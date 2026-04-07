@@ -1,10 +1,21 @@
 /**
  * Wendy NPC Conversation Demo — Frontend Logic
  * Pure vanilla JavaScript, no frameworks.
+ * Supports both original Wendy mode and multi-character mode.
  */
 
 (function () {
     'use strict';
+
+    // ============================================================================
+    // Character Mode Detection
+    // ============================================================================
+
+    const isCharacterMode = window.CHARACTER_MODE === true;
+    const currentCharacterId = isCharacterMode ? window.CHARACTER_ID : 'wendy';
+    const currentCharacterName = isCharacterMode ? window.CHARACTER_NAME : 'Wendy';
+
+    const charInitial = currentCharacterName.charAt(0).toUpperCase();
 
     // ============================================================================
     // State
@@ -18,6 +29,10 @@
         isActive: true,
         isLoading: false,
         conversations: [],
+        // Character mode
+        characterId: currentCharacterId,
+        characterName: currentCharacterName,
+        characterMode: isCharacterMode,
         // Demo mode state
         demoMode: false,
         demoSessionToken: null,
@@ -99,10 +114,14 @@
     // ============================================================================
 
     /**
-     * Send a chat message.
+     * Send a chat message. Uses character endpoint when in character mode.
      */
     async function sendMessage(conversationId, message) {
-        return apiRequest('/api/chat', {
+        const endpoint = state.characterMode
+            ? `/api/characters/${state.characterId}/chat`
+            : '/api/chat';
+
+        return apiRequest(endpoint, {
             method: 'POST',
             body: JSON.stringify({
                 conversation_id: conversationId,
@@ -112,14 +131,16 @@
     }
 
     /**
-     * Create a new conversation.
+     * Create a new conversation. Uses character endpoint when in character mode.
      */
     async function createConversation() {
-        return apiRequest('/api/conversations/new', {
+        const endpoint = state.characterMode
+            ? `/api/characters/${state.characterId}/new`
+            : '/api/conversations/new';
+        return apiRequest(endpoint, {
             method: 'POST'
         });
     }
-
     /**
      * Get a conversation with its messages.
      */
@@ -128,12 +149,14 @@
     }
 
     /**
-     * List conversations.
+     * List conversations. Uses character endpoint when in character mode.
      */
     async function listConversations(limit = 50, offset = 0) {
-        return apiRequest(`/api/conversations?limit=${limit}&offset=${offset}`);
+        const endpoint = state.characterMode
+            ? `/api/characters/${state.characterId}/conversations?limit=${limit}&offset=${offset}`
+            : `/api/conversations?limit=${limit}&offset=${offset}`;
+        return apiRequest(endpoint);
     }
-
     /**
      * Delete a conversation.
      */
@@ -142,7 +165,6 @@
             method: 'DELETE'
         });
     }
-
     // ============================================================================
     // Utility Functions
     // ============================================================================
@@ -155,14 +177,12 @@
         const now = new Date();
         const isToday = date.toDateString() === now.toDateString();
         const isThisYear = date.getFullYear() === now.getFullYear();
-
         const hours = date.getHours();
         const minutes = date.getMinutes();
         const ampm = hours >= 12 ? 'PM' : 'AM';
         const displayHours = hours % 12 || 12;
         const displayMinutes = minutes.toString().padStart(2, '0');
         const timeStr = `${displayHours}:${displayMinutes} ${ampm}`;
-
         if (isToday) {
             return timeStr;
         }
@@ -170,7 +190,6 @@
         const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
         const month = months[date.getMonth()];
         const day = date.getDate();
-
         if (isThisYear) {
             return `${month} ${day}, ${timeStr}`;
         }
@@ -185,7 +204,6 @@
         const date = new Date(isoString);
         const now = new Date();
         const isToday = date.toDateString() === now.toDateString();
-
         if (isToday) {
             const hours = date.getHours();
             const minutes = date.getMinutes();
@@ -212,7 +230,6 @@
         if (value < 70) return '#0891b2';
         return '#7c3aed';
     }
-
     /**
      * Escape HTML to prevent XSS.
      */
@@ -221,7 +238,6 @@
         div.textContent = text;
         return div.innerHTML;
     }
-
     /**
      * Show an error toast.
      */
@@ -234,12 +250,10 @@
         }
         toast.textContent = message;
         toast.classList.add('visible');
-
         setTimeout(() => {
             toast.classList.remove('visible');
         }, 4000);
     }
-
     // ============================================================================
     // Affinity Display
     // ============================================================================
@@ -252,32 +266,24 @@
     function updateAffinityDisplay(affinity, stage, animate = true) {
         state.affinity = affinity;
         state.stage = stage;
-
         // Calculate position (0-100%)
         const position = ((affinity + 100) / 200) * 100;
-
         // Update bar (mask from right — shows the "unfilled" portion)
         DOM.affinityBar.style.width = `${100 - position}%`;
-
         // Update marker position
         DOM.affinityMarker.style.left = `${position}%`;
-
         // Update color of marker
         const color = getAffinityColor(affinity);
         DOM.affinityMarker.style.backgroundColor = color;
-
         // Update value text
         DOM.affinityValue.textContent = affinity;
         DOM.affinityValue.style.color = color;
-
         // Update stage label
         DOM.stageLabel.textContent = stage;
         DOM.stageLabel.style.color = color;
-
         // Update title tooltip
         DOM.affinityDisplay.title = `Affinity: ${affinity} (${stage})`;
     }
-
     // ============================================================================
     // Message Rendering
     // ============================================================================
@@ -289,18 +295,15 @@
         const wrapper = document.createElement('div');
         wrapper.className = `message-wrapper ${message.role}`;
         wrapper.dataset.messageId = message.id;
-
         const avatar = document.createElement('div');
         avatar.className = 'message-avatar';
-        avatar.textContent = message.role === 'assistant' ? 'W' : 'U';
-
+        avatar.textContent = message.role === 'assistant' ? charInitial : 'U';
         const content = document.createElement('div');
         content.className = 'message-content';
 
         const bubble = document.createElement('div');
         bubble.className = 'message-bubble';
         bubble.textContent = message.content;
-
         const timestamp = document.createElement('div');
         timestamp.className = 'message-timestamp';
         timestamp.textContent = formatTimestamp(message.timestamp);
@@ -310,22 +313,19 @@
 
         wrapper.appendChild(avatar);
         wrapper.appendChild(content);
-
         return wrapper;
     }
-
     /**
      * Render all messages.
      */
     function renderMessages() {
         DOM.messagesList.innerHTML = '';
-
         if (state.messages.length === 0) {
             const emptyState = document.createElement('div');
             emptyState.className = 'empty-state';
             emptyState.innerHTML = `
                 <div class="empty-state-icon">💬</div>
-                <div class="empty-state-text">Start a conversation with Wendy!</div>
+                <div class="empty-state-text">Start a conversation with ${state.characterName}!</div>
             `;
             DOM.messagesList.appendChild(emptyState);
             return;
@@ -338,7 +338,6 @@
 
         scrollToBottom();
     }
-
     /**
      * Append a single message and scroll to it.
      */
@@ -348,12 +347,10 @@
         if (emptyState) {
             emptyState.remove();
         }
-
         const element = createMessageElement(message);
         DOM.messagesList.appendChild(element);
         scrollToBottom();
     }
-
     /**
      * Scroll messages to the bottom.
      */
@@ -362,7 +359,6 @@
             DOM.messagesContainer.scrollTop = DOM.messagesContainer.scrollHeight;
         });
     }
-
     // ============================================================================
     // Input State
     // ============================================================================
@@ -373,14 +369,12 @@
     function setInputEnabled(enabled) {
         DOM.messageInput.disabled = !enabled;
         DOM.btnSend.disabled = !enabled;
-
         if (!enabled) {
             DOM.inputDisabledMessage.classList.add('visible');
         } else {
             DOM.inputDisabledMessage.classList.remove('visible');
         }
     }
-
     /**
      * Set loading state.
      */
@@ -406,7 +400,6 @@
         DOM.messageInput.style.height = 'auto';
         DOM.messageInput.style.height = Math.min(DOM.messageInput.scrollHeight, 120) + 'px';
     }
-
     // ============================================================================
     // Sidebar / Conversation List
     // ============================================================================
@@ -416,7 +409,6 @@
      */
     function renderConversationList() {
         DOM.conversationList.innerHTML = '';
-
         if (state.conversations.length === 0) {
             const empty = document.createElement('div');
             empty.className = 'empty-state';
@@ -427,18 +419,15 @@
             DOM.conversationList.appendChild(empty);
             return;
         }
-
         state.conversations.forEach(conv => {
             const item = document.createElement('div');
             item.className = `conversation-item${conv.id === state.currentConversationId ? ' active' : ''}`;
             item.dataset.conversationId = conv.id;
-
             const preview = conv.last_message
                 ? (conv.last_message.length > 40 ? conv.last_message.substring(0, 40) + '…' : conv.last_message)
                 : 'No messages yet';
-
             item.innerHTML = `
-                <div class="conversation-item-avatar">W</div>
+                <div class="conversation-item-avatar">${charInitial}</div>
                 <div class="conversation-item-info">
                     <div class="conversation-item-header">
                         <span class="conversation-item-stage" style="color: ${getAffinityColor(conv.affinity)}">${escapeHtml(conv.stage || 'Stranger')}</span>
@@ -453,11 +442,9 @@
                     </svg>
                 </button>
             `;
-
             DOM.conversationList.appendChild(item);
         });
     }
-
     /**
      * Refresh the conversation list from the server.
      */
@@ -483,13 +470,11 @@
             DOM.sidebarOverlay.classList.remove('visible');
         }
     }
-
     // ============================================================================
     // Modal
     // ============================================================================
 
     let pendingNewChatCallback = null;
-
     /**
      * Show the confirmation modal.
      */
@@ -497,7 +482,6 @@
         pendingNewChatCallback = callback;
         DOM.modalOverlay.classList.add('visible');
     }
-
     /**
      * Hide the confirmation modal.
      */
@@ -505,7 +489,6 @@
         DOM.modalOverlay.classList.remove('visible');
         pendingNewChatCallback = null;
     }
-
     // ============================================================================
     // Core Actions
     // ============================================================================
@@ -516,24 +499,19 @@
     async function loadConversation(conversationId) {
         try {
             const data = await getConversation(conversationId);
-
             state.currentConversationId = data.conversation.id;
             state.affinity = data.conversation.affinity;
             state.isActive = data.conversation.is_active;
             state.messages = data.messages || [];
-
             updateAffinityDisplay(data.conversation.affinity, data.conversation.stage, false);
             renderMessages();
-
             if (!state.isActive) {
                 setInputEnabled(false);
             } else {
                 setInputEnabled(true);
             }
-
             // Update conversation list active state
             renderConversationList();
-
             // Close sidebar on mobile
             toggleSidebar(false);
         } catch (error) {
@@ -541,7 +519,6 @@
             showError('Failed to load conversation.');
         }
     }
-
     /**
      * Start a new conversation.
      */
@@ -549,21 +526,19 @@
         try {
             const data = await createConversation();
 
-            state.currentConversationId = data.conversation.id;
-            state.affinity = data.conversation.affinity;
-            state.isActive = data.conversation.is_active;
+            // Handle both character mode and normal mode response formats
+            const conv = data.conversation || data;
+            state.currentConversationId = conv.id;
+            state.affinity = conv.affinity;
+            state.isActive = conv.is_active;
             state.messages = [];
-
-            updateAffinityDisplay(data.conversation.affinity, data.conversation.stage, false);
+            updateAffinityDisplay(conv.affinity, conv.stage, false);
             renderMessages();
             setInputEnabled(true);
-
             // Refresh conversation list
             await refreshConversationList();
-
             // Focus input
             DOM.messageInput.focus();
-
             // Close sidebar on mobile
             toggleSidebar(false);
         } catch (error) {
@@ -571,7 +546,6 @@
             showError('Failed to start a new conversation.');
         }
     }
-
     /**
      * Handle the "New Chat" button click.
      */
@@ -584,13 +558,11 @@
             startNewConversation();
         }
     }
-
     /**
      * Send a message.
      */
     async function handleSendMessage() {
         const message = DOM.messageInput.value.trim();
-
         if (!message || state.isLoading || !state.isActive) {
             return;
         }
@@ -603,7 +575,6 @@
         // Clear input
         DOM.messageInput.value = '';
         autoResizeInput();
-
         // Add user message to UI immediately
         const userMessage = {
             id: Date.now(),
@@ -616,7 +587,6 @@
 
         // Show typing indicator
         setLoading(true);
-
         try {
             let data;
 
@@ -629,10 +599,8 @@
                         message: message
                     })
                 });
-
                 // Track demo message count
                 state.demoMessagesCount++;
-
                 // Check if time has run out
                 if (data.time_remaining !== undefined && data.time_remaining <= 0) {
                     state.isActive = false;
@@ -641,14 +609,12 @@
                     return;
                 }
             } else {
-                // Normal mode: use the standard chat endpoint
+                // Normal mode / Character mode: use the standard/character chat endpoint
                 data = await sendMessage(state.currentConversationId, message);
             }
-
-            // Add Wendy's response
+            // Add assistant response
             state.messages.push(data.message);
             appendMessage(data.message);
-
             // Update affinity
             // Demo API returns 'session_active', normal API returns 'conversation_active'
             // In demo mode, force isActive to true — Wendy never leaves in demo mode.
@@ -659,13 +625,11 @@
                 state.isActive = data.conversation_active !== false;
             }
             updateAffinityDisplay(data.affinity.current, data.affinity.stage, true);
-
             // Check if conversation ended (non-demo mode only;
             // demo mode never sets state.isActive to false)
             if (!state.isActive) {
                 setInputEnabled(false);
             }
-
             // Refresh conversation list (non-demo only)
             if (!state.demoMode) {
                 refreshConversationList();
@@ -673,7 +637,6 @@
         } catch (error) {
             console.error('Failed to send message:', error);
             showError(error.message || 'Failed to send message. Please try again.');
-
             // Remove the optimistic user message
             state.messages.pop();
             renderMessages();
@@ -682,14 +645,12 @@
             DOM.messageInput.focus();
         }
     }
-
     /**
      * Delete a conversation.
      */
     async function handleDeleteConversation(conversationId) {
         try {
             await deleteConversation(conversationId);
-
             // If we deleted the current conversation, start a new one
             if (conversationId === state.currentConversationId) {
                 await startNewConversation();
@@ -702,7 +663,6 @@
             showError('Failed to delete conversation.');
         }
     }
-
     // ============================================================================
     // Event Listeners
     // ============================================================================
@@ -718,13 +678,10 @@
         DOM.sidebarOverlay.addEventListener('click', () => {
             toggleSidebar(false);
         });
-
         // New chat button
         DOM.btnNewChat.addEventListener('click', handleNewChatClick);
-
         // Send button
         DOM.btnSend.addEventListener('click', handleSendMessage);
-
         // Input: Enter to send, Shift+Enter for newline
         DOM.messageInput.addEventListener('keydown', (e) => {
             if (e.key === 'Enter' && !e.shiftKey) {
@@ -735,7 +692,6 @@
 
         // Auto-resize textarea
         DOM.messageInput.addEventListener('input', autoResizeInput);
-
         // Conversation list clicks (delegation)
         DOM.conversationList.addEventListener('click', (e) => {
             const deleteBtn = e.target.closest('.conversation-item-delete');
@@ -747,7 +703,6 @@
                 }
                 return;
             }
-
             const item = e.target.closest('.conversation-item');
             if (item) {
                 const convId = parseInt(item.dataset.conversationId, 10);
@@ -759,7 +714,6 @@
 
         // Modal buttons
         DOM.btnModalCancel.addEventListener('click', hideConfirmModal);
-
         DOM.btnModalConfirm.addEventListener('click', () => {
             if (pendingNewChatCallback) {
                 const callback = pendingNewChatCallback;
@@ -786,7 +740,6 @@
             }
         });
     }
-
     // ============================================================================
     // Demo Mode
     // ============================================================================
@@ -797,20 +750,16 @@
     function isDemoMode() {
         return new URLSearchParams(window.location.search).has('demo');
     }
-
     /**
      * Initialize demo mode — hide normal UI, show welcome screen.
      */
     async function initDemoMode() {
         state.demoMode = true;
-
         // Hide sidebar and normal chat elements
         DOM.sidebar.style.display = 'none';
         DOM.sidebarOverlay.style.display = 'none';
-
         // Show the demo welcome screen
         document.getElementById('demo-welcome').style.display = 'flex';
-
         // Bind the demo start form immediately so button is responsive even if stats fetch is slow
         document.getElementById('demo-start-form').addEventListener('submit', (e) => {
             e.preventDefault();
@@ -831,24 +780,20 @@
             // Stats are non-critical; leave default text
         });
     }
-
     /**
      * Start a demo session — called when user clicks "Start Conversation".
      */
     async function startDemoSession() {
         const honeypot = document.getElementById('honeypot').value;
-
         try {
             const resp = await apiRequest('/api/demo/start', {
                 method: 'POST',
                 body: JSON.stringify({ website_url: honeypot })
             });
-
             // Determine status: use explicit field, or infer from response shape
             const status = resp.status ||
                 (resp.session_token ? 'active' : null) ||
                 (resp.queue_id ? 'queued' : null);
-
             if (status === 'active') {
                 // Got a slot — transition directly to chat
                 state.demoSessionToken = resp.session_token;
@@ -876,7 +821,6 @@
         state.demoQueueInterval = setInterval(async () => {
             try {
                 const resp = await apiRequest(`/api/demo/status?queue_id=${state.demoQueueId}`);
-
                 if (resp.status === 'active') {
                     clearInterval(state.demoQueueInterval);
                     state.demoQueueInterval = null;
@@ -898,7 +842,6 @@
             }
         }, 10000);
     }
-
     /**
      * Start the session countdown timer.
      */
@@ -907,12 +850,10 @@
             const now = new Date();
             const expires = new Date(state.demoExpiresAt);
             const remaining = Math.max(0, Math.floor((expires - now) / 1000));
-
             const mins = Math.floor(remaining / 60);
             const secs = remaining % 60;
             document.getElementById('demo-timer-value').textContent =
                 `${mins}:${secs.toString().padStart(2, '0')}`;
-
             const timerEl = document.getElementById('demo-timer');
             if (remaining <= 30) {
                 timerEl.classList.add('timer-warning');
@@ -927,32 +868,26 @@
                 showSessionExpired();
             }
         };
-
         updateTimer();
         state.demoTimerInterval = setInterval(updateTimer, 1000);
     }
-
     /**
      * Transition from a demo screen into the live chat UI.
      */
     function transitionToChat(conversationId) {
         // Hide all demo overlay screens
         document.querySelectorAll('.demo-screen').forEach(el => el.style.display = 'none');
-
         // Ensure sidebar stays hidden in demo mode
         DOM.sidebar.style.display = 'none';
         DOM.sidebarOverlay.style.display = 'none';
-
         // Show the timer in the header
         document.getElementById('demo-timer').style.display = 'flex';
-
         // Load the conversation using the existing function
         loadConversation(conversationId);
 
         // Start the countdown
         startSessionTimer();
     }
-
     /**
      * Show the session expired screen with conversation stats.
      */
@@ -963,41 +898,37 @@
             state.demoTimerInterval = null;
         }
 
-        // Disable input
         setInputEnabled(false);
-
         // Populate stats
         document.getElementById('demo-messages-sent').textContent = state.demoMessagesCount;
         document.getElementById('demo-final-affinity').textContent = state.stage || 'Stranger';
-
         // Hide all demo overlay screens and the chat main area
         document.querySelectorAll('.demo-screen').forEach(el => el.style.display = 'none');
         document.querySelector('.chat-main').style.display = 'none';
-
         // Show the expired screen
         document.getElementById('demo-expired').style.display = 'flex';
     }
-
     // ============================================================================
     // Initialization
     // ============================================================================
 
     async function init() {
         initEventListeners();
-
         if (isDemoMode()) {
             // Demo mode: skip normal initialization
             await initDemoMode();
             return;
         }
-
-        // Load conversation list
+        if (state.characterMode) {
+            // Character mode: start character-specific conversation
+            refreshConversationList();
+            await startNewConversation();
+            return;
+        }
+        // Normal Wendy mode
         await refreshConversationList();
-
-        // Create a new conversation automatically
         await startNewConversation();
     }
-
     // Start the app when DOM is ready
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', init);
