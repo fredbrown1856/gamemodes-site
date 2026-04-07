@@ -18,6 +18,8 @@ import bot_check
 import daily_cache
 import training_export
 import critical_facts
+import character_engine
+from flask import abort
 
 
 # Load configuration
@@ -463,7 +465,7 @@ def demo_start_handler():
                 "stage": stage_info["label"],
                 "expires_at": session["expires_at"],
                 "time_remaining_seconds": config.get("demo", {}).get(
-                    "session_duration_minutes", 10
+                    "session_duration_minutes", 15
                 ) * 60
             }), 201
         else:
@@ -840,6 +842,9 @@ def demo_stats_handler():
         {total_conversations, total_messages, current_queue_size, slots_available}
     """
     try:
+        # Auto-clean expired sessions before counting active sessions
+        database.expire_old_sessions()
+        
         # Get conversation and message counts from the database
         conn = database.get_connection()
         cursor = conn.cursor()
@@ -941,6 +946,158 @@ def export_training_handler():
 
 
 # ============================================================================
+# Multi-Character Routes
+# ============================================================================
+
+@app.route("/api/characters")
+def api_characters():
+    """Return list of available characters."""
+    try:
+        characters = character_engine.get_available_characters()
+        return jsonify({"characters": characters})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/api/characters/<character_id>/chat", methods=["POST"])
+def api_character_chat(character_id):
+    """Chat with a specific character using the generic character engine."""
+    try:
+        data = request.get_json()
+
+        if not data:
+            return jsonify({"error": "Request body is required"}), 400
+
+        message = data.get("message", "").strip()
+        conversation_id = data.get("conversation_id")
+
+        if not message:
+            return jsonify({"error": "Message required"}), 400
+
+        if len(message) > 2000:
+            return jsonify({"error": "Message exceeds 2000 characters"}), 400
+
+        # Load character
+        try:
+            character = character_engine.load_character(character_id)
+        except ValueError:
+            return jsonify({"error": f"Character not found: {character_id}"}), 404
+
+        # Get or create conversation
+        if conversation_id:
+            conv = database.get_conversation(conversation_id)
+            if not conv:
+                return jsonify({"error": "Conversation not found"}), 404
+        else:
+            conv = database.create_conversation(character_id=character_id)
+            conversation_id = conv["id"]
+
+        # Get current affinity
+        affinity = conv.get("affinity", 0)
+
+        # Save player message
+        database.add_message(conversation_id, "user", message)
+
+        # Calculate affinity shift (character engine uses 0-100 scale,
+        # but we store in the existing -100 to 100 DB column)
+        # Map: character engine 0-100 → DB -100..100 by centering at 0
+        # For simplicity we use the character engine's shift directly
+        new_affinity = character_engine.calculate_affinity_shift(
+            character_id, message, affinity
+        )
+
+        # Update affinity in DB using the existing mechanism
+        shift = int(new_affinity - affinity)
+        affinity_result = database.update_affinity(
+            conversation_id, shift,
+            f"Character engine shift for {character_id}"
+        )
+        new_affinity = affinity_result["affinity_after"]
+
+        # Get conversation history
+        history = database.get_messages(conversation_id)
+
+        # Build messages for LLM
+        llm_messages = character_engine.format_messages_for_llm(
+            character_id, history, new_affinity
+        )
+
+        # Get LLM response
+        try:
+            response_text = llm.generate_response(llm_messages)
+        except llm_client.LLMError as e:
+            return jsonify({"error": f"LLM error: {str(e)}"}), 500
+
+        # Save assistant message
+        assistant_message = database.add_message(conversation_id, "assistant", response_text)
+
+        # Get stage info
+        stage_label = character_engine.get_stage_label(character_id, new_affinity)
+        stage_description = character_engine.get_affinity_description(character_id, new_affinity)
+
+        return jsonify({
+            "message": {
+                "id": assistant_message["id"],
+                "role": "assistant",
+                "content": response_text,
+                "timestamp": assistant_message["timestamp"]
+            },
+            "affinity": {
+                "current": new_affinity,
+                "stage": stage_label,
+                "shift": shift,
+                "reason": f"Trust level: {stage_label}"
+            },
+            "conversation_id": conversation_id,
+            "stage_description": stage_description,
+            "conversation_active": affinity_result["conversation_active"]
+        })
+
+    except Exception as e:
+        app.logger.error(f"Error in api_character_chat: {str(e)}")
+        return jsonify({"error": "Internal server error"}), 500
+
+
+@app.route("/api/characters/<character_id>/conversations")
+def api_character_conversations(character_id):
+    """Get conversations for a specific character."""
+    try:
+        result = database.list_conversations(character_id=character_id)
+        return jsonify(result)
+    except Exception as e:
+        app.logger.error(f"Error in api_character_conversations: {str(e)}")
+        return jsonify({"error": "Internal server error"}), 500
+
+
+@app.route("/api/characters/<character_id>/new", methods=["POST"])
+def api_character_new_conversation(character_id):
+    """Create a new conversation for a specific character."""
+    try:
+        try:
+            character_engine.load_character(character_id)
+        except ValueError:
+            return jsonify({"error": f"Character not found: {character_id}"}), 404
+
+        conv = database.create_conversation(character_id=character_id)
+        stage_label = character_engine.get_stage_label(character_id, conv["affinity"])
+
+        return jsonify({
+            "conversation": {
+                "id": conv["id"],
+                "created_at": conv["created_at"],
+                "updated_at": conv["updated_at"],
+                "affinity": conv["affinity"],
+                "is_active": bool(conv["is_active"]),
+                "character_id": character_id,
+                "stage": stage_label
+            }
+        }), 201
+    except Exception as e:
+        app.logger.error(f"Error in api_character_new_conversation: {str(e)}")
+        return jsonify({"error": "Internal server error"}), 500
+
+
+# ============================================================================
 # Frontend Routes
 # ============================================================================
 
@@ -948,6 +1105,24 @@ def export_training_handler():
 def index():
     """Serve the main chat interface."""
     return render_template("index.html")
+
+
+@app.route("/characters")
+def characters_page():
+    """Render character selection page."""
+    characters = character_engine.get_available_characters()
+    return render_template("characters.html", characters=characters)
+
+
+@app.route("/chat/<character_id>")
+def character_chat_page(character_id):
+    """Render chat page for a specific character."""
+    try:
+        character = character_engine.load_character(character_id)
+    except ValueError:
+        abort(404)
+
+    return render_template("character_chat.html", character=character)
 
 
 @app.route("/static/<path:filename>")

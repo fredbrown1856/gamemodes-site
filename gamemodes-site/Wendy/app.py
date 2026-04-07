@@ -840,6 +840,9 @@ def demo_stats_handler():
         {total_conversations, total_messages, current_queue_size, slots_available}
     """
     try:
+        # Auto-clean expired sessions before counting active sessions
+        database.expire_old_sessions()
+        
         # Get conversation and message counts from the database
         conn = database.get_connection()
         cursor = conn.cursor()

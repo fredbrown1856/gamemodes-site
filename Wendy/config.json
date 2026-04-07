@@ -166,5 +166,10 @@
         "cache_hours": 2,
         "max_headlines": 5,
         "categories": ["general", "us"]
+    },
+    "characters": {
+        "enabled": true,
+        "default": "wendy",
+        "games": ["original", "fallout4", "skyrim"]
     }
 }

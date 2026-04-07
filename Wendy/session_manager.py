@@ -34,7 +34,7 @@ def create_demo_session(ip_hash: str, conversation_id: int, config: dict) -> Opt
     """
     token = generate_session_token()
     
-    duration_minutes = config.get("demo", {}).get("session_duration_minutes", 10)
+    duration_minutes = config.get("demo", {}).get("session_duration_minutes", 15)
     now = datetime.utcnow()
     expires_at = (now + timedelta(minutes=duration_minutes)).isoformat() + "Z"
     
