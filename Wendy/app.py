@@ -1060,13 +1060,34 @@ def api_character_chat(character_id):
 
 @app.route("/api/characters/<character_id>/conversations")
 def api_character_conversations(character_id):
-    """Get conversations for a specific character."""
+    """Get conversations for a specific character. Admin only."""
+    # Verify admin token
+    admin_token = os.environ.get("ADMIN_TOKEN", "")
+    if not admin_token:
+        return jsonify({"error": "Admin token not configured"}), 403
+    provided_token = request.headers.get("Authorization", "").replace("Bearer ", "")
+    if provided_token != admin_token:
+        return jsonify({"error": "Unauthorized"}), 403
     try:
         result = database.list_conversations(character_id=character_id)
         return jsonify(result)
     except Exception as e:
         app.logger.error(f"Error in api_character_conversations: {str(e)}")
         return jsonify({"error": "Internal server error"}), 500
+
+
+@app.route("/api/characters/<character_id>/conversations/<int:conversation_id>")
+def get_character_conversation(character_id, conversation_id):
+    """Get a specific conversation for a character."""
+    conv = database.get_conversation(conversation_id)
+    if not conv or conv.get("character_id") != character_id:
+        return jsonify({"error": "Conversation not found"}), 404
+    messages = database.get_messages(conversation_id)
+    stage_label = character_engine.get_stage_label(character_id, conv["affinity"])
+    return jsonify({
+        "conversation": {**conv, "stage": stage_label},
+        "messages": messages
+    })
 
 
 @app.route("/api/characters/<character_id>/new", methods=["POST"])
@@ -1140,7 +1161,12 @@ def not_found(e):
     """Handle 404 errors."""
     if request.path.startswith("/api/"):
         return jsonify({"error": "Not found"}), 404
-    return render_template("index.html"), 404
+    # Show character selector on 404 instead of chat interface
+    try:
+        characters = character_engine.get_available_characters()
+        return render_template("characters.html", characters=characters), 404
+    except Exception:
+        return render_template("characters.html", characters=[]), 404
 
 
 @app.errorhandler(500)

@@ -143,8 +143,12 @@
     }
     /**
      * Get a conversation with its messages.
+     * Uses character-specific endpoint when in character mode.
      */
     async function getConversation(conversationId) {
+        if (state.characterMode) {
+            return apiRequest(`/api/characters/${state.characterId}/conversations/${conversationId}`);
+        }
         return apiRequest(`/api/conversations/${conversationId}`);
     }
 
@@ -447,6 +451,7 @@
     }
     /**
      * Refresh the conversation list from the server.
+     * In character mode, conversation listing is admin-only — silently skip on 403.
      */
     async function refreshConversationList() {
         try {
@@ -454,6 +459,13 @@
             state.conversations = data.conversations || [];
             renderConversationList();
         } catch (error) {
+            // In character mode, non-admin users get 403 — hide sidebar gracefully
+            if (state.characterMode && error.status === 403) {
+                DOM.sidebar.style.display = 'none';
+                DOM.sidebarOverlay.style.display = 'none';
+                DOM.conversationList.innerHTML = '';
+                return;
+            }
             console.error('Failed to load conversations:', error);
         }
     }
