@@ -1060,16 +1060,23 @@ def api_character_chat(character_id):
 
 @app.route("/api/characters/<character_id>/conversations")
 def api_character_conversations(character_id):
-    """Get conversations for a specific character. Admin only."""
-    # Verify admin token
-    admin_token = os.environ.get("ADMIN_TOKEN", "")
-    if not admin_token:
-        return jsonify({"error": "Admin token not configured"}), 403
-    provided_token = request.headers.get("Authorization", "").replace("Bearer ", "")
-    if provided_token != admin_token:
-        return jsonify({"error": "Unauthorized"}), 403
+    """Get conversations for a specific character."""
     try:
-        result = database.list_conversations(character_id=character_id)
+        # Parse query parameters
+        limit = request.args.get("limit", 50, type=int)
+        offset = request.args.get("offset", 0, type=int)
+        
+        # Clamp values
+        limit = max(1, min(100, limit))
+        offset = max(0, offset)
+        
+        result = database.list_conversations(character_id=character_id, limit=limit, offset=offset)
+        
+        # Add stage info to each conversation
+        for conv in result["conversations"]:
+            stage_label = character_engine.get_stage_label(character_id, conv["affinity"])
+            conv["stage"] = stage_label
+        
         return jsonify(result)
     except Exception as e:
         app.logger.error(f"Error in api_character_conversations: {str(e)}")
