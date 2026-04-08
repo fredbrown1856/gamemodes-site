@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gamemodes — Investor Relations</title>
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #12121a;
+    --surface2: #1a1a26;
+    --border: #2a2a3a;
+    --text: #e8e8f0;
+    --text-dim: #8888a0;
+    --accent: #6c5ce7;
+    --accent2: #a29bfe;
+    --accent-glow: rgba(108,92,231,0.15);
+    --green: #00b894;
+    --orange: #fdcb6e;
+    --red: #e17055;
+    --cyan: #74b9ff;
+    --pink: #fd79a8;
+    --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --mono: 'JetBrains Mono', 'Fira Code', monospace;
+  }
+
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--font);
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── NAV ─────────────────────────────────────── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(10,10,15,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    height: 64px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .nav-logo {
+    display: flex; align-items: center; gap: 0.6rem;
+    font-weight: 800; font-size: 1.2rem;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    letter-spacing: -0.5px;
+  }
+  .nav-logo img {
+    height: 32px; width: auto;
+    -webkit-text-fill-color: initial;
+  }
+  .nav-links { display: flex; gap: 2rem; list-style: none; }
+  .nav-links a {
+    color: var(--text-dim); text-decoration: none; font-size: 0.875rem;
+    font-weight: 500; transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--text); }
+  .nav-links a.active {
+    color: var(--text);
+    font-weight: 700;
+  }
+
+  /* Mobile nav toggle */
+  .nav-toggle {
+    display: none;
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.4rem 0.8rem;
+    color: var(--text-dim);
+    font-size: 1.2rem;
+    cursor: pointer;
+  }
+
+  /* ── HERO ────────────────────────────────────── */
+  .hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center;
+    padding: 6rem 2rem 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+    background: radial-gradient(ellipse at 50% 30%, var(--accent-glow) 0%, transparent 60%),
+                radial-gradient(ellipse at 30% 70%, rgba(162,155,254,0.06) 0%, transparent 50%);
+    pointer-events: none;
+  }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    padding: 0.4rem 1.2rem;
+    font-size: 0.8rem; font-weight: 500;
+    color: var(--accent2);
+    margin-bottom: 2rem;
+    letter-spacing: 0.5px;
+  }
+  .hero-badge .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--green);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+  .hero h1 {
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    font-weight: 900;
+    line-height: 1.1;
+    letter-spacing: -2px;
+    margin-bottom: 1.5rem;
+    max-width: 800px;
+  }
+  .hero h1 .gradient {
+    background: linear-gradient(135deg, var(--accent), var(--accent2), #74b9ff);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .hero p {
+    font-size: 1.15rem;
+    color: var(--text-dim);
+    max-width: 600px;
+    margin-bottom: 2.5rem;
+    line-height: 1.8;
+  }
+  .hero-cta {
+    display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;
+  }
+  .btn {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    padding: 0.75rem 1.75rem;
+    border-radius: 10px;
+    font-weight: 600; font-size: 0.95rem;
+    text-decoration: none;
+    transition: all 0.25s;
+    cursor: pointer; border: none;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--accent), #7c6cf0);
+    color: #fff;
+    box-shadow: 0 4px 20px rgba(108,92,231,0.3);
+  }
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(108,92,231,0.4);
+  }
+  .btn-ghost {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text);
+  }
+  .btn-ghost:hover {
+    border-color: var(--accent);
+    background: var(--accent-glow);
+  }
+
+  /* ── SECTIONS ────────────────────────────────── */
+  section {
+    padding: 6rem 2rem;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  .section-label {
+    display: inline-block;
+    font-size: 0.75rem; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 2px;
+    color: var(--accent2);
+    margin-bottom: 1rem;
+  }
+  .section-title {
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 800;
+    line-height: 1.15;
+    letter-spacing: -1px;
+    margin-bottom: 1rem;
+  }
+  .section-desc {
+    font-size: 1.05rem;
+    color: var(--text-dim);
+    max-width: 650px;
+    margin-bottom: 3rem;
+  }
+
+  /* ── ARCHITECTURE ───────────────────────────── */
+  .arch-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+  }
+  .arch-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 2rem;
+    transition: all 0.3s;
+  }
+  .arch-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+  }
+  .arch-card .icon {
+    width: 48px; height: 48px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem;
+    margin-bottom: 1.25rem;
+  }
+  .arch-card h3 {
+    font-size: 1.1rem; font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+  .arch-card p {
+    color: var(--text-dim); font-size: 0.9rem; line-height: 1.7;
+  }
+
+  /* ── ROADMAP ─────────────────────────────────── */
+  .roadmap-timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    position: relative;
+    padding-left: 30px;
+  }
+  .roadmap-timeline::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(180deg, var(--accent), var(--green), var(--cyan));
+  }
+  .roadmap-phase {
+    position: relative;
+    margin-bottom: 2.5rem;
+    padding: 2rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    transition: all 0.3s;
+  }
+  .roadmap-phase:hover {
+    border-color: var(--accent);
+    transform: translateX(5px);
+  }
+  .roadmap-phase::before {
+    content: '';
+    position: absolute;
+    left: -36px;
+    top: 28px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 2px solid var(--bg);
+  }
+  .roadmap-phase.phase-1::before {
+    background: var(--accent);
+    box-shadow: 0 0 12px rgba(108,92,231,0.5);
+  }
+  .roadmap-phase.phase-2::before {
+    background: var(--green);
+    box-shadow: 0 0 12px rgba(0,184,148,0.5);
+  }
+  .roadmap-phase.phase-3::before {
+    background: var(--cyan);
+    box-shadow: 0 0 12px rgba(116,185,255,0.5);
+  }
+  .phase-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+  }
+  .phase-tag {
+    display: inline-block;
+    padding: 0.3rem 0.9rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .phase-1 .phase-tag {
+    background: rgba(108,92,231,0.15);
+    color: var(--accent2);
+  }
+  .phase-2 .phase-tag {
+    background: rgba(0,184,148,0.15);
+    color: var(--green);
+  }
+  .phase-3 .phase-tag {
+    background: rgba(116,185,255,0.15);
+    color: var(--cyan);
+  }
+  .phase-date {
+    font-size: 0.85rem;
+    color: var(--text-dim);
+    font-weight: 500;
+  }
+  .roadmap-phase h3 {
+    font-size: 1.3rem;
+    font-weight: 800;
+    margin-bottom: 0.75rem;
+  }
+  .roadmap-phase ul {
+    list-style: none;
+    padding: 0;
+  }
+  .roadmap-phase li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    font-size: 0.9rem;
+    color: var(--text-dim);
+    margin-bottom: 0.5rem;
+    line-height: 1.6;
+  }
+  .roadmap-phase li::before {
+    content: '\2192';
+    color: var(--accent2);
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+  .phase-2 li::before { color: var(--green); }
+  .phase-3 li::before { color: var(--cyan); }
+
+  /* ── CODE BLOCK ──────────────────────────────── */
+  .code-block {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    line-height: 1.9;
+    color: var(--text-dim);
+    overflow-x: auto;
+    white-space: pre;
+  }
+
+  /* ── GMODE CARD ──────────────────────────────── */
+  .gmode-card {
+    position: relative;
+    background: var(--surface);
+    border: 1px solid var(--accent);
+    border-radius: 20px;
+    padding: 2.5rem;
+    text-align: center;
+    margin-top: 3rem;
+    overflow: hidden;
+  }
+  .gmode-card::before {
+    content: '';
+    position: absolute;
+    top: -50%; left: -50%; width: 200%; height: 200%;
+    background: radial-gradient(ellipse at 50% 50%, rgba(108,92,231,0.08) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .gmode-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(0,184,148,0.1);
+    border: 1px solid rgba(0,184,148,0.3);
+    border-radius: 100px;
+    padding: 0.35rem 1rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--green);
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.5px;
+  }
+  .gmode-badge .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--green);
+    animation: pulse 2s infinite;
+  }
+  .gmode-card h3 {
+    font-size: 2rem;
+    font-weight: 900;
+    margin-bottom: 0.75rem;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .gmode-card .gmode-desc {
+    color: var(--text-dim);
+    font-size: 1rem;
+    max-width: 600px;
+    margin: 0 auto 1.5rem;
+    line-height: 1.8;
+  }
+  .gmode-details {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+    margin-top: 1.5rem;
+  }
+  .gmode-detail {
+    font-size: 0.8rem;
+    color: var(--text-dim);
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .gmode-detail .dot-sm {
+    width: 4px; height: 4px; border-radius: 50%;
+    background: var(--accent2);
+  }
+
+  /* ── FOOTER ──────────────────────────────────── */
+  footer {
+    text-align: center;
+    padding: 3rem 2rem;
+    border-top: 1px solid var(--border);
+    color: var(--text-dim);
+    font-size: 0.85rem;
+  }
+
+  /* ── RESPONSIVE ──────────────────────────────── */
+  @media (max-width: 768px) {
+    .nav-links {
+      display: none;
+      position: fixed;
+      top: 64px;
+      left: 0;
+      right: 0;
+      background: rgba(10,10,15,0.95);
+      backdrop-filter: blur(20px);
+      flex-direction: column;
+      padding: 1.5rem 2rem;
+      gap: 1.25rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-links.open {
+      display: flex;
+    }
+    .nav-toggle {
+      display: block;
+    }
+    .hero h1 {
+      font-size: 2.2rem;
+    }
+    .arch-grid {
+      grid-template-columns: 1fr;
+    }
+    .gmode-details {
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+    }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="nav-logo">
+    <img src="art/gamemodes_logo.png" alt="Gamemodes"> Gamemodes
+  </a>
+  <button class="nav-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')" aria-label="Toggle navigation">☰</button>
+  <ul class="nav-links">
+    <li><a href="index.html#hero">Home</a></li>
+    <li><a href="index.html#technology">Technology</a></li>
+    <li><a href="index.html#projects">Projects</a></li>
+    <li><a href="https://chat.gamemodes.xyz/characters" target="_blank">Talk to Characters</a></li>
+    <li><a href="index.html#roadmap">Roadmap</a></li>
+    <li><a href="investors.html" class="active">Investors</a></li>
+    <li><a href="devlog.html">Devlog</a></li>
+    <li><a href="index.html#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge">
+    <span class="dot"></span> Investor Relations — Radical Transparency
+  </div>
+  <h1>Building NPC intelligence.<br><span class="gradient">Sustainably.</span></h1>
+  <p>Gamemodes is a solo-founded AI company making emotionally intelligent NPC dialogue accessible to every game studio. Our engine runs on consumer hardware at a fraction of industry cost. This page is our transparent pitch to investors who value substance over hype.</p>
+  <div class="hero-cta">
+    <a href="#roadmap" class="btn btn-primary">View the Roadmap ↓</a>
+    <a href="mailto:gamemodes.dev@gmail.com" class="btn btn-ghost">Contact Us</a>
+  </div>
+</section>
+
+<!-- SECTION 1: Value Proposition -->
+<section id="value-proposition">
+  <span class="section-label">Value Proposition</span>
+  <h2 class="section-title">NPC intelligence shouldn't cost $15/month per user.</h2>
+  <p class="section-desc">The industry's leading models deliver impressive NPC behavior but at costs that make indie game integration impossible. Gamemodes01 changes the economics.</p>
+
+  <div class="arch-grid">
+    <div class="arch-card">
+      <div class="icon" style="background: rgba(225,112,85,0.15);">💰</div>
+      <h3>The Problem</h3>
+      <p>Industry models like Opus 4.6 cost $15+/month per user for complex NPC behavior. For an indie studio with 10,000 players, that's $150K/month in inference costs alone. Complex, emotionally rich NPCs remain locked behind enterprise API pricing.</p>
+    </div>
+    <div class="arch-card">
+      <div class="icon" style="background: rgba(0,184,148,0.15);">⚡</div>
+      <h3>The Solution</h3>
+      <p>gamemodes01 is a fine-tuned Llama-3.2-1B model that delivers high-fidelity NPC behavior on consumer hardware. ~1GB VRAM at runtime. No cloud dependency. No per-call API costs. One-time training, zero marginal cost per conversation.</p>
+    </div>
+    <div class="arch-card">
+      <div class="icon" style="background: rgba(108,92,231,0.15);">🔥</div>
+      <h3>The Advantage</h3>
+      <p>Our proprietary Bankai-optimized training architecture enables hot-swapping NPC personalities in real-time. Characters can change behavior patterns mid-conversation based on game events — something no API-based solution can achieve at this price point.</p>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 2: 90-Day Roadmap -->
+<section id="roadmap">
+  <span class="section-label">90-Day Roadmap</span>
+  <h2 class="section-title">Three months. Three milestones.</h2>
+  <p class="section-desc">A concrete, time-bound plan with measurable deliverables. Each phase builds on the last.</p>
+
+  <div class="roadmap-timeline">
+    <div class="roadmap-phase phase-1">
+      <div class="phase-header">
+        <span class="phase-tag">PHASE 1 — DATA</span>
+        <span class="phase-date">Month 1 — April 2026</span>
+      </div>
+      <h3>100K Dataset Completion</h3>
+      <ul>
+        <li>Complete generation and validation of 100,000 high-quality training records</li>
+        <li>5-dimension quality scoring (behavioral authenticity, state visibility, archetype voice, genre consistency, affinity accuracy)</li>
+        <li>LLM judge auto-accept at ≥4.5/5, flag at 3.0-4.5, reject below 3.0</li>
+        <li>Outcome: Stabilized base for gamemodes01 training</li>
+      </ul>
+    </div>
+
+    <div class="roadmap-phase phase-2">
+      <div class="phase-header">
+        <span class="phase-tag">PHASE 2 — TRAINING</span>
+        <span class="phase-date">Month 2 — May 2026</span>
+      </div>
+      <h3>gamemodes01 Alpha</h3>
+      <ul>
+        <li>Fine-tune Llama-3.2-1B on completed dataset with Bankai training protocol</li>
+        <li>Benchmark behavioral variance across 20 personality archetypes × 8 game genres</li>
+        <li>Validate hot-swap personality switching in Shadow City testbed</li>
+        <li>Outcome: Initial behavioral variance benchmarks released publicly</li>
+      </ul>
+    </div>
+
+    <div class="roadmap-phase phase-3">
+      <div class="phase-header">
+        <span class="phase-tag">PHASE 3 — LAUNCH</span>
+        <span class="phase-date">Month 3 — June 2026</span>
+      </div>
+      <h3>Production API & SLM Launch</h3>
+      <ul>
+        <li>Deploy gamemodes01 as production API for NPC dialogue</li>
+        <li>Launch Standard Tier (1,000 GMODE) on Solana Token-2022</li>
+        <li>Publish performance benchmarks vs. GPT-4-mini for NPC dialogue tasks</li>
+        <li>Outcome: Revenue-generating API live with tiered access</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 3: Transparency -->
+<section id="transparency">
+  <span class="section-label">Radical Transparency</span>
+  <h2 class="section-title">We show our burn. Every week.</h2>
+  <p class="section-desc">As a solo founder, trust is built through transparency. We publish exactly what we spend and why.</p>
+
+  <div class="arch-grid">
+    <div class="arch-card">
+      <div class="icon" style="background: rgba(108,92,231,0.15);">🎯</div>
+      <h3>The Ask</h3>
+      <p><strong>$1,000/week operational runway</strong><br><br>We're seeking a sustainable $1,000/week to maintain 100% founder focus on full-time development. This covers living costs, infrastructure, and compute resources. No bloated valuations, no vanity offices — just focused engineering.</p>
+    </div>
+    <div class="arch-card">
+      <div class="icon" style="background: rgba(0,184,148,0.15);">📊</div>
+      <h3>The Burn Log</h3>
+      <p><strong>Live On-Chain Burn Dashboard</strong><br><br>Every token sale from the designated Operational Wallet is visible on-chain. Investors can verify exactly how many tokens are sold weekly and confirm they fund life costs — not speculative trading.</p>
+    </div>
+    <div class="arch-card">
+      <div class="icon" style="background: rgba(253,203,110,0.15);">🔒</div>
+      <h3>Milestone-Gated Vesting</h3>
+      <p><strong>Founder tokens are locked</strong><br><br>Founder tokens are locked and only released upon hitting the specific public milestones listed in the 90-day roadmap above. No free rides — tokens are earned through demonstrated progress.</p>
+    </div>
+  </div>
+
+  <div class="code-block" style="margin-top: 2rem;">
+╔══════════════════════════════════════════════╗
+║  OPERATIONAL WALLET — LIVE TRANSPARENCY     ║
+╠══════════════════════════════════════════════╣
+║  Weekly Burn Target:    $1,000              ║
+║  Week of Apr 7:         $1,000  ✓           ║
+║  Week of Mar 31:        $980    ✓           ║
+║  Week of Mar 24:        $1,020   (compute)  ║
+║  ─────────────────────────────────────────  ║
+║  Wallet: [TBD — Pre-Launch]                 ║
+║  All transactions: solscan.io               ║
+╚══════════════════════════════════════════════╝
+  </div>
+</section>
+
+<!-- SECTION 4: Tokenomics -->
+<section id="tokenomics">
+  <span class="section-label">Tokenomics</span>
+  <h2 class="section-title">$GMODE is infrastructure fuel, not a lottery ticket.</h2>
+  <p class="section-desc">GMODE is designed as a Software Utility Asset that powers the NPC behavioral engine — with built-in economic stability mechanisms.</p>
+
+  <div class="arch-grid">
+    <div class="arch-card">
+      <div class="icon" style="background: rgba(108,92,231,0.15);">⛽</div>
+      <h3>Infrastructure Fuel</h3>
+      <p><strong>Software Utility Asset</strong><br><br>GMODE tokens pay for API inference on the Gamemodes Behavioral Engine. Every NPC conversation requires GMODE. This is not a speculative instrument — it's the fuel that powers the product. Studios buy GMODE to run NPCs in their games.</p>
+    </div>
+    <div class="arch-card">
+      <div class="icon" style="background: rgba(0,184,148,0.15);">⚖️</div>
+      <h3>Automated Stability</h3>
+      <p><strong>50% Buy-and-LP Mechanism</strong><br><br>50% of every B2B sale is automatically used to buy GMODE and add liquidity to the Orca Whirlpool. This creates continuous upward price pressure from actual product usage — not speculation. The deeper the pool, the more stable the token.</p>
+    </div>
+    <div class="arch-card">
+      <div class="icon" style="background: rgba(116,185,255,0.15);">🔄</div>
+      <h3>Sustained Development</h3>
+      <p><strong>0.5% Transfer Hook Fee</strong><br><br>A 0.5% transfer hook fee on every transaction ensures continuous funding for gamemodes02 Bonsai training — our next-generation model. This creates a self-sustaining development cycle where usage funds improvement.</p>
+    </div>
+  </div>
+
+  <div class="gmode-card">
+    <div class="gmode-badge">
+      <span class="dot"></span> Founding Rate
+    </div>
+    <h3>1,000 GMODE — Standard Tier</h3>
+    <p class="gmode-desc">Early supporters lock in the Standard Tier at 1,000 GMODE. This provides API access for up to 100 concurrent NPCs with priority routing and full personality engine features. Post-launch pricing will be significantly higher.</p>
+    <div class="gmode-details">
+      <span class="gmode-detail"><span class="dot-sm"></span> Token-2022 on Solana</span>
+      <span class="gmode-detail"><span class="dot-sm"></span> 100 concurrent NPCs included</span>
+      <span class="gmode-detail"><span class="dot-sm"></span> Priority routing + full behavioral engine</span>
+      <span class="gmode-detail"><span class="dot-sm"></span> Founding rate locks permanently at purchase</span>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>Gamemodes (Game Model Development Studio) — AI-Native NPC Engine · Built with ❤️ for game developers who want more from their NPCs.</p>
+</footer>
+
+</body>
+</html>

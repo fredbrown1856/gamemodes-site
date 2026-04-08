@@ -204,6 +204,16 @@
             "website": "gamemodes.xyz",
             "chat": "chat.gamemodes.xyz",
             "email": "Contact through website"
+        },
+        "investor_page": {
+            "url": "gamemodes.xyz/investors.html",
+            "purpose": "Transparent investor relations with live burn tracking",
+            "weekly_runway_ask": "$1,000/week for full-time solo founder development",
+            "milestone_vesting": "Founder tokens locked, released only on public milestone achievement",
+            "gmode_tiers": {
+                "standard": "1,000 GMODE — 100 concurrent NPCs, priority routing",
+                "founding_rate": "1,000 GMODE locks Standard Tier permanently"
+            }
         }
     },
     "affinity_shift": {
