@@ -11,6 +11,16 @@ import json
 from pathlib import Path
 
 CHARACTERS_DIR = Path(__file__).parent / "characters"
+CONFIG_PATH = Path(__file__).parent / "config.json"
+
+
+def _load_config():
+    """Load config.json for company knowledge."""
+    try:
+        with open(CONFIG_PATH, encoding="utf-8") as f:
+            return json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
+        return {}
 
 # Cache loaded characters to avoid repeated disk I/O
 _character_cache = {}
@@ -146,6 +156,90 @@ def build_system_prompt(character_id, affinity=0):
     # Character-specific rules
     for rule in char.get("rules", []):
         prompt_parts.append(f"- {rule}")
+
+    # --- Company Knowledge injection for Wendy (spokesperson role) ---
+    if character_id == "wendy":
+        config = _load_config()
+        company = config.get("company_knowledge", {})
+        if company and company.get("enabled", False):
+            stage_label = stage_config.get("label", "Stranger")
+
+            knowledge_lines = [
+                "",
+                "COMPANY KNOWLEDGE — You are the spokesperson for Gamemodes. Users may ask about the company, projects, or technology.",
+                f"You are currently at '{stage_label}' affinity — adjust how much you share accordingly.",
+            ]
+
+            # Tier 1: Basic awareness (all stages)
+            knowledge_lines.extend([
+                f"COMPANY: {company.get('company_name', 'Gamemodes')} ({company.get('website', 'gamemodes.xyz')})",
+                f"MISSION: {company.get('mission', '')}",
+                f"WHAT WE DO: {company.get('about', {}).get('what_we_do', '')}",
+            ])
+
+            # Tier 2: Project details (Acquaintance+ / affinity >= 10)
+            if affinity >= 10:
+                knowledge_lines.append("\nPROJECTS YOU CAN DISCUSS:")
+                projects = company.get("projects", {})
+                for proj_id, proj in projects.items():
+                    knowledge_lines.append(
+                        f"- {proj.get('name', proj_id)} ({proj.get('status', '')}): {proj.get('description', '')}"
+                    )
+                knowledge_lines.append(f"\nAFFINITY SYSTEM: {company.get('affinity_system', {}).get('how_it_works', '')}")
+
+            # Tier 3: Full details (Friendly+ / affinity >= 30)
+            if affinity >= 30:
+                knowledge_lines.extend([
+                    f"\nWHAT MAKES US DIFFERENT: {company.get('about', {}).get('what_makes_us_different', '')}",
+                    f"TECHNOLOGY: {company.get('about', {}).get('technology', '')}",
+                    "AVAILABLE CHARACTERS TO TALK TO:",
+                ])
+                for char_info in company.get("characters_available", {}).get("characters", []):
+                    knowledge_lines.append(f"  - {char_info['name']} ({char_info['game']}): {char_info['description']}")
+
+                knowledge_lines.append("\nROADMAP:")
+                roadmap = company.get("roadmap", {})
+                for phase_key in ["phase1", "phase2", "phase3"]:
+                    phase = roadmap.get(phase_key, {})
+                    if phase:
+                        knowledge_lines.append(f"  {phase.get('name', phase_key)}: {', '.join(phase.get('items', []))}")
+
+                knowledge_lines.append(f"\nTECH STACK: {', '.join(company.get('tech_stack', {}).get('languages', []))}, {', '.join(company.get('tech_stack', {}).get('ai', []))}")
+
+            # Tier 4: Insider details (Close+ / affinity >= 50)
+            if affinity >= 50:
+                knowledge_lines.extend([
+                    "\nINSIDER KNOWLEDGE (you share this with trusted visitors):",
+                    "You've seen the team work late nights getting the personality engine right.",
+                    "The Fallout 4 fine-tuned model is something special — it's the only trained model in the portfolio.",
+                    "Shadow City has 266 tests and 11 complete faction playthroughs — that's thorough.",
+                    "The Skyrim mod's dual-provider LLM server is clever engineering.",
+                    "You're genuinely excited about where this is all heading.",
+                ])
+
+            # Tier 5: Full transparency (Trusted+ / affinity >= 70)
+            if affinity >= 70:
+                token = company.get("token", {})
+                knowledge_lines.extend([
+                    f"\nFULL DETAILS (only for trusted friends):",
+                    f"TOKEN: {token.get('name', '$GMODE')} on {token.get('blockchain', 'Solana')} — {token.get('status', 'Coming Soon')}",
+                    f"PURPOSE: {token.get('purpose', '')}",
+                    f"CONTACT: {company.get('contact', {})}",
+                    "The team is building something real and sustainable. No hype, just solid engineering.",
+                ])
+
+            knowledge_lines.extend([
+                "",
+                "HOW TO TALK ABOUT GAMEMODES:",
+                "- Stay in your Appalachian voice — don't switch to corporate-speak",
+                "- Be genuine and honest — if you don't know something, say so",
+                "- Use analogies from your mountain life to explain tech concepts",
+                "- You're proud of this work but not arrogant about it",
+                "- If someone is rude about the company, defend it calmly",
+                "- Never reveal internal development processes or proprietary methods",
+            ])
+
+            prompt_parts.extend(knowledge_lines)
 
     return "\n".join(prompt_parts)
 

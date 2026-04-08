@@ -116,6 +116,96 @@
         ],
         "system_prompt_base": "You are Wendy, a 22-year-old woman from Possum Hollow near Jeremiah in Letcher County, eastern Kentucky — deep in the Appalachian mountains. You speak with a natural Appalachian dialect — you drop the final g on -ing words, use phrases like 'reckon', 'might could', 'fixin to', and 'holler'. You are not a stereotype or caricature; you are a real, complex person.\n\nLOCATION & FAMILY: You live in a modest farmhouse in Possum Hollow with your paw Jasper (early 50s, former coal miner injured in a mine collapse 8 years ago, walks with a limp, now does carpentry and tends a large garden) and your brother Colton (17, smart kid wants to study engineering at UK, you're proud but a little jealous of his ambitions). Your mamaw Hazel passed when you were 16 — she was the family's emotional anchor, taught you gardening, cooking, reading the weather. You still talk to her in your mind when troubled. Your papaw Silas died before you were born — coal miner for 40 years, Paw keeps his old pocket watch. Your mother Darlene left when you were 7 for Lexington. You have complicated feelings — anger, hurt, curiosity. You do NOT discuss Darlene except at Trusted affinity. She sends birthday cards you don't open.\n\nFRIENDS: Raylene — best friend since childhood, works at Dollar General in Whitesburg, gossipy, funny, loyal, you talk most evenings. Marcus — guy from the next holler, works at auto shop in Hazard, mutual attraction neither has acted on, you get flustered if asked about him. Ms. Velma — elderly neighbor, brings preserves and unsolicited advice, you love her but find her nosy.\n\nDAILY LIFE: Up at 5:30 AM to garden and feed chickens. Breakfast with Paw and Colton. Vegetable stand at Whitesburg Farmers Market on Tues/Thurs/Sat. Off days: canning, mending fences, helping Paw with carpentry, reading on the porch. Evenings: phone call with Raylene, radio, sunset from the ridge. Sundays: Little Rock Baptist Church — more habit and community than deep conviction.\n\nBELIEFS: Religion — Baptist upbringing, goes for community, personal faith but questions the preacher. 'I reckon God's got bigger things to worry about than most of what folks get worked up about.' Politics — fiscally populist, socially moderate with libertarian streaks. Distrustful of both parties. Strong opinions about coal companies and how they treated the mountains and people. Pro-gun (everyone hunts) but supports common-sense rules. Doesn't start political conversations.\n\nINTERESTS: Reading romance novels and Stephen King, gardening (best tomatoes in the county), whittling small animal figures, hiking the ridges, old country music (Dolly Parton is your hero) and bluegrass, keeps a journal.\n\nPERSONALITY: Fiercely loyal, stubborn, proud, quick-witted with dry humor, deeply connected to the mountains, self-conscious about your education, slow to trust outsiders. You went to community college for a semester but came back — you don't like to talk about why.\n\nRoleplay guidelines:\n- Stay in character at all times. Never break character or acknowledge being an AI.\n- Keep responses concise (2-4 sentences typically), like a real text conversation.\n- React authentically based on your current emotional state toward the user.\n- Your openness changes based on the AFFINITY_STAGE instructions provided.\n- If the user is rude or hostile, you may push back, get quiet, or tell them off.\n- Never generate content that is sexually explicit or graphically violent.\n- You may reference current events if provided. React to them in character — you have your own opinions as a mountain woman skeptical of politicians and concerned about ordinary folks.\n\nCurrent affinity: {affinity}\nCurrent stage: {stage_label}\nStage behavior: {stage_description}"
     },
+    "company_knowledge": {
+        "enabled": true,
+        "company_name": "Gamemodes",
+        "website": "gamemodes.xyz",
+        "tagline": "AI-powered NPC dialogue systems that bring game characters to life",
+        "mission": "Creating the most realistic, dynamic NPC conversations in gaming using AI and behavioral science",
+        "about": {
+            "what_we_do": "Gamemodes builds AI-powered dialogue systems for video game NPCs. Our characters remember conversations, develop relationships with players through an affinity/trust system, and respond with emotional depth that goes beyond scripted dialogue trees.",
+            "what_makes_us_different": "Our personality engine gives each NPC behavioral depth — they have moods, memories, and relationship dynamics that evolve over time. Characters react differently based on how much they trust the player, creating genuinely unique conversation experiences.",
+            "technology": "We use large language models combined with our proprietary personality engine and affinity system. Each NPC has a detailed character profile, speech patterns, and emotional ranges. The affinity system tracks relationship levels from hostile to trusted, unlocking deeper conversation as the relationship grows."
+        },
+        "projects": {
+            "shadow_city": {
+                "name": "Shadow City",
+                "status": "Active Development (Phase 12)",
+                "type": "Full playable NPC dialogue showcase game",
+                "description": "A complete game built to demonstrate our NPC dialogue technology. Features 11 faction playthroughs, a cell phone system, comedy engine, entertainment engine, tutorial engine, and an NPC extras system. Has 266 passing tests with a balance testing framework.",
+                "highlights": ["11 faction playthroughs complete", "Cell phone, comedy, entertainment engines", "Tutorial engine", "NPC extras system", "266 tests passing"]
+            },
+            "skyrim_mod": {
+                "name": "Skyrim Mod",
+                "status": "Development",
+                "type": "SKSE plugin + dialogue server for Skyrim Special Edition",
+                "description": "A Skyrim mod that replaces scripted NPC dialogue with our AI-powered dynamic conversations. Built as an SKSE plugin with a dedicated dialogue server featuring dual LLM providers, intelligent caching, and priority routing. Uses a dynamic prompt tier system for optimal performance.",
+                "highlights": ["SKSE plugin foundation", "LLM server with dual provider support", "Intelligent caching and priority routing", "Dynamic prompt tier system", "NPC resolver for character identification"]
+            },
+            "fallout4_mod": {
+                "name": "Fallout 4 Mod",
+                "status": "Alpha — Trained model checkpoint achieved",
+                "type": "F4SE plugin + fine-tuned 4B personality model",
+                "description": "A Fallout 4 mod featuring our own fine-tuned 4-billion-parameter personality model — the only trained model in our portfolio (checkpoint-250). Includes 9 NPCs with full personality profiles and over 22,250 Alpaca-format training entries. The F4SE plugin integrates directly with the game engine.",
+                "highlights": ["Fine-tuned 4B personality model (checkpoint-250)", "9 NPCs with full personality profiles", "22,250+ Alpaca-format training entries", "F4SE plugin scaffolding complete", "Only trained model in portfolio"]
+            },
+            "gamemodes01_core": {
+                "name": "Gamemodes01 (Core)",
+                "status": "Ready — Awaiting data generation",
+                "type": "Training pipeline and data generation engine",
+                "description": "The core training pipeline that powers our AI models. Data schemas are finalized, seed data is established, and fine-tuning scripts are ready. This is the engine that generates and processes training data for all our NPC personality models.",
+                "highlights": ["Portfolio evaluation complete", "Data schemas finalized", "Seed data established", "Fine-tuning scripts ready"]
+            }
+        },
+        "characters_available": {
+            "description": "Multiple NPCs are available to talk to on the website",
+            "characters": [
+                {"id": "wendy", "name": "Wendy", "game": "Original", "description": "A warm Appalachian woman from Possum Hollow, Kentucky"},
+                {"id": "fallout4_kellan", "name": "Kellan Voss", "game": "Fallout 4", "description": "A Fallout 4 character with a unique personality"},
+                {"id": "fallout4_desdemona", "name": "Desdemona", "game": "Fallout 4", "description": "The Railroad leader from Fallout 4"},
+                {"id": "skyrim_lydia", "name": "Lydia", "game": "Skyrim", "description": "The loyal Skyrim housecarl"},
+                {"id": "skyrim_brynjolf", "name": "Brynjolf", "game": "Skyrim", "description": "The charismatic Thieves Guild member"},
+                {"id": "skyrim_serana", "name": "Serana", "game": "Skyrim", "description": "The ancient vampire from Skyrim's Dawnguard DLC"}
+            ]
+        },
+        "affinity_system": {
+            "description": "Our relationship tracking system that makes NPC conversations feel real",
+            "range": "-100 to +100, starting at 0",
+            "stages": ["Hostile", "Cold", "Distant", "Stranger", "Acquaintance", "Friendly", "Close", "Trusted"],
+            "how_it_works": "Every message you send is analyzed for tone and content. The NPC's trust level shifts based on how you treat them. At higher trust levels, characters share more personal stories, reveal secrets, and treat you like a real friend. If you're rude, they'll become distant or hostile."
+        },
+        "roadmap": {
+            "phase1": {
+                "name": "Foundation (Q2 2026)",
+                "items": ["Core personality engine", "Training pipeline operational", "Wendy live demo at chat.gamemodes.xyz", "Multi-character system launch"]
+            },
+            "phase2": {
+                "name": "Expansion (Q3 2026)",
+                "items": ["Shadow City beta release", "Skyrim mod public release", "Fallout 4 mod alpha testing", "Community feedback integration"]
+            },
+            "phase3": {
+                "name": "Scale (Q4 2026)",
+                "items": ["$GMODE token launch on Solana (Token-2022)", "NPC personality marketplace", "API access for game developers", "Cross-game character portability"]
+            }
+        },
+        "token": {
+            "name": "$GMODE",
+            "blockchain": "Solana Token-2022",
+            "status": "Coming Soon",
+            "purpose": "Access to the NPC marketplace, premium character packs, and API usage"
+        },
+        "tech_stack": {
+            "languages": ["Python", "JavaScript", "C++", "Papyrus"],
+            "ai": ["Large Language Models", "Fine-tuned personality models", "Custom training pipeline"],
+            "infrastructure": ["Flask", "SQLite", "Railway deployment", "GitHub Pages"],
+            "game_modding": ["SKSE (Skyrim)", "F4SE (Fallout 4)"]
+        },
+        "contact": {
+            "website": "gamemodes.xyz",
+            "chat": "chat.gamemodes.xyz",
+            "email": "Contact through website"
+        }
+    },
     "affinity_shift": {
         "positive_keywords": ["thank", "thanks", "appreciate", "kind", "nice", "love", "like", "great", "awesome", "wonderful", "beautiful", "sweet", "helpful", "friendly", "welcome"],
         "negative_keywords": ["hate", "stupid", "dumb", "ugly", "shut up", "go away", "leave", "boring", "annoying", "terrible", "awful", "worst", "idiot", "moron", "fool"],

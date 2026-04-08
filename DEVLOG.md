@@ -6,6 +6,15 @@
 
 ---
 
+## 2026-04-08
+- **Site**: Major website restructure — navigation consolidated from 11 tabs to 7
+- **Site**: Added Roadmap section with 3-phase development plan (Q2–Q4 2026)
+- **Site**: Added $GMODE token "Coming Soon" card — Solana Token-2022, tiered API access
+- **Site**: Merged Vision + Engine sections into unified Technology section
+- **Site**: Replaced Wendy + Characters with compact "Talk to Characters" CTA
+- **Site**: Added mobile hamburger menu for responsive navigation
+- **Portfolio**: Synced all project devlogs to consolidated timeline — 15 entries added
+
 ## Overview
 
 Gamemodes is building an AI-native NPC engine that generates psychologically authentic, dynamic dialogue using fine-tuned 1-bit quantized models running on consumer hardware. The engine is game-agnostic — proven across four projects.
@@ -392,6 +401,37 @@ The plugin currently loads and logs but doesn't hook console commands or make HT
 - [ ] Voice synthesis pipeline
 - [ ] Dynamic NPC discovery (auto-profile generation)
 - [ ] Community tools and contributor documentation
+
+---
+
+## Development Timeline
+
+### 2026-04-06
+- Portfolio evaluation complete — pipeline status: Ready, awaiting data generation (Core)
+- Phase 12 active development — tick system bugs being resolved (Shadow City)
+- Only trained model in portfolio (checkpoint-250) — 9 NPCs with full personality profiles (Fallout 4)
+- Live at chat.gamemodes.xyz — deepest personality profile in portfolio (Wendy)
+- Devlog section added to main page — standalone devlog overview page created (Site)
+- Website content updated to reflect current portfolio state (Site)
+
+### 2026-04-05
+- Patent strategy — balance testing framework — 11 faction playthroughs complete (Shadow City)
+
+### 2026-04-04
+- GitHub Pages deployment at gamemodes.xyz (Site)
+- Live stats integration (Wendy)
+
+### 2026-04-03
+- Data schemas finalized — seed data established — fine-tuning scripts ready (Core)
+- Cell phone, comedy, entertainment engines — tutorial engine added — NPC extras system (Shadow City)
+- Complete rewrite with modular architecture — affinity system, LLM client, database, session manager — training export system (Wendy)
+
+### 2026-04-02
+- LLM server with dual provider, caching, priority routing — dynamic prompt tier system (Skyrim)
+
+### 2026-04-01
+- SKSE plugin foundation — http_client, npc_resolver, papyrus_functions, subtitle_display (Skyrim)
+- F4SE plugin scaffolding — training data: 22,250+ Alpaca-format entries (Fallout 4)
 
 ---
 

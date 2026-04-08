@@ -69,6 +69,18 @@
   .nav-links a:hover { color: var(--text); }
   .nav-links a.active { color: var(--accent2); }
 
+  /* Mobile nav toggle */
+  .nav-toggle {
+    display: none;
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.4rem 0.8rem;
+    color: var(--text-dim);
+    font-size: 1.2rem;
+    cursor: pointer;
+  }
+
   /* ── HERO ────────────────────────────────────── */
   .hero {
     min-height: 50vh;
@@ -324,6 +336,21 @@
       padding: 0.4rem 0.9rem;
       font-size: 0.8rem;
     }
+    .nav-links {
+      display: none;
+      position: absolute;
+      top: 64px;
+      left: 0;
+      right: 0;
+      background: rgba(10,10,15,0.95);
+      backdrop-filter: blur(20px);
+      flex-direction: column;
+      padding: 1rem 2rem;
+      gap: 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-links.open { display: flex; }
+    .nav-toggle { display: block; }
   }
 </style>
 </head>
@@ -332,9 +359,15 @@
   <!-- ═══ NAVIGATION ═══ -->
   <nav>
     <a href="index.html" class="nav-logo"><img src="art/gamemodes_logo.png" alt="Gamemodes Logo">GAMEMODES</a>
+    <button class="nav-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')" aria-label="Toggle navigation">&#9776;</button>
     <ul class="nav-links">
-      <li><a href="index.html">Home</a></li>
+      <li><a href="index.html#hero">Home</a></li>
+      <li><a href="index.html#technology">Technology</a></li>
+      <li><a href="index.html#projects">Projects</a></li>
+      <li><a href="https://chat.gamemodes.xyz/characters" target="_blank">Talk to Characters</a></li>
+      <li><a href="index.html#roadmap">Roadmap</a></li>
       <li><a href="devlog.html" class="active">Devlog</a></li>
+      <li><a href="index.html#contact">Contact</a></li>
     </ul>
   </nav>
 
@@ -368,6 +401,56 @@
   <section class="devlog-section">
     <div class="timeline">
 
+      <!-- ── 2026-04-08 ───────────────────────────── -->
+      <div class="date-group">
+        <div class="date-header">
+          <div class="date-dot">08</div>
+          <div class="date-text">April 8, 2026</div>
+        </div>
+        <div class="devlog-entry" data-project="site">
+          <div class="entry-content">
+            <span class="project-badge badge-site">Site</span>
+            <span class="entry-text">Major website restructure — navigation consolidated from 11 tabs to 7.</span>
+          </div>
+        </div>
+        <div class="devlog-entry" data-project="site">
+          <div class="entry-content">
+            <span class="project-badge badge-site">Site</span>
+            <span class="entry-text">Added Roadmap section with 3-phase development plan (Q2–Q4 2026).</span>
+          </div>
+        </div>
+        <div class="devlog-entry" data-project="site">
+          <div class="entry-content">
+            <span class="project-badge badge-site">Site</span>
+            <span class="entry-text">Added $GMODE token "Coming Soon" card — Solana Token-2022, tiered API access.</span>
+          </div>
+        </div>
+        <div class="devlog-entry" data-project="site">
+          <div class="entry-content">
+            <span class="project-badge badge-site">Site</span>
+            <span class="entry-text">Merged Vision + Engine sections into unified Technology section.</span>
+          </div>
+        </div>
+        <div class="devlog-entry" data-project="site">
+          <div class="entry-content">
+            <span class="project-badge badge-site">Site</span>
+            <span class="entry-text">Replaced Wendy + Characters with compact "Talk to Characters" CTA.</span>
+          </div>
+        </div>
+        <div class="devlog-entry" data-project="site">
+          <div class="entry-content">
+            <span class="project-badge badge-site">Site</span>
+            <span class="entry-text">Added mobile hamburger menu for responsive navigation.</span>
+          </div>
+        </div>
+        <div class="devlog-entry" data-project="portfolio">
+          <div class="entry-content">
+            <span class="project-badge badge-portfolio">Portfolio</span>
+            <span class="entry-text">Synced all project devlogs to consolidated timeline — 15 entries added.</span>
+          </div>
+        </div>
+      </div>
+
       <!-- ── 2026-04-06 ───────────────────────────── -->
       <div class="date-group">
         <div class="date-header">
@@ -384,6 +467,42 @@
           <div class="entry-content">
             <span class="project-badge badge-portfolio">Portfolio</span>
             <span class="entry-text">Project Overseer skills folder created with cross-project documentation.</span>
+          </div>
+        </div>
+        <div class="devlog-entry" data-project="core">
+          <div class="entry-content">
+            <span class="project-badge badge-core">Core</span>
+            <span class="entry-text">Portfolio evaluation complete — pipeline status: Ready, awaiting data generation.</span>
+          </div>
+        </div>
+        <div class="devlog-entry" data-project="shadow-city">
+          <div class="entry-content">
+            <span class="project-badge badge-shadow-city">Shadow City</span>
+            <span class="entry-text">Phase 12 active development — tick system bugs being resolved.</span>
+          </div>
+        </div>
+        <div class="devlog-entry" data-project="fallout4">
+          <div class="entry-content">
+            <span class="project-badge badge-fallout4">Fallout 4</span>
+            <span class="entry-text">Only trained model in portfolio (checkpoint-250) — 9 NPCs with full personality profiles.</span>
+          </div>
+        </div>
+        <div class="devlog-entry" data-project="wendy">
+          <div class="entry-content">
+            <span class="project-badge badge-wendy">Wendy</span>
+            <span class="entry-text">Live at chat.gamemodes.xyz — deepest personality profile in portfolio.</span>
+          </div>
+        </div>
+        <div class="devlog-entry" data-project="site">
+          <div class="entry-content">
+            <span class="project-badge badge-site">Site</span>
+            <span class="entry-text">Devlog section added to main page — standalone devlog overview page created.</span>
+          </div>
+        </div>
+        <div class="devlog-entry" data-project="site">
+          <div class="entry-content">
+            <span class="project-badge badge-site">Site</span>
+            <span class="entry-text">Website content updated to reflect current portfolio state.</span>
           </div>
         </div>
       </div>
@@ -496,6 +615,14 @@
         </div>
       </div>
 
+      <!-- ── 2026-04-03-core ──────────────────────── -->
+      <div class="devlog-entry" data-project="core">
+        <div class="entry-content">
+          <span class="project-badge badge-core">Core</span>
+          <span class="entry-text">Data schemas finalized — seed data established — fine-tuning scripts ready.</span>
+        </div>
+      </div>
+
       <!-- ── 2026-04-02 ───────────────────────────── -->
       <div class="date-group">
         <div class="date-header">
@@ -569,6 +696,14 @@
             <span class="project-badge badge-core">Core</span>
             <span class="entry-text">Alpaca-format training data pipeline designed.</span>
           </div>
+        </div>
+      </div>
+
+      <!-- ── 2026-04-01-fallout4 ──────────────────── -->
+      <div class="devlog-entry" data-project="fallout4">
+        <div class="entry-content">
+          <span class="project-badge badge-fallout4">Fallout 4</span>
+          <span class="entry-text">Training data: 22,250+ Alpaca-format entries.</span>
         </div>
       </div>
 

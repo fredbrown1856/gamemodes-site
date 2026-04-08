@@ -18,6 +18,8 @@
     --green: #00b894;
     --orange: #fdcb6e;
     --red: #e17055;
+    --cyan: #74b9ff;
+    --pink: #fd79a8;
     --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     --mono: 'JetBrains Mono', 'Fira Code', monospace;
   }
@@ -63,6 +65,18 @@
     font-weight: 500; transition: color 0.2s;
   }
   .nav-links a:hover { color: var(--text); }
+
+  /* Mobile nav toggle */
+  .nav-toggle {
+    display: none;
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.4rem 0.8rem;
+    color: var(--text-dim);
+    font-size: 1.2rem;
+    cursor: pointer;
+  }
 
   /* ── HERO ────────────────────────────────────── */
   .hero {
@@ -277,7 +291,7 @@
     margin-bottom: 0.5rem;
   }
   .project-features li::before {
-    content: '→';
+    content: '\2192';
     color: var(--accent2);
     font-weight: 600;
     flex-shrink: 0;
@@ -298,108 +312,240 @@
   .project-visual .hl3 { color: var(--orange); }
   .project-visual .comment { color: #555570; }
 
-  /* ── PIPELINE ────────────────────────────────── */
-  .pipeline {
+  /* ── TALK TO CHARACTERS ──────────────────────── */
+  .characters-section {
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 6rem 2rem;
+  }
+  .characters-section .inner {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  .character-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2.5rem;
+  }
+  .character-card {
+    display: block;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 1.5rem 1rem;
+    transition: all 0.3s;
+    text-align: center;
+    text-decoration: none;
+    color: inherit;
+  }
+  .character-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+  }
+  .character-card .char-emoji {
+    font-size: 2.5rem;
+    display: block;
+    margin-bottom: 0.75rem;
+  }
+  .character-card h4 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 0.4rem;
+    color: var(--text);
+  }
+  .character-card p {
+    font-size: 0.8rem;
+    color: var(--text-dim);
+    line-height: 1.5;
+  }
+  .characters-cta {
+    text-align: center;
+  }
+
+  /* ── ROADMAP ─────────────────────────────────── */
+  .roadmap-timeline {
     display: flex;
     flex-direction: column;
     gap: 0;
     position: relative;
+    padding-left: 30px;
   }
-  .pipeline::before {
+  .roadmap-timeline::before {
     content: '';
     position: absolute;
-    left: 23px;
-    top: 0; bottom: 0;
+    left: 0;
+    top: 0;
+    bottom: 0;
     width: 2px;
-    background: linear-gradient(180deg, var(--accent), var(--accent2), var(--green));
+    background: linear-gradient(180deg, var(--accent), var(--green), var(--cyan));
   }
-  .pipeline-step {
-    display: flex; gap: 1.5rem;
-    padding: 1.5rem 0;
+  .roadmap-phase {
     position: relative;
-  }
-  .pipeline-dot {
-    width: 48px; height: 48px; flex-shrink: 0;
-    border-radius: 50%;
-    background: var(--surface);
-    border: 2px solid var(--accent);
-    display: flex; align-items: center; justify-content: center;
-    font-weight: 700; font-size: 0.85rem;
-    color: var(--accent2);
-    z-index: 1;
-  }
-  .pipeline-content h4 {
-    font-size: 1rem; font-weight: 700;
-    margin-bottom: 0.3rem;
-  }
-  .pipeline-content p {
-    color: var(--text-dim); font-size: 0.88rem;
-  }
-
-  /* ── MODEL TABLE ─────────────────────────────── */
-  .model-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 2rem;
-  }
-  .model-table th {
-    text-align: left;
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: var(--text-dim);
-    padding: 0.75rem 1rem;
-    border-bottom: 1px solid var(--border);
-    font-weight: 600;
-  }
-  .model-table td {
-    padding: 1rem;
-    border-bottom: 1px solid var(--border);
-    font-size: 0.9rem;
-  }
-  .model-table tr:hover td {
-    background: var(--surface2);
-  }
-  .tag {
-    display: inline-block;
-    padding: 0.2rem 0.6rem;
-    border-radius: 6px;
-    font-size: 0.75rem;
-    font-weight: 600;
-  }
-  .tag-green { background: rgba(0,184,148,0.15); color: var(--green); }
-  .tag-orange { background: rgba(253,203,110,0.15); color: var(--orange); }
-  .tag-purple { background: rgba(108,92,231,0.15); color: var(--accent2); }
-
-  /* ── CONTRIBUTOR ─────────────────────────────── */
-  .contrib-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 1.5rem;
-  }
-  .contrib-card {
+    margin-bottom: 2.5rem;
+    padding: 2rem;
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: 16px;
-    padding: 2rem;
-    text-align: center;
     transition: all 0.3s;
   }
-  .contrib-card:hover {
+  .roadmap-phase:hover {
     border-color: var(--accent);
-    transform: translateY(-3px);
+    transform: translateX(5px);
   }
-  .contrib-card .icon {
-    font-size: 2rem;
+  .roadmap-phase::before {
+    content: '';
+    position: absolute;
+    left: -36px;
+    top: 28px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 2px solid var(--bg);
+  }
+  .roadmap-phase.phase-1::before {
+    background: var(--accent);
+    box-shadow: 0 0 12px rgba(108,92,231,0.5);
+  }
+  .roadmap-phase.phase-2::before {
+    background: var(--green);
+    box-shadow: 0 0 12px rgba(0,184,148,0.5);
+  }
+  .roadmap-phase.phase-3::before {
+    background: var(--cyan);
+    box-shadow: 0 0 12px rgba(116,185,255,0.5);
+  }
+  .phase-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
     margin-bottom: 1rem;
+    flex-wrap: wrap;
   }
-  .contrib-card h3 {
-    font-size: 1rem; font-weight: 700;
+  .phase-tag {
+    display: inline-block;
+    padding: 0.3rem 0.9rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .phase-1 .phase-tag {
+    background: rgba(108,92,231,0.15);
+    color: var(--accent2);
+  }
+  .phase-2 .phase-tag {
+    background: rgba(0,184,148,0.15);
+    color: var(--green);
+  }
+  .phase-3 .phase-tag {
+    background: rgba(116,185,255,0.15);
+    color: var(--cyan);
+  }
+  .phase-date {
+    font-size: 0.85rem;
+    color: var(--text-dim);
+    font-weight: 500;
+  }
+  .roadmap-phase h3 {
+    font-size: 1.3rem;
+    font-weight: 800;
+    margin-bottom: 0.75rem;
+  }
+  .roadmap-phase ul {
+    list-style: none;
+    padding: 0;
+  }
+  .roadmap-phase li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    font-size: 0.9rem;
+    color: var(--text-dim);
     margin-bottom: 0.5rem;
+    line-height: 1.6;
   }
-  .contrib-card p {
-    color: var(--text-dim); font-size: 0.85rem;
-    line-height: 1.7;
+  .roadmap-phase li::before {
+    content: '\2192';
+    color: var(--accent2);
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+  .phase-2 li::before { color: var(--green); }
+  .phase-3 li::before { color: var(--cyan); }
+
+  /* ── GMODE CARD ──────────────────────────────── */
+  .gmode-card {
+    position: relative;
+    background: var(--surface);
+    border: 1px solid var(--accent);
+    border-radius: 20px;
+    padding: 2.5rem;
+    text-align: center;
+    margin-top: 3rem;
+    overflow: hidden;
+  }
+  .gmode-card::before {
+    content: '';
+    position: absolute;
+    top: -50%; left: -50%; width: 200%; height: 200%;
+    background: radial-gradient(ellipse at 50% 50%, rgba(108,92,231,0.08) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .gmode-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(0,184,148,0.1);
+    border: 1px solid rgba(0,184,148,0.3);
+    border-radius: 100px;
+    padding: 0.35rem 1rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--green);
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.5px;
+  }
+  .gmode-badge .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--green);
+    animation: pulse 2s infinite;
+  }
+  .gmode-card h3 {
+    font-size: 2rem;
+    font-weight: 900;
+    margin-bottom: 0.75rem;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .gmode-card .gmode-desc {
+    color: var(--text-dim);
+    font-size: 1rem;
+    max-width: 600px;
+    margin: 0 auto 1.5rem;
+    line-height: 1.8;
+  }
+  .gmode-details {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+    margin-top: 1.5rem;
+  }
+  .gmode-detail {
+    font-size: 0.8rem;
+    color: var(--text-dim);
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .gmode-detail .dot-sm {
+    width: 4px; height: 4px; border-radius: 50%;
+    background: var(--accent2);
   }
 
   /* ── CONTACT ─────────────────────────────────── */
@@ -474,182 +620,6 @@
   .code-block .str { color: var(--green); }
   .code-block .cm { color: #555570; }
 
-  /* ── WENDY SHOWCASE ──────────────────────────── */
-  .wendy-showcase {
-    display: grid;
-    grid-template-columns: 1fr 1.5fr;
-    gap: 3rem;
-    align-items: start;
-  }
-  .wendy-card {
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 2.5rem;
-    text-align: center;
-  }
-  .wendy-avatar {
-    font-size: 4rem;
-    margin-bottom: 1rem;
-  }
-  .wendy-card h3 {
-    font-size: 1.6rem;
-    font-weight: 800;
-    margin-bottom: 0.3rem;
-  }
-  .wendy-subtitle {
-    color: var(--text-dim);
-    font-size: 0.85rem;
-    margin-bottom: 1rem;
-  }
-  .wendy-traits {
-    display: flex;
-    gap: 0.5rem;
-    justify-content: center;
-    flex-wrap: wrap;
-    margin-bottom: 1.5rem;
-  }
-  .wendy-description {
-    color: var(--text-dim);
-    font-size: 0.95rem;
-    line-height: 1.8;
-  }
-  .wendy-demo-info {
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
-  }
-  .wendy-feature-list {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-  }
-  .wendy-feature {
-    display: flex;
-    gap: 1rem;
-    align-items: flex-start;
-    padding: 1rem;
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    transition: border-color 0.2s;
-  }
-  .wendy-feature:hover {
-    border-color: var(--accent);
-  }
-  .wendy-feature-icon {
-    font-size: 1.5rem;
-    flex-shrink: 0;
-  }
-  .wendy-feature strong {
-    display: block;
-    font-size: 0.95rem;
-    margin-bottom: 0.2rem;
-  }
-  .wendy-feature p {
-    color: var(--text-dim);
-    font-size: 0.85rem;
-    line-height: 1.5;
-  }
-  .wendy-cta-area {
-    text-align: center;
-  }
-  .wendy-cta-btn {
-    font-size: 1.1rem;
-    padding: 1rem 2.5rem;
-  }
-  .wendy-cta-note {
-    color: var(--text-dim);
-    font-size: 0.8rem;
-    margin-top: 0.75rem;
-  }
-  .wendy-live-stats {
-    display: flex;
-    gap: 2rem;
-    justify-content: center;
-    padding: 1.5rem;
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-  }
-  .wendy-stat {
-    text-align: center;
-  }
-  .wendy-stat-value {
-    display: block;
-    font-size: 1.3rem;
-    font-weight: 800;
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
-  .wendy-stat-label {
-    font-size: 0.75rem;
-    color: var(--text-dim);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
-
-  /* ── CHARACTER SHOWCASE ────────────────────────── */
-  .character-showcase {
-    text-align: center;
-    padding: 4rem 2rem;
-    background: var(--surface2);
-    border-radius: 20px;
-    border: 1px solid var(--border);
-    margin-top: 4rem;
-  }
-  .character-showcase h3 {
-    font-size: 1.8rem;
-    font-weight: 800;
-    margin-bottom: 2rem;
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
-  .character-cards {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-    gap: 1.5rem;
-    margin-bottom: 2.5rem;
-  }
-  .character-card {
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 1.5rem 1rem;
-    transition: all 0.3s;
-    text-align: center;
-  }
-  .character-card:hover {
-    border-color: var(--accent);
-    transform: translateY(-4px);
-    box-shadow: 0 12px 40px rgba(0,0,0,0.3);
-  }
-  .character-card h4 {
-    font-size: 1.1rem;
-    font-weight: 700;
-    margin-bottom: 0.4rem;
-    color: var(--text);
-  }
-  .character-card p {
-    font-size: 0.8rem;
-    color: var(--text-dim);
-    line-height: 1.5;
-  }
-
-  /* ── RESPONSIVE ──────────────────────────────── */
-  @media (max-width: 768px) {
-    .project { grid-template-columns: 1fr; }
-    .project:nth-child(even) { direction: ltr; }
-    .nav-links { display: none; }
-    .stats-bar { gap: 1.5rem; }
-    section { padding: 4rem 1.5rem; }
-    .wendy-showcase { grid-template-columns: 1fr; }
-    .wendy-live-stats { flex-direction: column; gap: 1rem; }
-    .character-cards { grid-template-columns: repeat(2, 1fr); }
-  }
-
   /* ── DEVLOG TIMELINE ─────────────────────────── */
   .devlog-timeline {
     max-width: 800px;
@@ -716,6 +686,35 @@
     font-size: 0.9rem;
     line-height: 1.5;
   }
+
+  /* ── RESPONSIVE ──────────────────────────────── */
+  @media (max-width: 768px) {
+    .project { grid-template-columns: 1fr; }
+    .project:nth-child(even) { direction: ltr; }
+
+    .nav-links {
+      display: none;
+      position: absolute;
+      top: 64px;
+      left: 0;
+      right: 0;
+      background: rgba(10,10,15,0.95);
+      backdrop-filter: blur(20px);
+      flex-direction: column;
+      padding: 1rem 2rem;
+      gap: 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-links.open { display: flex; }
+    .nav-toggle { display: block; }
+
+    .stats-bar { gap: 1.5rem; }
+    section { padding: 4rem 1.5rem; }
+    .characters-section { padding: 4rem 1.5rem; }
+    .character-cards { grid-template-columns: repeat(2, 1fr); }
+    .gmode-details { flex-direction: column; align-items: center; gap: 0.75rem; }
+    .phase-header { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
+  }
 </style>
 </head>
 <body>
@@ -723,23 +722,20 @@
 <!-- NAV -->
 <nav>
   <div class="nav-logo"><img src="art/gamemodes_logo.png" alt="Gamemodes Logo">GAMEMODES</div>
+  <button class="nav-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')" aria-label="Toggle navigation">&#9776;</button>
   <ul class="nav-links">
     <li><a href="#hero">Home</a></li>
-    <li><a href="#vision">Vision</a></li>
-    <li><a href="#engine">Engine</a></li>
+    <li><a href="#technology">Technology</a></li>
     <li><a href="#projects">Projects</a></li>
-    <li><a href="#wendy">Meet Wendy</a></li>
-    <li><a href="https://chat.gamemodes.xyz/characters" target="_blank">Characters</a></li>
-    <li><a href="#pipeline">Pipeline</a></li>
-    <li><a href="#models">Models</a></li>
-    <li><a href="#contribute">Contribute</a></li>
+    <li><a href="https://chat.gamemodes.xyz/characters" target="_blank">Talk to Characters</a></li>
+    <li><a href="#roadmap">Roadmap</a></li>
     <li><a href="devlog.html">Devlog</a></li>
     <li><a href="#contact">Contact</a></li>
   </ul>
 </nav>
 
 <!-- HERO -->
-<div class="hero">
+<div class="hero" id="hero">
   <img src="art/gamemodes_logo.png" alt="Gamemodes Logo" class="hero-logo">
   <div class="hero-badge">
     <span class="dot"></span>
@@ -778,13 +774,13 @@
   </div>
   <div class="stat">
     <div class="stat-value">Live</div>
-    <div class="stat-label">Wendy Demo</div>
+    <div class="stat-label">NPC Demo</div>
   </div>
 </div>
 
-<!-- VISION -->
-<section id="vision">
-  <span class="section-label">The Vision</span>
+<!-- TECHNOLOGY (merged Vision + Engine) -->
+<section id="technology">
+  <span class="section-label">The Technology</span>
   <h2 class="section-title">Game NPCs deserve better than canned lines.</h2>
   <p class="section-desc">
     For decades, NPCs have been limited to pre-written dialogue trees. Gamemodes applies multi-layered behavioral psychology to NPC behavior. The engine generates contextually aware, psychologically grounded dialogue in real time, at a cost and compute footprint that works on any gaming PC.
@@ -807,17 +803,8 @@
       <p>The core engine is designed for general applicability. We've proven it across three distinct game worlds — the architecture adapts to any game genre or setting.</p>
     </div>
   </div>
-</section>
 
-<!-- ENGINE -->
-<section id="engine">
-  <span class="section-label">The Engine</span>
-  <h2 class="section-title">How it works.</h2>
-  <p class="section-desc">
-    The Gamemodes engine sits between the game and an LLM, translating game state into psychologically rich prompts and routing responses back as natural dialogue. The behavioral framework governs NPC internal states — protective modes shield, reactive modes respond, vulnerable modes reveal depth.
-  </p>
-
-  <div class="code-block">
+  <div class="code-block" style="margin-top: 3rem;">
 <span class="cm">/* Core Data Flow */</span>
 <span class="kw">Game Engine</span> → <span class="fn">States</span> + <span class="fn">Profile</span> + <span class="fn">Context</span> → <span class="fn">Prompt Builder</span> → <span class="fn">LLM</span> → <span class="str">NPC Dialogue</span>
 
@@ -826,7 +813,7 @@
 <span class="fn">7 Physiological States</span>  <span class="cm">(stress, hunger, thirst, ...)</span>
 <span class="fn">3 Psychological Modes</span>   <span class="cm">(protective, reactive, vulnerable)</span>
 <span class="fn">20 Personality Archetypes</span> <span class="cm">(base traits, speech patterns)</span>
-<span class="fn">7 Relationship Levels</span>   <span class="cm">(hostile → bonded)</span>
+<span class="fn">7 Relationship Levels</span>   <span class="cm">(hostile to bonded)</span>
 <span class="fn">5 Awareness Tiers</span>       <span class="cm">(emotional regulation capacity)</span>
 <span class="fn">8 Game Genres</span>           <span class="cm">(noir, fantasy, sci-fi, ...)</span>
   </div>
@@ -977,305 +964,134 @@
 <span class="cm">// Training pipeline</span><br>
 <span class="fn">generate</span> → <span class="fn">validate</span> → <span class="fn">merge</span> → <span class="fn">filter</span> → <span class="fn">fine-tune</span><br><br>
 <span class="cm">// Quality scoring (5 dimensions)</span><br>
-<span class="hl">part_authenticity</span>: <span class="hl3">0-1</span><br>
+<span class="hl">behavioral_authenticity</span>: <span class="hl3">0-1</span><br>
 <span class="hl">state_visibility</span>: <span class="hl3">0-1</span><br>
 <span class="hl">archetype_voice</span>: <span class="hl3">0-1</span><br>
 <span class="hl">genre_consistency</span>: <span class="hl3">0-1</span><br>
 <span class="hl">affinity_accuracy</span>: <span class="hl3">0-1</span><br><br>
 <span class="cm">// Auto-accept if avg ≥ 4.5/5</span><br>
 <span class="cm">// Flag for review if 3.0-4.5</span><br>
-<span class="cm">// Reject if avg &lt; 3.0</span>
+<span class="cm">// Reject if avg < 3.0</span>
     </div>
   </div>
 </section>
 
-<!-- MEET WENDY -->
-<section id="wendy" style="background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 6rem 2rem;">
-  <div style="max-width: 1100px; margin: 0 auto;">
-    <span class="section-label">Live Demo</span>
-    <h2 class="section-title">Meet Wendy — Our NPC in Action</h2>
+<!-- TALK TO CHARACTERS -->
+<section class="characters-section" id="characters">
+  <div class="inner">
+    <span class="section-label">Interactive NPCs</span>
+    <h2 class="section-title">Talk to Our Characters</h2>
     <p class="section-desc">
-      Wendy is a 22-year-old from the Appalachian mountains of eastern Kentucky. She's a fully interactive NPC powered by the Gamemodes psychology engine — live at chat.gamemodes.xyz. She has the deepest personality profile in the portfolio, with named emotional states and backstories that govern how she responds to you.
+      Chat with NPC personalities powered by the Gamemodes engine. Each character has unique traits, backgrounds, and dynamic relationship progression.
     </p>
 
-    <div class="wendy-showcase">
-      <!-- Left: Wendy character card -->
-      <div class="wendy-card">
-        <div class="wendy-avatar">👩‍🌾</div>
-        <h3>Wendy</h3>
-        <p class="wendy-subtitle">Appalachian NPC • Affinity System Demo</p>
-        <div class="wendy-traits">
-          <span class="tag tag-green">8 Affinity Stages</span>
-          <span class="tag tag-purple">Dynamic Personality</span>
-          <span class="tag tag-orange">Appalachian Dialect</span>
-        </div>
-        <p class="wendy-description">
-          Wendy remembers how you treat her. Build trust over time and she'll open up about her life in the holler. Push her too far and she'll shut you out. Every conversation is different — and every conversation helps her grow.
-        </p>
-      </div>
-
-      <!-- Right: Demo info + CTA -->
-      <div class="wendy-demo-info">
-        <div class="wendy-feature-list">
-          <div class="wendy-feature">
-            <span class="wendy-feature-icon">💬</span>
-            <div>
-              <strong>15-Minute Live Chat</strong>
-              <p>Have a real conversation with Wendy. She responds dynamically based on her affinity toward you.</p>
-            </div>
-          </div>
-          <div class="wendy-feature">
-            <span class="wendy-feature-icon">📈</span>
-            <div>
-              <strong>Dynamic Affinity System</strong>
-              <p>Wendy's responses change across 8 relationship stages — from Hostile to Trusted.</p>
-            </div>
-          </div>
-          <div class="wendy-feature">
-            <span class="wendy-feature-icon">🧠</span>
-            <div>
-              <strong>Help Her Grow</strong>
-              <p>Your conversations train a fine-tuned Wendy model. Every interaction makes her smarter and more authentic.</p>
-            </div>
-          </div>
-          <div class="wendy-feature">
-            <span class="wendy-feature-icon">🎭</span>
-            <div>
-              <strong>Full Personality Range</strong>
-              <p>Be kind, be rude, be curious — test the full range of her psychologically grounded personality.</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="wendy-cta-area">
-          <a href="https://chat.gamemodes.xyz?demo" class="btn btn-primary wendy-cta-btn" target="_blank">
-            Talk to Wendy →
-          </a>
-          <a href="https://chat.gamemodes.xyz/characters" class="btn btn-ghost" target="_blank" style="margin-left: 12px;">
-            Browse All Characters →
-          </a>
-          <p class="wendy-cta-note">Free • No account needed • 15 min session</p>
-        </div>
-
-        <div class="wendy-live-stats">
-          <div class="wendy-stat">
-            <span class="wendy-stat-value" id="wendy-total-convos">—</span>
-            <span class="wendy-stat-label">Conversations</span>
-          </div>
-          <div class="wendy-stat">
-            <span class="wendy-stat-value" id="wendy-total-messages">—</span>
-            <span class="wendy-stat-label">Messages</span>
-          </div>
-          <div class="wendy-stat">
-            <span class="wendy-stat-value" id="wendy-slots">—</span>
-            <span class="wendy-stat-label">Slots Open</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- CHARACTER SHOWCASE -->
-<section>
-  <div class="character-showcase">
-    <h3>Meet Our Characters</h3>
     <div class="character-cards">
-      <div class="character-card">
+      <a href="https://chat.gamemodes.xyz/characters" target="_blank" class="character-card">
+        <span class="char-emoji">👩‍🌾</span>
         <h4>Wendy</h4>
         <p>Appalachian Kentucky</p>
-      </div>
-      <div class="character-card">
+      </a>
+      <a href="https://chat.gamemodes.xyz/characters" target="_blank" class="character-card">
+        <span class="char-emoji">🕵️‍♀️</span>
         <h4>Desdemona</h4>
         <p>Fallout 4 — The Railroad</p>
-      </div>
-      <div class="character-card">
+      </a>
+      <a href="https://chat.gamemodes.xyz/characters" target="_blank" class="character-card">
+        <span class="char-emoji">⚔️</span>
         <h4>Kellan Voss</h4>
         <p>Fallout 4 — Brotherhood of Steel</p>
-      </div>
-      <div class="character-card">
+      </a>
+      <a href="https://chat.gamemodes.xyz/characters" target="_blank" class="character-card">
+        <span class="char-emoji">🛡️</span>
         <h4>Lydia</h4>
         <p>Skyrim — Whiterun</p>
-      </div>
-      <div class="character-card">
+      </a>
+      <a href="https://chat.gamemodes.xyz/characters" target="_blank" class="character-card">
+        <span class="char-emoji">🗡️</span>
         <h4>Brynjolf</h4>
         <p>Skyrim — Thieves Guild</p>
-      </div>
-      <div class="character-card">
+      </a>
+      <a href="https://chat.gamemodes.xyz/characters" target="_blank" class="character-card">
+        <span class="char-emoji">🧛‍♀️</span>
         <h4>Serana</h4>
         <p>Skyrim — Volkihar</p>
-      </div>
+      </a>
     </div>
-    <a href="https://chat.gamemodes.xyz/characters" class="btn btn-primary" target="_blank">Choose a Character →</a>
-  </div>
-</section>
 
-<!-- TRAINING PIPELINE -->
-<section id="pipeline">
-  <span class="section-label">Training Pipeline</span>
-  <h2 class="section-title">From simulation to fine-tuned model.</h2>
-  <p class="section-desc">
-    Gamemodes operates a complete pipeline that transforms game simulation data into production-ready dialogue models — validated, quality-filtered, and optimized for edge deployment.
-  </p>
-
-  <div class="pipeline">
-    <div class="pipeline-step">
-      <div class="pipeline-dot">1</div>
-      <div class="pipeline-content">
-        <h4>Simulation & Generation</h4>
-        <p>Game simulations produce thousands of NPC interactions. A larger LLM generates training examples across categories — dialogue, faction voice, affinity scenarios, moral dilemmas, and more.</p>
-      </div>
-    </div>
-    <div class="pipeline-step">
-      <div class="pipeline-dot">2</div>
-      <div class="pipeline-content">
-        <h4>Validation & Deduplication</h4>
-        <p>Every example is validated for schema compliance, field completeness, and distribution balance. Duplicates are removed automatically.</p>
-      </div>
-    </div>
-    <div class="pipeline-step">
-      <div class="pipeline-dot">3</div>
-      <div class="pipeline-content">
-        <h4>LLM Judge Quality Filtering</h4>
-        <p>An independent LLM scores each example across five dimensions: psychological authenticity, state visibility, voice consistency, genre accuracy, and relationship modeling. Only high-quality data advances.</p>
-      </div>
-    </div>
-    <div class="pipeline-step">
-      <div class="pipeline-dot">4</div>
-      <div class="pipeline-content">
-        <h4>Format Conversion & Augmentation</h4>
-        <p>Clean data is converted to Alpaca format (instruction/input/output) with multiple instruction templates and controlled augmentation to increase effective dataset diversity.</p>
-      </div>
-    </div>
-    <div class="pipeline-step">
-      <div class="pipeline-dot">5</div>
-      <div class="pipeline-content">
-        <h4>Fine-Tuning (QLoRA)</h4>
-        <p>QLoRA fine-tuning on meta-llama-3.2-1b-instruct — proven settings with rank=16, adamw_8bit. Exportable to GGUF q4_k_m for local inference via llama.cpp.</p>
-      </div>
-    </div>
-    <div class="pipeline-step">
-      <div class="pipeline-dot">6</div>
-      <div class="pipeline-content">
-        <h4>Deployment</h4>
-        <p>Models are served via llama.cpp's OpenAI-compatible API. The engine routes requests between models based on complexity — Bonsai 8B for nuanced scenes, Llama 1B for simple exchanges.</p>
-      </div>
+    <div class="characters-cta">
+      <a href="https://chat.gamemodes.xyz/characters" class="btn btn-primary" target="_blank">Start a Conversation →</a>
     </div>
   </div>
 </section>
 
-<!-- MODEL STRATEGY -->
-<section id="models">
-  <span class="section-label">Model Strategy</span>
-  <h2 class="section-title">1-bit models. Full-size intelligence.</h2>
+<!-- ROADMAP -->
+<section id="roadmap">
+  <span class="section-label">Roadmap</span>
+  <h2 class="section-title">Building the future of NPC intelligence</h2>
   <p class="section-desc">
-    Our roadmap centers on 1-bit quantized models — leveraging Microsoft's BitNet research and the Bonsai model family to deliver frontier-quality NPC dialogue at a fraction of the compute cost.
+    Our phased plan to move from research prototype to production deployment and enterprise API.
   </p>
 
-  <table class="model-table">
-    <thead>
-      <tr>
-        <th>Model</th>
-        <th>Parameters</th>
-        <th>Quantization</th>
-        <th>VRAM</th>
-        <th>Role</th>
-        <th>Status</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><strong>Llama 3.2 1B</strong></td>
-        <td>1.2B</td>
-        <td>Q4_K_M</td>
-        <td>~0.5 GB</td>
-        <td>Simple exchanges, fallback</td>
-        <td><span class="tag tag-green">Active</span></td>
-      </tr>
-      <tr>
-        <td><strong>Bonsai 8B</strong></td>
-        <td>8.2B</td>
-        <td>Q1_0 (1-bit)</td>
-        <td>~1.0 GB</td>
-        <td>Complex dialogue, nuanced scenes</td>
-        <td><span class="tag tag-green">Active</span></td>
-      </tr>
-      <tr>
-        <td><strong>Bonsai 4B</strong></td>
-        <td>4B</td>
-        <td>1-bit</td>
-        <td>~0.7 GB</td>
-        <td>Mid-tier routing target</td>
-        <td><span class="tag tag-orange">Planned</span></td>
-      </tr>
-      <tr>
-        <td><strong>BitNet (Microsoft)</strong></td>
-        <td>Variable</td>
-        <td>1.58-bit</td>
-        <td>TBD</td>
-        <td>Next-gen baseline for future development</td>
-        <td><span class="tag tag-purple">Research</span></td>
-      </tr>
-    </tbody>
-  </table>
+  <div class="roadmap-timeline">
 
-  <div class="arch-grid" style="margin-top: 2.5rem;">
-    <div class="arch-card">
-      <div class="icon" style="background: rgba(108,92,231,0.15);">🎯</div>
-      <h3>Game-Specific Fine-Tuning</h3>
-      <p>Each game produces its own fine-tuned adapter — trained on that game's specific dialogue patterns, lore vocabulary, and character archetypes. One base model, many game-specific variants.</p>
+    <div class="roadmap-phase phase-1">
+      <div class="phase-header">
+        <span class="phase-tag">Phase 1 — Foundation</span>
+        <span class="phase-date">Q2 2026 — Next 3 Months</span>
+      </div>
+      <h3>Foundation</h3>
+      <ul>
+        <li>Complete training data collection for Gamemodes01</li>
+        <li>Train Gamemodes01 model based on Meta-Llama-3.2-1B</li>
+        <li>Implement testing framework for live deployment</li>
+        <li>Launch NPC demo service</li>
+      </ul>
     </div>
-    <div class="arch-card">
-      <div class="icon" style="background: rgba(0,184,148,0.15);">🌐</div>
-      <h3>General Applicability</h3>
-      <p>The engine architecture is game-agnostic. Proven across noir RPG (Shadow City), fantasy (Skyrim), and post-apocalyptic (Fallout 4) — any genre can plug in.</p>
+
+    <div class="roadmap-phase phase-2">
+      <div class="phase-header">
+        <span class="phase-tag">Phase 2 — Live Deployment</span>
+        <span class="phase-date">Q3 2026 — 3-6 Months</span>
+      </div>
+      <h3>Live Deployment</h3>
+      <ul>
+        <li>Deploy Gamemodes01 for live NPC service</li>
+        <li>Build enterprise deployment plan</li>
+        <li>Begin Gamemodes02 research (Bonsai models + Bankai training protocol)</li>
+        <li>Scale character library across game universes</li>
+      </ul>
     </div>
-    <div class="arch-card">
-      <div class="icon" style="background: rgba(253,203,110,0.15);">📉</div>
-      <h3>Cost Curve Advantage</h3>
-      <p>1-bit models deliver 8B+ parameter quality at ~1GB VRAM. This means NPC dialogue generation runs on the player's existing GPU — no cloud costs, no latency, full privacy.</p>
+
+    <div class="roadmap-phase phase-3">
+      <div class="phase-header">
+        <span class="phase-tag">Phase 3 — Frontier</span>
+        <span class="phase-date">Q4 2026+ — 6+ Months</span>
+      </div>
+      <h3>Frontier</h3>
+      <ul>
+        <li>Gamemodes02 deployment with next-gen training</li>
+        <li>Frontier AI research tracking and integration</li>
+        <li>Expand to new game engines and platforms</li>
+        <li>B2B behavioral engine API launch</li>
+      </ul>
     </div>
+
   </div>
-</section>
 
-<!-- CONTRIBUTE -->
-<section id="contribute">
-  <span class="section-label">Get Involved</span>
-  <h2 class="section-title">Built in the open. Grow with us.</h2>
-  <p class="section-desc">
-    Gamemodes welcomes contributors across every discipline — from game modders to ML researchers.
-  </p>
-
-  <div class="contrib-grid">
-    <div class="contrib-card">
-      <div class="icon">🎮</div>
-      <h3>Game Modders</h3>
-      <p>Help expand NPC profiles, write training scenarios, or build integrations for new games. Familiarity with Skyrim/Fallout 4 modding is a plus.</p>
+  <!-- GMODE Token -->
+  <div class="gmode-card">
+    <div class="gmode-badge">
+      <span class="dot"></span>
+      Coming Soon
     </div>
-    <div class="contrib-card">
-      <div class="icon">🐍</div>
-      <h3>Python Developers</h3>
-      <p>Work on the dialogue server, training pipeline, quality filtering, or simulation engine. Flask, data processing, and API design experience welcome.</p>
-    </div>
-    <div class="contrib-card">
-      <div class="icon">⚙️</div>
-      <h3>C++ Developers</h3>
-      <p>Contribute to the SKSE/F4SE plugin layer — NPC resolution, HTTP clients, subtitle display, or Papyrus integration. CommonLibSSE-NG experience helpful.</p>
-    </div>
-    <div class="contrib-card">
-      <div class="icon">🤖</div>
-      <h3>ML / AI Researchers</h3>
-      <p>Help optimize fine-tuning strategies, explore 1-bit quantization approaches, improve quality scoring, or design new training data categories.</p>
-    </div>
-    <div class="contrib-card">
-      <div class="icon">✍️</div>
-      <h3>Writers & Designers</h3>
-      <p>Craft training scenarios, define psychological profiles, design archetypes, or help shape the narrative systems. Understanding of character psychology valued.</p>
-    </div>
-    <div class="contrib-card">
-      <div class="icon">🧪</div>
-      <h3>QA & Testing</h3>
-      <p>Run simulations, validate training data quality, test dialogue outputs across game scenarios, or help build automated evaluation frameworks.</p>
+    <h3>$GMODE Token</h3>
+    <p class="gmode-desc">
+      $GMODE is the access token for the Gamemodes Behavioral Engine API. A software utility asset powering NPC intelligence at scale.
+    </p>
+    <div class="gmode-details">
+      <span class="gmode-detail"><span class="dot-sm"></span> Token-2022 on Solana</span>
+      <span class="gmode-detail"><span class="dot-sm"></span> API access payment for behavioral engine inference</span>
+      <span class="gmode-detail"><span class="dot-sm"></span> Tiered access: Free / Standard / Professional / Enterprise</span>
     </div>
   </div>
 </section>
@@ -1287,6 +1103,17 @@
   <p class="section-desc">A chronological view of milestones, launches, and stabilization work across the Gamemodes portfolio.</p>
 
   <div class="devlog-timeline">
+
+    <div class="devlog-entry">
+      <div class="devlog-date">2026-04-08</div>
+      <h4>Website Restructure + Roadmap Launch</h4>
+      <ul>
+        <li>Navigation consolidated from 11 tabs to 7</li>
+        <li>3-phase roadmap added (Q2–Q4 2026)</li>
+        <li>$GMODE token "Coming Soon" card live — Solana Token-2022</li>
+        <li>Mobile responsive hamburger menu added</li>
+      </ul>
+    </div>
 
     <div class="devlog-entry">
       <div class="devlog-date">2026-04-06</div>
@@ -1334,10 +1161,10 @@
 
     <div class="devlog-entry">
       <div class="devlog-date">2026-04-02</div>
-      <h4>Psychology Engine v2 & Skyrim Server Overhaul</h4>
+      <h4>Behavioral Engine v2 & Skyrim Server Overhaul</h4>
       <ul>
-        <li>Psychology Engine v2 with 3-layer protection</li>
-        <li>Affinity-driven emotional depth (protective → reactive → vulnerable)</li>
+        <li>Behavioral Engine v2 with 3-layer personality depth</li>
+        <li>Affinity-driven emotional depth (protective, reactive, vulnerable)</li>
         <li>Skyrim LLM server with dual provider, caching, priority routing</li>
         <li>Dynamic prompt tier system</li>
       </ul>
@@ -1351,17 +1178,6 @@
         <li>Emotionally-aware dialogue system with NPC resolver and subtitle display</li>
         <li>Fallout 4 F4SE plugin scaffolding</li>
         <li>Multi-project architecture established</li>
-      </ul>
-    </div>
-
-    <div class="devlog-entry">
-      <div class="devlog-date">2026-03-31</div>
-      <h4>Shadow City Foundation</h4>
-      <ul>
-        <li>Core game loop: World, NPC, Rumor, Task, Entertainment engines</li>
-        <li>Behavioral psychology framework for NPC behavior</li>
-        <li>6 factions, 11 playthrough narratives</li>
-        <li>Database layer with conversation history</li>
       </ul>
     </div>
 
@@ -1387,24 +1203,5 @@
   <p>Gamemodes (Game Model Development Studio) — AI-Native NPC Engine · Built with ❤️ for game developers who want more from their NPCs.</p>
 </footer>
 
-<script>
-  // Fetch Wendy live stats
-  fetch('https://chat.gamemodes.xyz/api/demo/stats')
-    .then(r => r.json())
-    .then(data => {
-      const convos = document.getElementById('wendy-total-convos');
-      const msgs = document.getElementById('wendy-total-messages');
-      const slots = document.getElementById('wendy-slots');
-      if (convos) convos.textContent = data.total_conversations || '0';
-      if (msgs) msgs.textContent = data.total_messages || '0';
-      if (slots) slots.textContent = data.slots_available ? 'Open' : 'Full';
-    })
-    .catch(() => {
-      // Backend may not be running yet — show dashes
-      document.getElementById('wendy-total-convos').textContent = '—';
-      document.getElementById('wendy-total-messages').textContent = '—';
-      document.getElementById('wendy-slots').textContent = '—';
-    });
-</script>
 </body>
 </html>
