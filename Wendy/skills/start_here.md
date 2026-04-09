@@ -87,6 +87,19 @@ When accessed with `?demo` URL parameter, the app runs in public demo mode:
 | [`daily_cache.py`](../daily_cache.py) | Daily consistency cache |
 | [`training_export.py`](../training_export.py) | AES-256-GCM encrypted export |
 
+### TTS Module
+
+| Module | Purpose |
+|--------|---------|
+| [`tts_client.py`](../tts_client.py) | MiMo TTS API client with base64 response parsing |
+| [`test_tts.py`](../test_tts.py) | Offline test script for TTS connectivity |
+
+### TTS Route (in [`app.py`](../app.py))
+
+| Function | Route | Method | Purpose |
+|----------|-------|--------|---------|
+| `tts_handler()` | `/api/tts` | POST | Generate TTS audio for text, returns audio/mpeg |
+
 ## Key Concepts
 
 ### Affinity System
@@ -135,6 +148,8 @@ Eight stages define Wendy's behavior:
 | [`bot_check.py`](../bot_check.py) | Bot protection | Honeypot, IP rate limit, UA blocking |
 | [`daily_cache.py`](../daily_cache.py) | Daily consistency cache | Briefing + response caching |
 | [`training_export.py`](../training_export.py) | Training data export | AES-256-GCM encrypted Alpaca format |
+| [`tts_client.py`](../tts_client.py) | MiMo TTS client | `MiMoTTSClient`, `create_tts_client()` factory |
+| [`test_tts.py`](../test_tts.py) | TTS offline test | API connectivity check, voice comparison |
 | [`.env.example`](../.env.example) | Environment variable template | Required env vars for deployment |
 
 ### app.py — Routes
