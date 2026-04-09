@@ -81,6 +81,27 @@ CREATE INDEX IF NOT EXISTS idx_affinity_log_conversation_id
 | `reason` | TEXT | — | Explanation from LLM analysis |
 | `timestamp` | TEXT | now | ISO 8601 UTC timestamp |
 
+### critical_facts
+
+Stores established facts about Wendy for cross-conversation consistency.
+
+| Column | Type | Description |
+|--------|------|-------------|
+| `id` | INTEGER PK | Auto-increment ID |
+| `category` | TEXT | Fact category: family, personal, location, relationship, background |
+| `fact_key` | TEXT | Short identifier (e.g., `father_name`, `age`) |
+| `fact_value` | TEXT | The established fact value |
+| `source` | TEXT | Where the fact came from: conversation, extraction, character_definition |
+| `conversation_id` | INTEGER | Conversation where fact was established (nullable) |
+| `confidence` | REAL | Confidence score 0.0-1.0 (default 0.8) |
+| `is_active` | INTEGER | 1 = active, 0 = deactivated |
+| `created_at` | TIMESTAMP | When the fact was created |
+| `updated_at` | TIMESTAMP | Last update time |
+
+**Unique constraint:** `(category, fact_key)` — first cached value wins for consistency.
+
+See `critical_facts.py` for the full API.
+
 ## Relationships
 
 ```

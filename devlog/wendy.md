@@ -8,6 +8,7 @@ Standalone chatbot with behavioral personality.
 - Investor relations page added at gamemodes.xyz/investors.html
 - Fixed TTS audio element null reference bug on Railway deployment
 - Voice toggle and speaker buttons on all NPC responses
+- All skills files updated with TTS, company knowledge, and critical_facts documentation
 
 ## 2026-04-06
 - Live at chat.gamemodes.xyz

@@ -882,7 +882,7 @@
   <!-- Skyrim -->
   <div class="project">
     <div>
-      <div class="project-label" style="background: rgba(0,184,148,0.12); color: var(--green);">⚔️ Skyrim Integration — Best Architecture</div>
+      <div class="project-label" style="background: rgba(0,184,148,0.12); color: var(--green);">⚔️ Skyrim Integration — Active Development</div>
       <h3>Skyrim NPC Dialogue Engine</h3>
       <p>
         A Skyrim Special Edition mod that replaces canned voice lines with real-time, psychologically grounded dialogue. Players type messages to NPCs via a console command; the engine generates responses through a C++ SKSE plugin communicating with a local Python dialogue server with dual-provider architecture.
@@ -890,9 +890,9 @@
       <ul class="project-features">
         <li>SKSE C++ plugin: http_client, npc_resolver, papyrus_functions, subtitle_display</li>
         <li>Full LLM server with dual provider, caching, and priority routing</li>
-        <li>Dynamic prompt tier system with psychology integration</li>
+        <li>Lydia-1B: First fine-tuned NPC model (Llama 3.2 1B + QLoRA)</li>
+        <li>MiMo v2 Pro data generation pipeline validated (100% pass rate)</li>
         <li>NPCs across all major Skyrim factions with rich personality profiles</li>
-        <li>Graceful fallback to curated dialogue when LLM unavailable</li>
       </ul>
     </div>
     <div class="project-visual">
@@ -1169,6 +1169,18 @@
         <li>Affinity system, LLM client, database, session management</li>
         <li>Shadow City Phase 7+: Cell phone, comedy, entertainment engines</li>
         <li>NPC extras system with 11 trait categories</li>
+      </ul>
+    </div>
+
+    <div class="devlog-entry">
+      <div class="devlog-date">2026-04-09</div>
+      <h4>Lydia-1B Model Investigation & Training Data Pipeline</h4>
+      <ul>
+        <li>Completed comprehensive Lydia-1B model investigation</li>
+        <li>Root cause identified: body language failure due to narrow gesture vocabulary</li>
+        <li>Validated MiMo v2 Pro API for training data generation (100% pass rate)</li>
+        <li>Updated quality standards with body language diversity requirements</li>
+        <li>Prepared 800-1500 example generation pipeline for model retraining</li>
       </ul>
     </div>
 

@@ -198,6 +198,51 @@ docker run -p 5000:5000 -e WENDY_OPENAI_API_KEY=sk-... wendy
 
 ---
 
+## How to Modify TTS Voice or Provider
+
+TTS configuration is in `config.json` under the `tts` key.
+
+### Change the default voice
+Edit `tts.default_voice` in config.json. Currently only `default_en` is confirmed working.
+
+### Disable TTS
+Set `tts.enabled` to `false` in config.json. The chat will work normally without audio.
+
+### Switch TTS providers
+1. Create a new client class in `tts_client.py` (implement the same interface as `MiMoTTSClient`)
+2. Update `create_tts_client()` factory function to detect the provider
+3. Add provider config to `config.json` under `tts.provider`
+
+### Test TTS offline
+```bash
+cd Wendy
+python test_tts.py
+```
+
+## How to Update Company Knowledge
+
+Wendy's company knowledge is stored in `config.json` under `company_knowledge`.
+
+### Add a new project
+Add a new key under `company_knowledge.projects`:
+```json
+"new_project": {
+    "name": "Project Name",
+    "status": "In Development",
+    "type": "Description",
+    "description": "Full project description...",
+    "highlights": ["Feature 1", "Feature 2"]
+}
+```
+
+### Change what Wendy shares at each affinity level
+Edit the tier logic in `wendy.py::build_system_prompt()` — search for "COMPANY KNOWLEDGE".
+
+### Disable spokesperson mode
+Set `company_knowledge.enabled` to `false` in config.json.
+
+---
+
 ## Common Modification Patterns
 
 ### Change Wendy's personality

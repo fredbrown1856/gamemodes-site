@@ -152,6 +152,35 @@ Returns `total_conversations`, `total_messages`, `active_sessions`, `slots_avail
 
 ---
 
+## TTS Configuration
+
+TTS requires the MiMo Token Plan API key. Set in `config.json` under the `tts` key:
+
+| Variable | Config Key | Required | Description |
+|----------|-----------|----------|-------------|
+| — | `tts.api_key` | Yes | MiMo Token Plan API key (`tp-...`) |
+| — | `tts.base_url` | Yes | Must be `https://token-plan-sgp.xiaomimimo.com/v1` for Token Plan |
+| — | `tts.enabled` | No | Set `false` to disable TTS without removing config |
+
+**Important:** The base URL must match your subscription type:
+- **Token Plan:** `https://token-plan-sgp.xiaomimimo.com/v1`
+- **Standard:** `https://api.xiaomimimo.com/v1`
+
+Using the wrong URL will result in 401 errors.
+
+## Company Knowledge (Spokesperson Mode)
+
+Wendy's company knowledge is configured in `config.json` under `company_knowledge`. This is a static data block injected into the system prompt — no external services required.
+
+| Variable | Config Key | Required | Description |
+|----------|-----------|----------|-------------|
+| — | `company_knowledge.enabled` | No | Set `false` to disable spokesperson mode |
+| — | `company_knowledge.investor_page` | No | Investor page URL and tier data |
+
+To update project info, edit the `company_knowledge.projects` section in config.json.
+
+---
+
 ## ⚠️ Common Issues
 
 | Issue | Fix |

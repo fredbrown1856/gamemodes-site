@@ -14,6 +14,7 @@
 - **Company Spokesperson:** Wendy has affinity-tiered knowledge about all Gamemodes projects. Visitors can ask her about Shadow City, Skyrim mod, Fallout 4 mod, and the roadmap.
 - **Investor Relations Page:** New `investors.html` at gamemodes.xyz with value proposition, 90-day roadmap, radical transparency (burn tracking), and tokenomics sections.
 - **Bug Fix:** Fixed TTS audio element null reference on Railway deployment — audio element now created dynamically in JavaScript.
+- **Docs:** All skills files updated with TTS endpoint, company knowledge, and critical_facts table documentation.
 
 ## 2026-04-08
 - **Site**: Major website restructure — navigation consolidated from 11 tabs to 7

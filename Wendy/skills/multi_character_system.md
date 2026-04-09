@@ -53,6 +53,19 @@ Optional fields:
 
 ---
 
+## Company Knowledge (Wendy Only)
+
+Wendy has a unique spokesperson role where she can answer questions about the Gamemodes company. This is implemented in:
+
+- `wendy.py::build_system_prompt()` — for the main Wendy chat
+- `character_engine.py::build_system_prompt()` — for the multi-character route
+
+Only Wendy receives company knowledge. Other characters (Skyrim, Fallout 4) do not.
+
+The knowledge is tiered by affinity level — see `skills/company_knowledge.md` for details.
+
+---
+
 ## ⚠️ PROPRIETARY NOTICE
 
 All public-facing character data uses generic terminology only No IFS-specific fields are included.

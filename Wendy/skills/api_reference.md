@@ -536,6 +536,61 @@ Admin-only encrypted training data export.
 
 ---
 
+---
+
+## POST /api/tts
+
+Generate Text-to-Speech audio for a text string using MiMo-V2-TTS.
+
+**Request:**
+
+```json
+{
+    "text": "Well hey there, sugar. How are you doin' today?",
+    "voice": "default_en"
+}
+```
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `text` | string | Yes | — | Text to synthesize (max 1000 chars) |
+| `voice` | string | No | `"default_en"` | Voice identifier |
+
+**Success Response:** `200 OK`
+
+Returns `audio/mpeg` binary data (mp3 file).
+
+```
+Content-Type: audio/mpeg
+Cache-Control: no-cache
+
+<raw mp3 bytes>
+```
+
+**Error Responses:**
+
+| Status | Condition | Body |
+|--------|-----------|------|
+| 400 | No text provided | `{"error": "No text provided"}` |
+| 500 | TTS generation failed (API error, timeout, parse failure) | `{"error": "TTS generation failed"}` |
+| 503 | TTS disabled or not configured | `{"error": "TTS not available"}` |
+
+**Frontend Usage:**
+
+```javascript
+const resp = await fetch('/api/tts', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ text: messageText }),
+});
+const blob = await resp.blob();
+const url = URL.createObjectURL(blob);
+const audio = new Audio(url);
+await audio.play();
+```
+
+---
+
 ## Frontend Routes
 
 | Route | Method | Description |
