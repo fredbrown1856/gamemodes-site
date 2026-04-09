@@ -295,7 +295,13 @@
     // TTS Playback
     // ============================================================================
 
-    const ttsAudio = document.getElementById('tts-audio');
+    const ttsAudio = document.getElementById('tts-audio') || (() => {
+        const el = document.createElement('audio');
+        el.id = 'tts-audio';
+        el.preload = 'none';
+        document.body.appendChild(el);
+        return el;
+    })();
     const ttsToggleBtn = document.getElementById('tts-toggle');
     let currentTTSUrl = null;
 
