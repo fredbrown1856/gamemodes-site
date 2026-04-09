@@ -106,7 +106,7 @@ class MiMoTTSClient:
                 },
             }
 
-            logger.debug(f"TTS request: voice={voice}, text_len={len(text)}")
+            logger.info(f"TTS request: voice={voice}, text_len={len(text)}")
 
             response = requests.post(
                 f"{self.base_url}/chat/completions",
@@ -128,7 +128,12 @@ class MiMoTTSClient:
                 audio_b64 = data["choices"][0]["message"]["audio"]["data"]
                 audio_bytes = base64.b64decode(audio_b64)
             except (KeyError, IndexError, ValueError) as e:
-                logger.warning(f"Failed to parse audio from TTS response: {e}")
+                logger.error(f"TTS response parse error: {e}")
+                logger.error(f"Response structure: {list(data.keys()) if isinstance(data, dict) else type(data)}")
+                if isinstance(data, dict) and "choices" in data and data["choices"]:
+                    logger.error(f"First choice keys: {list(data['choices'][0].keys())}")
+                    if "message" in data["choices"][0]:
+                        logger.error(f"Message keys: {list(data['choices'][0]['message'].keys())}")
                 return None
 
             logger.info(f"TTS generated: {len(audio_bytes)} bytes")
@@ -141,7 +146,7 @@ class MiMoTTSClient:
             logger.warning(f"TTS connection error: {e}")
             return None
         except Exception as e:
-            logger.error(f"TTS unexpected error (non-fatal): {e}")
+            logger.error(f"TTS unexpected error: {e}")
             return None
 
     def get_available_voices(self) -> list:

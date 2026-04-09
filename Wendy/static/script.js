@@ -305,44 +305,72 @@
      * @param {HTMLElement} btnElement - The speaker button element
      */
     async function playTTS(text, btnElement) {
+        console.log('[TTS] playTTS called, text length:', text?.length);
+
         // If currently playing, stop
         if (state.ttsPlaying) {
+            console.log('[TTS] Stopping current playback');
             stopTTS();
             return;
         }
 
-        if (!text || !text.trim()) return;
+        if (!text || !text.trim()) {
+            console.warn('[TTS] No text provided');
+            return;
+        }
 
         btnElement.classList.add('playing');
         state.ttsPlaying = true;
 
         try {
+            console.log('[TTS] Fetching /api/tts...');
             const resp = await fetch('/api/tts', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ text: text }),
             });
 
+            console.log('[TTS] Response status:', resp.status, resp.statusText);
+            console.log('[TTS] Content-Type:', resp.headers.get('content-type'));
+
             if (!resp.ok) {
                 const errData = await resp.json().catch(() => ({}));
-                throw new Error(errData.error || 'TTS failed');
+                console.error('[TTS] Error response:', errData);
+                throw new Error(errData.error || `TTS failed: ${resp.status}`);
             }
 
             const blob = await resp.blob();
+            console.log('[TTS] Received blob:', blob.size, 'bytes, type:', blob.type);
+
+            if (blob.size < 100) {
+                console.error('[TTS] Blob too small, likely not audio');
+                throw new Error('Received invalid audio data');
+            }
+
             const url = URL.createObjectURL(blob);
             currentTTSUrl = url;
 
             ttsAudio.src = url;
+
+            ttsAudio.oncanplaythrough = () => {
+                console.log('[TTS] Audio ready, playing...');
+            };
+
             ttsAudio.onended = () => {
+                console.log('[TTS] Playback ended');
                 cleanupTTS(btnElement);
             };
-            ttsAudio.onerror = () => {
+
+            ttsAudio.onerror = (e) => {
+                console.error('[TTS] Audio element error:', e);
                 cleanupTTS(btnElement);
             };
 
             await ttsAudio.play();
+            console.log('[TTS] Playback started');
         } catch (e) {
-            console.warn('TTS playback failed:', e);
+            console.error('[TTS] Playback failed:', e.message || e);
+            showError('Voice playback failed: ' + (e.message || 'Unknown error'));
             cleanupTTS(btnElement);
         }
     }
