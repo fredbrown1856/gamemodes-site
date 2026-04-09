@@ -5,6 +5,74 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Wendy — NPC Conversation Demo</title>
     <link rel="stylesheet" href="/static/style.css">
+    <style>
+        /* TTS Controls */
+        .tts-controls {
+            display: flex;
+            justify-content: flex-end;
+            padding: 4px 16px;
+            background: var(--bg-secondary, #1a1a2e);
+        }
+        .tts-toggle-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: none;
+            border: 1px solid rgba(255,255,255,0.1);
+            cursor: pointer;
+            opacity: 0.6;
+            font-size: 0.8rem;
+            padding: 4px 10px;
+            border-radius: 6px;
+            transition: opacity 0.2s, background 0.2s;
+            color: inherit;
+        }
+        .tts-toggle-btn:hover {
+            opacity: 1;
+            background: rgba(255,255,255,0.06);
+        }
+        .tts-toggle-btn.off {
+            opacity: 0.35;
+        }
+        .tts-toggle-btn.off .tts-label {
+            text-decoration: line-through;
+        }
+
+        /* TTS speaker button on messages */
+        .tts-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            opacity: 0.4;
+            font-size: 0.85rem;
+            padding: 2px 6px;
+            border-radius: 4px;
+            transition: opacity 0.2s, background 0.2s;
+            flex-shrink: 0;
+            position: absolute;
+            bottom: 4px;
+            right: 8px;
+        }
+        .tts-btn:hover {
+            opacity: 1;
+            background: rgba(255,255,255,0.08);
+        }
+        .tts-btn.playing {
+            opacity: 1;
+            color: #a29bfe;
+            animation: pulse-tts 1.5s infinite;
+        }
+        @keyframes pulse-tts {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Position message bubble relatively for TTS button */
+        .message-bubble {
+            position: relative;
+            padding-bottom: 20px;
+        }
+    </style>
 </head>
 <body>
     <div class="app-container">
@@ -74,6 +142,14 @@
                 </div>
             </div>
 
+            <!-- TTS Toggle -->
+            <div class="tts-controls" id="tts-controls">
+                <button class="tts-toggle-btn" id="tts-toggle" title="Toggle auto-play voice">
+                    <span class="tts-icon">🔊</span>
+                    <span class="tts-label">Voice: On</span>
+                </button>
+            </div>
+
             <!-- Input Area -->
             <div class="input-area" id="input-area">
                 <div class="input-container">
@@ -96,6 +172,9 @@
             </div>
         </main>
     </div>
+
+    <!-- Audio element for TTS playback -->
+    <audio id="tts-audio" preload="none"></audio>
 
     <!-- Demo Welcome Screen -->
     <div id="demo-welcome" class="demo-screen" style="display:none;">

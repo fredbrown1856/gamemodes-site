@@ -40,7 +40,10 @@
         demoExpiresAt: null,
         demoTimerInterval: null,
         demoQueueInterval: null,
-        demoMessagesCount: 0
+        demoMessagesCount: 0,
+        // TTS state
+        ttsEnabled: true,
+        ttsPlaying: false
     };
 
     // ============================================================================
@@ -289,6 +292,132 @@
         DOM.affinityDisplay.title = `Affinity: ${affinity} (${stage})`;
     }
     // ============================================================================
+    // TTS Playback
+    // ============================================================================
+
+    const ttsAudio = document.getElementById('tts-audio');
+    const ttsToggleBtn = document.getElementById('tts-toggle');
+    let currentTTSUrl = null;
+
+    /**
+     * Play TTS audio for a given text.
+     * @param {string} text - The text to synthesize
+     * @param {HTMLElement} btnElement - The speaker button element
+     */
+    async function playTTS(text, btnElement) {
+        // If currently playing, stop
+        if (state.ttsPlaying) {
+            stopTTS();
+            return;
+        }
+
+        if (!text || !text.trim()) return;
+
+        btnElement.classList.add('playing');
+        state.ttsPlaying = true;
+
+        try {
+            const resp = await fetch('/api/tts', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ text: text }),
+            });
+
+            if (!resp.ok) {
+                const errData = await resp.json().catch(() => ({}));
+                throw new Error(errData.error || 'TTS failed');
+            }
+
+            const blob = await resp.blob();
+            const url = URL.createObjectURL(blob);
+            currentTTSUrl = url;
+
+            ttsAudio.src = url;
+            ttsAudio.onended = () => {
+                cleanupTTS(btnElement);
+            };
+            ttsAudio.onerror = () => {
+                cleanupTTS(btnElement);
+            };
+
+            await ttsAudio.play();
+        } catch (e) {
+            console.warn('TTS playback failed:', e);
+            cleanupTTS(btnElement);
+        }
+    }
+
+    /**
+     * Stop current TTS playback.
+     */
+    function stopTTS() {
+        ttsAudio.pause();
+        ttsAudio.currentTime = 0;
+        document.querySelectorAll('.tts-btn.playing').forEach(b => b.classList.remove('playing'));
+        state.ttsPlaying = false;
+        if (currentTTSUrl) {
+            URL.revokeObjectURL(currentTTSUrl);
+            currentTTSUrl = null;
+        }
+    }
+
+    /**
+     * Clean up TTS state after playback ends or fails.
+     */
+    function cleanupTTS(btnElement) {
+        if (btnElement) btnElement.classList.remove('playing');
+        state.ttsPlaying = false;
+        if (currentTTSUrl) {
+            URL.revokeObjectURL(currentTTSUrl);
+            currentTTSUrl = null;
+        }
+    }
+
+    /**
+     * Create a TTS speaker button and attach to a message bubble.
+     */
+    function addTTSButton(bubbleElement, text) {
+        const btn = document.createElement('button');
+        btn.className = 'tts-btn';
+        btn.textContent = '🔊';
+        btn.title = 'Listen to response';
+        btn.onclick = (e) => {
+            e.stopPropagation();
+            playTTS(text, btn);
+        };
+        bubbleElement.appendChild(btn);
+    }
+
+    /**
+     * Toggle TTS auto-play on/off.
+     */
+    function toggleTTSAutoPlay() {
+        state.ttsEnabled = !state.ttsEnabled;
+        const label = ttsToggleBtn.querySelector('.tts-label');
+        if (state.ttsEnabled) {
+            label.textContent = 'Voice: On';
+            ttsToggleBtn.classList.remove('off');
+        } else {
+            label.textContent = 'Voice: Off';
+            ttsToggleBtn.classList.add('off');
+            stopTTS();
+        }
+    }
+
+    /**
+     * Auto-play TTS for an assistant message if enabled.
+     */
+    function autoPlayTTS(text) {
+        if (!state.ttsEnabled || !text || !text.trim()) return;
+        // Find the last tts-btn in the messages list (the one just added)
+        const allBtns = DOM.messagesList.querySelectorAll('.tts-btn');
+        const lastBtn = allBtns[allBtns.length - 1];
+        if (lastBtn) {
+            playTTS(text, lastBtn);
+        }
+    }
+
+    // ============================================================================
     // Message Rendering
     // ============================================================================
 
@@ -308,6 +437,12 @@
         const bubble = document.createElement('div');
         bubble.className = 'message-bubble';
         bubble.textContent = message.content;
+
+        // Add TTS button for assistant messages
+        if (message.role === 'assistant') {
+            addTTSButton(bubble, message.content);
+        }
+
         const timestamp = document.createElement('div');
         timestamp.className = 'message-timestamp';
         timestamp.textContent = formatTimestamp(message.timestamp);
@@ -627,6 +762,8 @@
             // Add assistant response
             state.messages.push(data.message);
             appendMessage(data.message);
+            // Auto-play TTS for assistant response
+            autoPlayTTS(data.message.content);
             // Update affinity
             // Demo API returns 'session_active', normal API returns 'conversation_active'
             // In demo mode, force isActive to true — Wendy never leaves in demo mode.
@@ -723,6 +860,11 @@
                 }
             }
         });
+
+        // TTS toggle button
+        if (ttsToggleBtn) {
+            ttsToggleBtn.addEventListener('click', toggleTTSAutoPlay);
+        }
 
         // Modal buttons
         DOM.btnModalCancel.addEventListener('click', hideConfirmModal);

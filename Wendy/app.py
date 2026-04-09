@@ -19,7 +19,8 @@ import daily_cache
 import training_export
 import critical_facts
 import character_engine
-from flask import abort
+from tts_client import create_tts_client
+from flask import abort, Response
 
 
 # Load configuration
@@ -76,6 +77,9 @@ if config.get("critical_facts", {}).get("auto_seed", True):
 
 # Initialize LLM client
 llm = llm_client.create_client(config)
+
+# Initialize TTS client
+tts_client = create_tts_client(config)
 
 # Enable CORS for demo API access from the main website
 CORS(app, origins=[
@@ -240,6 +244,46 @@ def chat_handler():
     except Exception as e:
         app.logger.error(f"Error in chat_handler: {str(e)}")
         return jsonify({"error": "Internal server error"}), 500
+
+
+@app.route("/api/tts", methods=["POST"])
+def tts_handler():
+    """
+    Generate TTS audio for a text response.
+    
+    Request JSON:
+        {
+            "text": str,
+            "voice": str (optional)
+        }
+    
+    Response: Raw audio bytes (mp3)
+    """
+    if tts_client is None:
+        return jsonify({"error": "TTS not available"}), 503
+    
+    data = request.get_json(silent=True) or {}
+    text = data.get("text", "").strip()
+    voice = data.get("voice", None)
+    
+    if not text:
+        return jsonify({"error": "No text provided"}), 400
+    
+    # Limit text length to prevent abuse
+    if len(text) > 1000:
+        text = text[:1000]
+    
+    audio = tts_client.synthesize(text, voice=voice)
+    
+    if audio is None:
+        return jsonify({"error": "TTS generation failed"}), 500
+    
+    # Return audio as binary response
+    return Response(
+        audio,
+        mimetype="audio/mpeg",
+        headers={"Cache-Control": "no-cache"},
+    )
 
 
 @app.route("/api/conversations/new", methods=["POST"])

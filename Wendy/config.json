@@ -216,6 +216,24 @@
             }
         }
     },
+    "tts": {
+        "enabled": true,
+        "provider": "mimo",
+        "base_url": "https://token-plan-sgp.xiaomimimo.com/v1",
+        "api_key": "tp-s34sb1kzmw2xaxxzsqj8jh5p7k3woxnjunpdvk9744n40dto",
+        "model": "mimo-v2-tts",
+        "default_voice": "default_en",
+        "available_voices": [
+            "default_en",
+            "English_expressive_narrator",
+            "English_radiant_girl",
+            "English_magnetic_voiced_man",
+            "English_compelling_lady1"
+        ],
+        "response_format": "mp3",
+        "auto_play": true,
+        "timeout_seconds": 30
+    },
     "affinity_shift": {
         "positive_keywords": ["thank", "thanks", "appreciate", "kind", "nice", "love", "like", "great", "awesome", "wonderful", "beautiful", "sweet", "helpful", "friendly", "welcome"],
         "negative_keywords": ["hate", "stupid", "dumb", "ugly", "shut up", "go away", "leave", "boring", "annoying", "terrible", "awful", "worst", "idiot", "moron", "fool"],
