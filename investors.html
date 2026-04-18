@@ -467,6 +467,480 @@
       gap: 1rem;
     }
   }
+
+  /* ── VALUATION REPORTS ────────────────────────── */
+  .valuation-section {
+    background: linear-gradient(180deg, var(--bg) 0%, rgba(108,92,231,0.03) 50%, var(--bg) 100%);
+  }
+
+  /* Report Card Wrapper */
+  .report-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    overflow: hidden;
+    margin-bottom: 2rem;
+  }
+
+  /* Report Header */
+  .report-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    padding: 1.5rem 2rem;
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+  }
+  .report-header-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .report-date-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: rgba(108,92,231,0.12);
+    border: 1px solid rgba(108,92,231,0.25);
+    border-radius: 8px;
+    padding: 0.35rem 0.9rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--accent2);
+  }
+  .report-number {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--text-dim);
+    letter-spacing: 0.5px;
+  }
+  .report-assessment {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: rgba(253,203,110,0.1);
+    border: 1px solid rgba(253,203,110,0.3);
+    border-radius: 8px;
+    padding: 0.35rem 0.9rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--orange);
+  }
+  .report-tab-bar {
+    display: flex;
+    gap: 0.5rem;
+  }
+  .report-tab {
+    padding: 0.3rem 0.8rem;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text-dim);
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+  }
+  .report-tab.active {
+    background: rgba(108,92,231,0.15);
+    border-color: var(--accent);
+    color: var(--accent2);
+  }
+  .report-tab:hover {
+    border-color: var(--accent);
+    color: var(--text);
+  }
+
+  /* Report Body */
+  .report-body {
+    padding: 2rem;
+  }
+
+  /* Blended Valuation Hero */
+  .valuation-hero {
+    text-align: center;
+    padding: 2rem 1rem 2.5rem;
+    margin-bottom: 2rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .valuation-hero-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--text-dim);
+    margin-bottom: 1.25rem;
+  }
+  .valuation-range {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+  }
+  .valuation-bound {
+    text-align: center;
+  }
+  .valuation-bound .label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--text-dim);
+    margin-bottom: 0.3rem;
+  }
+  .valuation-bound .value {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: var(--text-dim);
+    line-height: 1.2;
+  }
+  .valuation-mid {
+    text-align: center;
+    position: relative;
+  }
+  .valuation-mid .label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--accent2);
+    margin-bottom: 0.4rem;
+  }
+  .valuation-mid .value {
+    font-size: 3rem;
+    font-weight: 900;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    line-height: 1.1;
+  }
+  .valuation-mid::before,
+  .valuation-mid::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: 40px;
+    height: 1px;
+    background: var(--border);
+  }
+  .valuation-mid::before { right: 100%; margin-right: 1rem; }
+  .valuation-mid::after { left: 100%; margin-left: 1rem; }
+
+  /* Valuation Methods Breakdown */
+  .valuation-methods {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+  .method-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.25rem;
+    text-align: center;
+  }
+  .method-card .method-name {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-dim);
+    margin-bottom: 0.75rem;
+  }
+  .method-card .method-values {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.8;
+  }
+  .method-card .method-weight {
+    font-size: 0.7rem;
+    color: var(--accent2);
+    margin-top: 0.5rem;
+    font-weight: 600;
+  }
+
+  /* Two-column grid for report subsections */
+  .report-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  /* Subsection cards inside report */
+  .report-sub-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1.5rem;
+  }
+  .report-sub-card h4 {
+    font-size: 0.95rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  /* Technical Assets Grid */
+  .tech-assets-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 0.75rem;
+  }
+  .tech-asset {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1rem;
+    text-align: center;
+    transition: all 0.25s;
+  }
+  .tech-asset:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+  }
+  .tech-asset .asset-value {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: var(--accent2);
+    line-height: 1.2;
+    margin-bottom: 0.25rem;
+  }
+  .tech-asset .asset-label {
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    font-weight: 500;
+    line-height: 1.4;
+  }
+
+  /* Risk Heat Map Table */
+  .risk-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.82rem;
+  }
+  .risk-table th {
+    text-align: left;
+    padding: 0.6rem 0.75rem;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-dim);
+    border-bottom: 1px solid var(--border);
+  }
+  .risk-table td {
+    padding: 0.55rem 0.75rem;
+    border-bottom: 1px solid rgba(42,42,58,0.5);
+    color: var(--text);
+    vertical-align: middle;
+  }
+  .risk-table tr:last-child td {
+    border-bottom: none;
+  }
+  .risk-table .risk-name {
+    font-weight: 500;
+  }
+  .risk-badge {
+    display: inline-block;
+    padding: 0.15rem 0.55rem;
+    border-radius: 4px;
+    font-size: 0.72rem;
+    font-weight: 600;
+  }
+  .risk-badge.high {
+    background: rgba(225,112,85,0.15);
+    color: var(--red);
+  }
+  .risk-badge.medium {
+    background: rgba(253,203,110,0.12);
+    color: var(--orange);
+  }
+  .risk-badge.low {
+    background: rgba(0,184,148,0.12);
+    color: var(--green);
+  }
+
+  /* Revenue Scenarios */
+  .scenario-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+  }
+  .scenario-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.25rem;
+    text-align: center;
+    transition: all 0.25s;
+  }
+  .scenario-card:hover {
+    transform: translateY(-2px);
+  }
+  .scenario-card .scenario-icon {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+  }
+  .scenario-card .scenario-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-dim);
+    margin-bottom: 0.75rem;
+  }
+  .scenario-card .scenario-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.82rem;
+    padding: 0.3rem 0;
+    color: var(--text-dim);
+  }
+  .scenario-card .scenario-row .val {
+    font-weight: 700;
+    color: var(--text);
+  }
+  .scenario-card .scenario-total {
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--border);
+    font-size: 0.9rem;
+    font-weight: 800;
+    color: var(--accent2);
+  }
+  .scenario-card.bear { border-color: rgba(225,112,85,0.3); }
+  .scenario-card.bear .scenario-total { color: var(--red); }
+  .scenario-card.base { border-color: rgba(108,92,231,0.3); }
+  .scenario-card.bull { border-color: rgba(0,184,148,0.3); }
+  .scenario-card.bull .scenario-total { color: var(--green); }
+
+  /* Market Comparables */
+  .comp-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+  .comp-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.6rem 0.9rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 0.85rem;
+  }
+  .comp-item .comp-name {
+    font-weight: 600;
+    color: var(--text);
+  }
+  .comp-item .comp-value {
+    font-weight: 700;
+    color: var(--accent2);
+    font-family: var(--mono);
+    font-size: 0.8rem;
+  }
+
+  /* Replacement Cost Table */
+  .cost-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.82rem;
+  }
+  .cost-table th {
+    text-align: left;
+    padding: 0.6rem 0.75rem;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-dim);
+    border-bottom: 1px solid var(--border);
+  }
+  .cost-table th:not(:first-child) {
+    text-align: right;
+  }
+  .cost-table td {
+    padding: 0.55rem 0.75rem;
+    border-bottom: 1px solid rgba(42,42,58,0.5);
+    color: var(--text);
+  }
+  .cost-table td:not(:first-child) {
+    text-align: right;
+    font-family: var(--mono);
+    font-size: 0.8rem;
+  }
+  .cost-table tr:last-child td {
+    border-bottom: none;
+    font-weight: 800;
+    color: var(--accent2);
+    padding-top: 0.75rem;
+    border-top: 2px solid var(--border);
+  }
+
+  /* Report Footer */
+  .report-footer {
+    padding: 1.25rem 2rem;
+    background: var(--surface2);
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  .report-footer .audit-info {
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    line-height: 1.6;
+  }
+  .report-footer .view-report-link {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--accent2);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .report-footer .view-report-link:hover {
+    color: var(--accent);
+    text-decoration: underline;
+  }
+
+  /* Responsive for valuation section */
+  @media (max-width: 768px) {
+    .valuation-range {
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+    }
+    .valuation-mid::before,
+    .valuation-mid::after {
+      display: none;
+    }
+    .valuation-mid .value {
+      font-size: 2.2rem;
+    }
+    .scenario-grid {
+      grid-template-columns: 1fr;
+    }
+    .report-header {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    .tech-assets-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
 </style>
 </head>
 <body>
@@ -615,6 +1089,216 @@
 ║  All transactions: solscan.io               ║
 ╚══════════════════════════════════════════════╝
   </div>
+</section>
+
+<!-- SECTION: Valuation Reports -->
+<section id="valuation-reports" class="valuation-section">
+  <span class="section-label">Valuation Reports</span>
+  <h2 class="section-title">Independent Project Valuations</h2>
+  <p class="section-desc">Regular third-party assessments of our technical assets, market position, and revenue potential. Updated quarterly.</p>
+
+  <!-- Report #1 -->
+  <div class="report-card">
+    <!-- Report Header -->
+    <div class="report-header">
+      <div class="report-header-left">
+        <span class="report-date-badge">📅 April 15, 2026</span>
+        <span class="report-number">Report #1</span>
+        <span class="report-assessment">🟡 WATCH</span>
+      </div>
+      <div class="report-tab-bar">
+        <span class="report-tab active">Report #1</span>
+      </div>
+    </div>
+
+    <div class="report-body">
+
+      <!-- Blended Valuation Hero -->
+      <div class="valuation-hero">
+        <div class="valuation-hero-label">Blended Valuation</div>
+        <div class="valuation-range">
+          <div class="valuation-bound">
+            <div class="label">Low</div>
+            <div class="value">$150,000</div>
+          </div>
+          <div class="valuation-mid">
+            <div class="label">Mid Estimate</div>
+            <div class="value">$580,000</div>
+          </div>
+          <div class="valuation-bound">
+            <div class="label">High</div>
+            <div class="value">$1,600,000</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Valuation Methods -->
+      <div class="valuation-methods">
+        <div class="method-card">
+          <div class="method-name">Replacement Cost</div>
+          <div class="method-values">$103K / $239K / $438K</div>
+          <div class="method-weight">Weight: 25%</div>
+        </div>
+        <div class="method-card">
+          <div class="method-name">Market Comps</div>
+          <div class="method-values">$200K / $750K / $2M</div>
+          <div class="method-weight">Weight: 35%</div>
+        </div>
+        <div class="method-card">
+          <div class="method-name">Revenue Potential</div>
+          <div class="method-values">$150K / $750K / $2.4M</div>
+          <div class="method-weight">Weight: 40%</div>
+        </div>
+      </div>
+
+      <!-- Technical Assets + Risk Heat Map -->
+      <div class="report-grid">
+
+        <!-- Technical Assets Summary -->
+        <div class="report-sub-card">
+          <h4>🏗️ Technical Assets Summary</h4>
+          <div class="tech-assets-grid">
+            <div class="tech-asset">
+              <div class="asset-value">8</div>
+              <div class="asset-label">Projects across<br>4 platforms</div>
+            </div>
+            <div class="tech-asset">
+              <div class="asset-value">79,716+</div>
+              <div class="asset-label">Lines of Code<br>Python + C++</div>
+            </div>
+            <div class="tech-asset">
+              <div class="asset-value">50,000+</div>
+              <div class="asset-label">Psychology-labeled<br>training records</div>
+            </div>
+            <div class="tech-asset">
+              <div class="asset-value">4</div>
+              <div class="asset-label">Fine-tuned model<br>adapters (Lydia v1–v4)</div>
+            </div>
+            <div class="tech-asset">
+              <div class="asset-value">85%</div>
+              <div class="asset-label">Dataset completion<br>8,500 / 10,000</div>
+            </div>
+            <div class="tech-asset">
+              <div class="asset-value">5</div>
+              <div class="asset-label">Revenue model<br>candidates</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Risk Heat Map -->
+        <div class="report-sub-card">
+          <h4>🔥 Risk Heat Map</h4>
+          <table class="risk-table">
+            <thead>
+              <tr><th>Risk</th><th>Likelihood</th><th>Impact</th></tr>
+            </thead>
+            <tbody>
+              <tr><td class="risk-name">Solo Developer Dependency</td><td><span class="risk-badge medium">Medium</span></td><td><span class="risk-badge high">High</span></td></tr>
+              <tr><td class="risk-name">Critical Bug (Shadow City tick)</td><td><span class="risk-badge high">High</span></td><td><span class="risk-badge high">High</span></td></tr>
+              <tr><td class="risk-name">Unvalidated Model Quality</td><td><span class="risk-badge medium">Medium</span></td><td><span class="risk-badge medium">Medium</span></td></tr>
+              <tr><td class="risk-name">API Dependency (z.ai, OpenAI)</td><td><span class="risk-badge low">Low</span></td><td><span class="risk-badge medium">Medium</span></td></tr>
+              <tr><td class="risk-name">Pre-Revenue Status</td><td><span class="risk-badge medium">Medium</span></td><td><span class="risk-badge medium">Medium</span></td></tr>
+              <tr><td class="risk-name">Market Timing</td><td><span class="risk-badge low">Low</span></td><td><span class="risk-badge medium">Medium</span></td></tr>
+              <tr><td class="risk-name">Data Pipeline Reliability</td><td><span class="risk-badge low">Low</span></td><td><span class="risk-badge medium">Medium</span></td></tr>
+              <tr><td class="risk-name">Regulatory (AI/ML)</td><td><span class="risk-badge low">Low</span></td><td><span class="risk-badge medium">Medium</span></td></tr>
+              <tr><td class="risk-name">Competition</td><td><span class="risk-badge medium">Medium</span></td><td><span class="risk-badge medium">Medium</span></td></tr>
+              <tr><td class="risk-name">Technical Debt</td><td><span class="risk-badge medium">Medium</span></td><td><span class="risk-badge low">Low</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Revenue Scenarios + Market Comparables -->
+      <div class="report-grid">
+
+        <!-- Revenue Scenarios -->
+        <div class="report-sub-card">
+          <h4>📈 24-Month Revenue Scenarios</h4>
+          <div class="scenario-grid">
+            <div class="scenario-card bear">
+              <div class="scenario-icon">🐻</div>
+              <div class="scenario-label">Bear</div>
+              <div class="scenario-row"><span>Year 1</span><span class="val">$50K</span></div>
+              <div class="scenario-row"><span>Year 2</span><span class="val">$25K</span></div>
+              <div class="scenario-total">Total: $75K</div>
+            </div>
+            <div class="scenario-card base">
+              <div class="scenario-icon">📊</div>
+              <div class="scenario-label">Base</div>
+              <div class="scenario-row"><span>Year 1</span><span class="val">$250K</span></div>
+              <div class="scenario-row"><span>Year 2</span><span class="val">$200K</span></div>
+              <div class="scenario-total">Total: $450K</div>
+            </div>
+            <div class="scenario-card bull">
+              <div class="scenario-icon">🐂</div>
+              <div class="scenario-label">Bull</div>
+              <div class="scenario-row"><span>Year 1</span><span class="val">$800K</span></div>
+              <div class="scenario-row"><span>Year 2</span><span class="val">$700K</span></div>
+              <div class="scenario-total">Total: $1.5M</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Market Comparables -->
+        <div class="report-sub-card">
+          <h4>🏢 Market Comparables</h4>
+          <div class="comp-list">
+            <div class="comp-item">
+              <span class="comp-name">AI Dungeon</span>
+              <span class="comp-value">$500K – $2M</span>
+            </div>
+            <div class="comp-item">
+              <span class="comp-name">NovelAI</span>
+              <span class="comp-value">$300K – $1.5M</span>
+            </div>
+            <div class="comp-item">
+              <span class="comp-name">AI Roguelite</span>
+              <span class="comp-value">$200K – $800K</span>
+            </div>
+            <div class="comp-item">
+              <span class="comp-name">Convai</span>
+              <span class="comp-value">$500K – $2M</span>
+            </div>
+            <div class="comp-item">
+              <span class="comp-name">Replika</span>
+              <span class="comp-value">$300K – $1.5M</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Replacement Cost Breakdown -->
+      <div class="report-sub-card">
+        <h4>🔧 Replacement Cost Breakdown</h4>
+        <table class="cost-table">
+          <thead>
+            <tr><th>Category</th><th>Low</th><th>Mid</th><th>High</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Python Backend</td><td>$60,000</td><td>$105,000</td><td>$180,000</td></tr>
+            <tr><td>Game Design / Narrative</td><td>$20,000</td><td>$40,000</td><td>$60,000</td></tr>
+            <tr><td>LLM/AI Engineering</td><td>$30,000</td><td>$75,000</td><td>$100,000</td></tr>
+            <tr><td>C++ Plugin Development</td><td>$7,500</td><td>$18,750</td><td>$30,000</td></tr>
+            <tr><td>Frontend / Web UI</td><td>$6,000</td><td>$15,000</td><td>$24,000</td></tr>
+            <tr><td>Training Data Generation</td><td>$6,000</td><td>$18,000</td><td>$24,000</td></tr>
+            <tr><td>QA / Testing</td><td>$6,000</td><td>$18,000</td><td>$24,000</td></tr>
+            <tr><td>DevOps / Deployment</td><td>$4,800</td><td>$12,000</td><td>$19,200</td></tr>
+            <tr><td>Documentation</td><td>$5,000</td><td>$12,500</td><td>$16,000</td></tr>
+            <tr><td>Fine-tuned Models</td><td>$2,000</td><td>$5,000</td><td>$10,000</td></tr>
+            <tr><td>TOTAL</td><td>$147,300</td><td>$319,250</td><td>$487,200</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+
+    <!-- Report Footer -->
+    <div class="report-footer">
+      <span class="audit-info">Audited by Roo (AI Orchestrator) · Methodology: Replacement Cost (25%), Market Comps (35%), Revenue Potential (40%)</span>
+      <a href="gamemodes-site/AUDIT_2026-04-15.md" class="view-report-link">View Full Report →</a>
+    </div>
+  </div>
+
 </section>
 
 <!-- SECTION 4: Tokenomics -->
