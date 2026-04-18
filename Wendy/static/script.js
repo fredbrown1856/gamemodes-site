@@ -70,7 +70,10 @@
         inputDisabledMessage: document.getElementById('input-disabled-message'),
         modalOverlay: document.getElementById('modal-overlay'),
         btnModalCancel: document.getElementById('btn-modal-cancel'),
-        btnModalConfirm: document.getElementById('btn-modal-confirm')
+        btnModalConfirm: document.getElementById('btn-modal-confirm'),
+        fabNewChat: document.getElementById('fab-new-chat'),
+        navToggle: document.getElementById('nav-toggle'),
+        navLinks: document.getElementById('nav-links')
     };
 
     // ============================================================================
@@ -275,21 +278,31 @@
         state.stage = stage;
         // Calculate position (0-100%)
         const position = ((affinity + 100) / 200) * 100;
-        // Update bar (mask from right — shows the "unfilled" portion)
-        DOM.affinityBar.style.width = `${100 - position}%`;
-        // Update marker position
-        DOM.affinityMarker.style.left = `${position}%`;
-        // Update color of marker
+        // Update bar fill width (new mini bar fills from left)
+        if (DOM.affinityBar) {
+            DOM.affinityBar.style.width = `${position}%`;
+        }
+        // Update marker position (legacy compatibility)
+        if (DOM.affinityMarker) {
+            DOM.affinityMarker.style.left = `${position}%`;
+        }
+        // Update color
         const color = getAffinityColor(affinity);
-        DOM.affinityMarker.style.backgroundColor = color;
+        if (DOM.affinityMarker) {
+            DOM.affinityMarker.style.backgroundColor = color;
+        }
         // Update value text
-        DOM.affinityValue.textContent = affinity;
-        DOM.affinityValue.style.color = color;
+        if (DOM.affinityValue) {
+            DOM.affinityValue.textContent = affinity;
+        }
         // Update stage label
-        DOM.stageLabel.textContent = stage;
-        DOM.stageLabel.style.color = color;
+        if (DOM.stageLabel) {
+            DOM.stageLabel.textContent = stage.toUpperCase();
+        }
         // Update title tooltip
-        DOM.affinityDisplay.title = `Affinity: ${affinity} (${stage})`;
+        if (DOM.affinityDisplay) {
+            DOM.affinityDisplay.title = `Affinity: ${affinity} (${stage})`;
+        }
     }
     // ============================================================================
     // TTS Playback
@@ -496,10 +509,27 @@
         if (state.messages.length === 0) {
             const emptyState = document.createElement('div');
             emptyState.className = 'empty-state';
+            const suggestions = window.CHARACTER_SUGGESTIONS || [];
+            let chipsHtml = '';
+            if (suggestions.length > 0) {
+                chipsHtml = '<div class="suggestion-chips">' +
+                    suggestions.map(s => `<button class="suggestion-chip" data-suggestion="${escapeHtml(s)}">${escapeHtml(s)}</button>`).join('') +
+                    '</div>';
+            }
             emptyState.innerHTML = `
-                <div class="empty-state-icon">💬</div>
-                <div class="empty-state-text">Start a conversation with ${state.characterName}!</div>
+                <div class="empty-avatar">${charInitial}</div>
+                <div class="empty-name">${state.characterName}</div>
+                <div class="empty-desc">Start a conversation with ${state.characterName}! Type a message below or pick a suggestion.</div>
+                ${chipsHtml}
             `;
+            // Bind suggestion chip clicks
+            emptyState.querySelectorAll('.suggestion-chip').forEach(chip => {
+                chip.addEventListener('click', () => {
+                    DOM.messageInput.value = chip.dataset.suggestion;
+                    DOM.messageInput.focus();
+                    autoResizeInput();
+                });
+            });
             DOM.messagesList.appendChild(emptyState);
             return;
         }
@@ -641,8 +671,10 @@
 
     /**
      * Toggle sidebar open/closed (mobile).
+     * Skips toggle if sidebar is hidden (e.g. character mode).
      */
     function toggleSidebar(open) {
+        if (!DOM.sidebar || DOM.sidebar.style.display === 'none') return;
         if (open) {
             DOM.sidebar.classList.add('open');
             DOM.sidebarOverlay.classList.add('visible');
@@ -851,18 +883,36 @@
     // ============================================================================
 
     function initEventListeners() {
-        // Menu toggle (mobile)
-        DOM.btnMenu.addEventListener('click', () => {
-            const isOpen = DOM.sidebar.classList.contains('open');
-            toggleSidebar(!isOpen);
-        });
+        // Menu toggle (mobile sidebar)
+        if (DOM.btnMenu) {
+            DOM.btnMenu.addEventListener('click', () => {
+                const isOpen = DOM.sidebar.classList.contains('open');
+                toggleSidebar(!isOpen);
+            });
+        }
 
         // Sidebar overlay click to close
-        DOM.sidebarOverlay.addEventListener('click', () => {
-            toggleSidebar(false);
-        });
-        // New chat button
-        DOM.btnNewChat.addEventListener('click', handleNewChatClick);
+        if (DOM.sidebarOverlay) {
+            DOM.sidebarOverlay.addEventListener('click', () => {
+                toggleSidebar(false);
+            });
+        }
+        // New chat button (sidebar)
+        if (DOM.btnNewChat) {
+            DOM.btnNewChat.addEventListener('click', handleNewChatClick);
+        }
+        // FAB new chat button (floating action button)
+        if (DOM.fabNewChat) {
+            DOM.fabNewChat.addEventListener('click', handleNewChatClick);
+        }
+        // Nav toggle (mobile)
+        if (DOM.navToggle) {
+            DOM.navToggle.addEventListener('click', () => {
+                if (DOM.navLinks) {
+                    DOM.navLinks.classList.toggle('open');
+                }
+            });
+        }
         // Send button
         DOM.btnSend.addEventListener('click', handleSendMessage);
         // Input: Enter to send, Shift+Enter for newline
@@ -944,15 +994,21 @@
     async function initDemoMode() {
         state.demoMode = true;
         // Hide sidebar and normal chat elements
-        DOM.sidebar.style.display = 'none';
-        DOM.sidebarOverlay.style.display = 'none';
+        if (DOM.sidebar) DOM.sidebar.style.display = 'none';
+        if (DOM.sidebarOverlay) DOM.sidebarOverlay.style.display = 'none';
         // Show the demo welcome screen
-        document.getElementById('demo-welcome').style.display = 'flex';
+        const demoWelcome = document.getElementById('demo-welcome');
+        if (demoWelcome) {
+            demoWelcome.style.display = 'flex';
+        }
         // Bind the demo start form immediately so button is responsive even if stats fetch is slow
-        document.getElementById('demo-start-form').addEventListener('submit', (e) => {
-            e.preventDefault();
-            startDemoSession();
-        });
+        const demoStartForm = document.getElementById('demo-start-form');
+        if (demoStartForm) {
+            demoStartForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                startDemoSession();
+            });
+        }
 
         // Fetch and display queue stats (non-blocking)
         apiRequest('/api/demo/stats').then(stats => {
@@ -990,10 +1046,14 @@
             } else if (status === 'queued') {
                 // All slots full — show queue screen
                 state.demoQueueId = resp.queue_id;
-                document.getElementById('queue-position').textContent = `#${resp.position}`;
-                document.getElementById('queue-eta').textContent = resp.estimated_wait;
-                document.getElementById('demo-welcome').style.display = 'none';
-                document.getElementById('demo-queue').style.display = 'flex';
+                const queuePos = document.getElementById('queue-position');
+                if (queuePos) queuePos.textContent = `#${resp.position}`;
+                const queueEta = document.getElementById('queue-eta');
+                if (queueEta) queueEta.textContent = resp.estimated_wait;
+                const demoWelcome = document.getElementById('demo-welcome');
+                if (demoWelcome) demoWelcome.style.display = 'none';
+                const demoQueue = document.getElementById('demo-queue');
+                if (demoQueue) demoQueue.style.display = 'flex';
                 startQueuePolling();
             }
         } catch (error) {
@@ -1040,13 +1100,17 @@
             const remaining = Math.max(0, Math.floor((expires - now) / 1000));
             const mins = Math.floor(remaining / 60);
             const secs = remaining % 60;
-            document.getElementById('demo-timer-value').textContent =
-                `${mins}:${secs.toString().padStart(2, '0')}`;
+            const timerValue = document.getElementById('demo-timer-value');
+            if (timerValue) {
+                timerValue.textContent = `${mins}:${secs.toString().padStart(2, '0')}`;
+            }
             const timerEl = document.getElementById('demo-timer');
-            if (remaining <= 30) {
-                timerEl.classList.add('timer-warning');
-            } else {
-                timerEl.classList.remove('timer-warning');
+            if (timerEl) {
+                if (remaining <= 30) {
+                    timerEl.classList.add('timer-warning');
+                } else {
+                    timerEl.classList.remove('timer-warning');
+                }
             }
 
             if (remaining <= 0) {
@@ -1066,10 +1130,11 @@
         // Hide all demo overlay screens
         document.querySelectorAll('.demo-screen').forEach(el => el.style.display = 'none');
         // Ensure sidebar stays hidden in demo mode
-        DOM.sidebar.style.display = 'none';
-        DOM.sidebarOverlay.style.display = 'none';
+        if (DOM.sidebar) DOM.sidebar.style.display = 'none';
+        if (DOM.sidebarOverlay) DOM.sidebarOverlay.style.display = 'none';
         // Show the timer in the header
-        document.getElementById('demo-timer').style.display = 'flex';
+        const demoTimer = document.getElementById('demo-timer');
+        if (demoTimer) demoTimer.style.display = 'flex';
         // Load the conversation using the existing function
         loadConversation(conversationId);
 
@@ -1088,13 +1153,17 @@
 
         setInputEnabled(false);
         // Populate stats
-        document.getElementById('demo-messages-sent').textContent = state.demoMessagesCount;
-        document.getElementById('demo-final-affinity').textContent = state.stage || 'Stranger';
+        const msgsSent = document.getElementById('demo-messages-sent');
+        if (msgsSent) msgsSent.textContent = state.demoMessagesCount;
+        const finalAffinity = document.getElementById('demo-final-affinity');
+        if (finalAffinity) finalAffinity.textContent = state.stage || 'Stranger';
         // Hide all demo overlay screens and the chat main area
         document.querySelectorAll('.demo-screen').forEach(el => el.style.display = 'none');
-        document.querySelector('.chat-main').style.display = 'none';
+        const chatMain = document.querySelector('.chat-main');
+        if (chatMain) chatMain.style.display = 'none';
         // Show the expired screen
-        document.getElementById('demo-expired').style.display = 'flex';
+        const demoExpired = document.getElementById('demo-expired');
+        if (demoExpired) demoExpired.style.display = 'flex';
     }
     // ============================================================================
     // Initialization
@@ -1109,7 +1178,6 @@
         }
         if (state.characterMode) {
             // Character mode: start character-specific conversation
-            refreshConversationList();
             await startNewConversation();
             return;
         }
